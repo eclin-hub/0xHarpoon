@@ -1,146 +1,128 @@
-# Boussole des baleines
+<div align="center">
 
-## Mise en ligne gratuite (GitHub Pages)
-
-Le dépôt contient tout pour publier le site gratuitement, sans ordinateur allumé : GitHub collecte les données toutes les 10 à 20 minutes et met la page à jour. Le lien est public et s'ouvre sur ordinateur, tablette ou téléphone.
-
-1. Créez un compte sur github.com, puis un dépôt **public** (par exemple `boussole`). Un dépôt public est nécessaire pour que tout reste gratuit.
-2. Envoyez-y tous les fichiers de ce dossier, **y compris le dossier caché `.github`** (avec GitHub Desktop, ou `git push`).
-3. Dans le dépôt : **Settings → Pages → Source : GitHub Actions**.
-4. Dans le dépôt : **Settings → Actions → General → Workflow permissions : Read and write permissions**.
-5. Onglet **Actions → Mise à jour des données → Run workflow** pour la première publication (environ 1 minute).
-6. Le site est à l'adresse `https://VOTRE-NOM.github.io/boussole/`.
-
-Une fois en ligne, la page travaille en deux temps :
-- **En direct, depuis le navigateur** : prix, funding et open interest toutes les 20 s, positions des 100 comptes Hyperliquid toutes les 45 s, avec la carte des liquidations et le flux des mouvements. À l'ouverture, la page compare les positions en direct avec la dernière collecte GitHub et affiche tout de suite ce qui a bougé entre-temps (étiquette « depuis la dernière collecte »).
-- **Toutes les 10 à 20 minutes, par GitHub** : macro, hedge funds, options, actualités, calendrier, globe, Polymarket, sentiment, directions et signaux d'edge. La page relit ces analyses toute seule chaque minute.
-
-Le direct se met en pause quand l'onglet est caché, pour économiser la batterie. L'historique et le flux d'activité sont conservés dans la branche `state`.
-
-Limites : GitHub espace parfois les exécutions planifiées (jusqu'à 20 à 30 minutes aux heures chargées), et désactive les tâches planifiées d'un dépôt sans activité pendant 60 jours (un e-mail prévient, un clic les réactive). L'actualité « au clic » sur les pays non préchargés et le chargement des comptes Hyperliquid hors échantillon demandent la version locale.
-
-Pour brancher X en ligne : **Settings → Secrets and variables → Actions**, ajoutez `X_BEARER_TOKEN` ou `TWITTERAPI_IO_KEY`.
-
-## Version locale (en direct)
-
-Site local qui suit les gros portefeuilles de **Hyperliquid** et de **Polymarket** et en tire un sentiment de marché.
-
-## Lancer
-
-```bash
-cd whale-compass
-node server.mjs        # Node 20 ou plus, aucune dépendance à installer
-# puis ouvrir http://localhost:8787
+```text
+   ___        _   _                                    
+  / _ \ __  _| | | | __ _ _ __ _ __   ___   ___  _ __  
+ | | | |\ \/ / |_| |/ _` | '__| '_ \ / _ \ / _ \| '_ \ 
+ | |_| | >  <|  _  | (_| | |  | |_) | (_) | (_) | | | |
+  \___/ /_/\_\_| |_|\__,_|_|  | .__/ \___/ \___/|_| |_|
+                              |_|                      
 ```
 
-Variables : `PORT` (8787), `HL_COHORT` (taille de l'échantillon Hyperliquid, 100 par défaut), `REFRESH_SCALE` (0.5 = rafraîchissement deux fois plus rapide).
+# 🔱 0xHarpoon
 
-L'historique et le flux d'activité sont conservés dans `data/` et survivent à un redémarrage.
+### Terminal d'Intelligence Quantitative & Surveillance Multi-Marchés en Temps Réel
+*Suivi des baleines, analyse des flux d'ordres institutionnels et modélisation factorielle prédictive.*
 
-## Quant Vault (page annexe)
+[![Architecture](https://img.shields.io/badge/Architecture-Zero--Dependency_Node.js-10b981?style=for-the-badge)]()
+[![Edition](https://img.shields.io/badge/Édition-2026_Quantitative_Suite-3b82f6?style=for-the-badge)]()
+[![Data](https://img.shields.io/badge/Flux-Temps_Réel_&_SSE-f59e0b?style=for-the-badge)]()
 
-Le bouton cadenas « 🔒 QUANT VAULT » bascule, sans rechargement, vers un laboratoire de recherche. Un en-tête unique et mince porte les onglets ; chaque graphique occupe toute la hauteur, avec un mode mosaïque et un bouton plein écran par graphique.
+---
 
-- **Outils 1 à 7** : Sankey capital → facteurs → CVaR, frontière efficiente 3D, paysage de robustesse, arbre couvrant minimal avec contagion, bascule de corrélation, cônes à sauts (Bates), surface de bêta conditionnel.
-- **Outil 11, Facteurs cachés** : retrait des facteurs évidents par régression, covariance des résidus débruitée (Marchenko-Pastur ou Ledoit-Wolf), ACP, corrélations partielles, part du risque caché du portefeuille. Source au choix : simulation ou cours réels Hyperliquid.
-- **Outils 8 à 10** (laboratoire du mémoire) : ACP, modèle à facteurs dynamiques par filtre de Kalman, bêtas dynamiques, Fama-MacBeth avec Newey-West, test GRS, Factor-GJR-GARCH, Kupiec. Export CSV et JSON.
+</div>
 
-**Important** : sauf l'option « cours réels » de l'outil 11, ce laboratoire tourne sur un modèle stylisé et des données simulées (graine fixe). La page n'est pas protégée : c'est une bascule d'affichage.
+## 🧭 Qu'est-ce que 0xHarpoon ?
 
-Les outils sont montés une seule fois puis masqués : leur état survit aux changements de vue. Les moteurs de données (`live.js`, `tape.js`, collecte) tournent indépendamment de l'affichage.
+**0xHarpoon** est un terminal de recherche quantitative et de surveillance de marché conçu en **2026** pour unifier en un seul cockpit haute vitesse l'ensemble des flux financiers majeurs. 
 
-Fichiers : `q-model.js` (mathématiques), `q-canvas.js` (rendu 3D), `q-tools.js` (outils 1 à 7), `q-hidden.js` (outil 11), `q-thesis.js` (outils 8 à 10), `q-vault.js` (page, onglets, plein écran).
+Là où les traders doivent habituellement jongler entre des dizaines d'onglets (carnets d'ordres crypto, marchés de prédiction, rapports macroéconomiques, calendriers financiers, flux d'actualités et modèles mathématiques), **0xHarpoon** agrège, croise et pondère ces sources en continu sans aucune dépendance externe lourde.
 
-## Whale Tape
+---
 
-Page « Whale Tape » : toutes les transactions Polymarket d'au moins 10 000 $, relevées toutes les 30 secondes en une seule requête, plus les mouvements Hyperliquid des comptes suivis. Seuils 10 k, 25 k, 50 k (par défaut) et 100 k. Les **convergences** signalent une même issue achetée par plusieurs baleines. En cas de limite de débit, le moteur passe à un essai toutes les 10 minutes et continue d'afficher l'historique conservé dans le navigateur (24 h).
+## 🌐 Ce que 0xHarpoon regroupe en temps réel
 
-## Accès à l'API Polymarket
+Le moteur du terminal fusionne **plus de 15 sources de données institutionnelles, on-chain et alternatives** à travers 18 vues analytiques spécialisées :
 
-`public/pmapi.js` (navigateur) et `lib/pm.mjs` (collecte) passent par une file d'attente : 2 requêtes simultanées au plus, reprise avec délai exponentiel, pause générale après un refus. Côté navigateur, un cache de 45 s sert la réponse immédiatement puis la rafraîchit en arrière-plan, et les 15 plus grosses positions de chaque profil consulté sont gardées en mémoire locale.
+### 1. 🐋 Surveillance des Baleines & Flux On-Chain (Hyperliquid & Polymarket)
+* **Cohorte Élite Hyperliquid :** Filtrage algorithmique en temps réel des 100 portefeuilles les plus performants ($> 500\text{ k\$}$ de capital, excluant le bruit des market makers) pour suivre leurs positions exactes sur les cryptos majeures et les actifs synthétiques (Or, Pétrole, Indices).
+* **Whale Tape & Inspecteur Polymarket :** Détection instantanée toutes les 30 secondes des paris à forte conviction ($\ge 10\text{ k\$}$ jusqu'à $100\text{ k\$}+$), calcul des convergences multi-baleines sur une même issue, et audit détaillé de chaque portefeuille (PnL latent/réalisé, concentration, historique sur 7 jours).
+* **Microstructure & Liquidations :** Suivi toutes les 15 à 20 secondes des prix, taux de financement (*funding rates*), *Open Interest* et carte thermique des niveaux de liquidation.
 
-## Inspecteur Polymarket
+### 2. 🏛️ Données Institutionnelles & Macroéconomie
+* **Régime Macroéconomique (FRED & Réserve Fédérale) :** Surveillance en continu de la courbe des taux, de la liquidité nette globale, des anticipations d'inflation, de l'emploi et des spreads de crédit.
+* **Positionnement des Hedge Funds (CFTC) :** Analyse des rapports *Commitments of Traders* sur les contrats à terme américains avec calcul des centiles historiques sur 3 ans.
+* **Marché des Options (Deribit) :** Volatilité implicite, ratio Puts/Calls, asymétrie (*skew* put − call) et calcul automatique du *Max Pain*.
 
-Un clic sur n'importe quel compte Polymarket ouvre sa fiche complète : valeur, PnL latent et réalisé, concentration, toutes les positions ouvertes (triables, filtrables), mouvements sur 7 jours, profil de risque. Les données sont lues en direct par le navigateur.
+### 3. 🌍 Géopolitique, Actualités & Thermomètres Alternatifs
+* **Globe 3D Interactif :** Cartographie dynamique de 25 foyers de tension géopolitique mondiaux (base éditoriale 2026), flux sismiques en direct (USGS) et dépêches localisées par pays.
+* **Synthèse Directionnelle & Signaux d'Edge :** Moteur de décision pondérant automatiquement tendance, baleines, options et macro pour dégager un biais clair sur **BTC, ETH, SOL, S&P 500, Nasdaq, Or, Pétrole et Dollar (DXY)**.
+* **Indicateurs Alternatifs :** Indice Peur & Avidité, flux de liquidité des stablecoins (DefiLlama), tendances grand public (Wikipedia, classements App Store) et calendrier économique haute fréquence (ForexFactory).
 
-## Les pages (18)
+### 4. 🔒 Quant Vault (Laboratoire de Recherche Quantitative)
+Accessible en un clic sans rechargement, cet espace intègre un moteur mathématique et graphique 3D sur mesure :
+* **Gestion du Risque & Portefeuille (Outils 1 à 7) :** Flux Sankey Capital $\rightarrow$ Facteurs $\rightarrow$ CVaR, frontière efficiente 3D, paysages de robustesse, arbres couvrants minimaux (contagion), cônes de diffusion à sauts (modèle de Bates) et surfaces de bêta conditionnel.
+* **Extraction de Facteurs Cachés (Outil 11) :** Régression des facteurs évidents, débruitage de matrices de covariance (Marchenko-Pastur & Ledoit-Wolf) et analyse en composantes principales (ACP) sur données simulées ou cours réels Hyperliquid.
+* **Économétrie Avancée (Outils 8 à 10) :** Filtre de Kalman dynamique, régressions Fama-MacBeth avec correction Newey-West, tests GRS, modèles Factor-GJR-GARCH et backtesting de VaR (Kupiec).
 
-Funding et open interest est intégré à « Prix et funding », l'historique à « Sentiment », les réseaux à « Infos et réseaux ».
+---
 
-**Synthèse**
-- **Tableau de bord** : jauge de sentiment, directions par actif, signaux d'edge, à la une, convictions, radar des setups.
-- **Directions** : une conclusion par actif (BTC, ETH, SOL, S&P 500, Nasdaq, or, pétrole, dollar) qui pèse tendance, baleines, hedge funds, options, macro et funding.
-- **Signaux d'edge** : anomalies détectées en croisant les sources, plus les thermomètres alternatifs (peur/avidité, stablecoins, App Store, Wikipedia).
+## 🏗️ Architecture du Système
 
-**Monde**
-- **Globe** : globe 3D à faire tourner, 25 foyers de tension, séismes, clic sur un pays pour son actualité, ses chiffres clés et les paris liés.
-- **Fil d'info** : dépêches étiquetées par thème et par actif touché.
-- **Réseaux** : canaux Telegram, Truth Social, X (à brancher).
-- **Calendrier** : publications économiques de la semaine.
-- **Probabilités** : cotes Polymarket sur la politique, l'économie et la géopolitique, avec les cotes qui bougent.
-
-**Institutionnel**
-- **Macro** : régime de marché, courbe des taux, liquidité nette, inflation, emploi, crédit.
-- **Marchés** : carte de chaleur multi-actifs, momentum, volatilité, corrélations.
-- **Hedge funds** : positions des fonds sur les futures américains (rapport CFTC), centile sur 3 ans.
-- **Options** : volatilité implicite, ratio puts/calls, écart put − call, max pain (Deribit).
-
-**Baleines** : Hyperliquid, Polymarket, Sentiment croisé.
-
-**Outils** : Flux en direct, Liquidations, Funding & OI, Historique, Calculateur.
-
-## Brancher X (Twitter)
-
-X n'offre plus d'accès public gratuit. Trois branchements au choix, par variable d'environnement :
-
-```bash
-X_BEARER_TOKEN=...      node server.mjs   # API officielle X
-TWITTERAPI_IO_KEY=...   node server.mjs   # service tiers twitterapi.io
-X_RSS_BASE=http://localhost:1200/twitter/user node server.mjs   # votre instance RSSHub ou Nitter
+```text
+┌─────────────────────────────────────────────────────────────────────────┐
+│                         SOURCES DE DONNÉES EN DIRECT                    │
+│  Hyperliquid API • Polymarket Gamma • FRED • CFTC • Deribit • USGS/News │
+└────────────────────────────────────┬────────────────────────────────────┘
+                                     │
+                 ┌───────────────────┴───────────────────┐
+                 ▼                                       ▼
+┌─────────────────────────────────┐     ┌─────────────────────────────────┐
+│     SERVEUR LOCAL (Node.js)     │     │    COLLECTE CLOUD (GitHub)      │
+│  • Agrégation mémoire & disque  │     │  • Actions toutes les 10-20 min │
+│  • Flux temps réel SSE (/events)│     │  • Sauvegarde branche 'state'   │
+└────────────────┬────────────────┘     └────────────────┬────────────────┘
+                 │                                       │
+                 └───────────────────┬───────────────────┘
+                                     ▼
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     INTERFACE CLIENT (Vanilla JS & D3)                  │
+│  • Mise à jour directe navigateur (15s - 45s)                           │
+│  • Moteur mathématique & rendu 3D Canvas (Quant Vault)                  │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
 
-`X_ACCOUNTS` (liste séparée par des virgules) choisit les comptes suivis, `TELEGRAM_CHANNELS` les canaux Telegram.
+---
 
-## Bouton Actualiser
+## 💻 Lancer 0xHarpoon sur son propre PC
 
-Le bouton en haut de la barre latérale recharge toutes les sources à la demande (`POST /api/refresh`) : prix et funding, classements, positions Hyperliquid et Polymarket. Il est limité à une fois toutes les 5 secondes, et l'âge des données s'affiche dessous (en orange quand elles vieillissent).
+Le projet est conçu sans aucune dépendance externe (`node_modules` inutile) pour démarrer instantanément sur n'importe quelle machine disposant de **Node.js 20 ou supérieur**.
 
-## Rafraîchissement automatique
-
-| Donnée | Fréquence |
-|---|---|
-| Classement Hyperliquid (tous comptes) | 2 min |
-| Positions Hyperliquid (échantillon) | 45 s |
-| Prix, funding, open interest | 15 s |
-| Classements Polymarket | 90 s |
-| Positions Polymarket | 2,5 min |
-
-Le navigateur reçoit les mises à jour par flux SSE (`/api/events`).
-
-## Échantillon Hyperliquid
-
-Comptes d'au moins 500 k$ de capital, actifs cette semaine, rentables sur le mois et sur toute la période, hors market makers (volume mensuel > 300 × capital). Score = 30 % PnL du mois, 20 % PnL total, 25 % rendement du mois, 25 % taille du compte. Réglages dans `lib/hl.mjs` (`selectCohort`).
-
-## Limites à garder en tête
-
-- Les positions Hyperliquid incluent le marché principal et le dex HIP-3 `xyz` (pétrole `CL`/`BRENTOIL`, or, indices, actions). Les autres dex HIP-3 ne sont pas lus.
-- Sur Polymarket, le sens haussier/baissier d'un pari est **déduit du titre** (« above », « dip to », « Up »/« Down »…). C'est une heuristique, la liste des marchés cités est visible dans le détail de chaque actif. Les paris quasi résolus (prix > 95 % ou < 5 %) sont ignorés.
-- Les catégories des marchés (onglet « marchés concentrés ») sont déduites par mots-clés dans le titre.
-- Un échantillon de baleines n'est pas le marché entier, et un grand compte peut couvrir une position ailleurs. C'est un indicateur, pas un signal de trading.
-
-## Instantané sans serveur
+### 1. Cloner le dépôt et démarrer le serveur
+Ouvrez votre terminal et exécutez les commandes suivantes :
 
 ```bash
-node scripts/snapshot.mjs      # écrit dist/snapshot.html avec les données du moment (interroge le serveur s'il tourne, sinon collecte directement)
+git clone https://github.com/eclin-hub/0xHarpoon.git
+cd 0xHarpoon
+node server.mjs
 ```
 
-## Sources complémentaires (toutes publiques, sans clé)
+### 2. Accéder au terminal
+Une fois le serveur lancé, ouvrez simplement votre navigateur à l'adresse :
+👉 **[http://localhost:8787](http://localhost:8787)**
 
-FRED (macro), CFTC (positions des fonds), Deribit (options), ForexFactory (calendrier), Google Actualités, Réserve fédérale, Telegram (aperçu web public), trumpstruth.org, Polymarket Gamma (cotes), Banque mondiale, USGS (séismes), Wikipedia (pages vues), App Store (classement), DefiLlama (stablecoins), alternative.me (peur et avidité).
+> *Note : L'historique des positions et le flux d'activité sont automatiquement sauvegardés dans le dossier local `data/` et survivent au redémarrage de votre ordinateur.*
 
-La liste des foyers de tension du globe est une base éditoriale (`lib/world.mjs`) arrêtée à mi-2026 : modifiez-la librement. L'actualité associée est chargée en direct.
+### 3. Personnalisation avancée (Optionnel)
+Vous pouvez ajuster la puissance de collecte locale via des variables d'environnement au lancement :
 
-## Sources de base (API publiques, sans clé)
+```bash
+# Exemple : doublage de la vitesse de rafraîchissement et suivi de 150 baleines
+PORT=8787 HL_COHORT=150 REFRESH_SCALE=0.5 node server.mjs
+```
 
-- `stats-data.hyperliquid.xyz/Mainnet/leaderboard`, `api.hyperliquid.xyz/info` (`clearinghouseState`)
-- `data-api.polymarket.com/v2/leaderboard`, `/v2/positions`
+---
+
+## 📁 Structure du Projet
+
+* `server.mjs` — Serveur HTTP natif, gestionnaire de cache et diffuseur temps réel SSE.
+* `lib/` — Connecteurs d'ingestion de données (`hl.mjs`, `pm.mjs`, `macro.mjs`, `odds.mjs`, `world.mjs`, `synth.mjs`...).
+* `public/` — Interface utilisateur complète, vues analytiques (`views1.js` à `views4.js`) et moteurs en direct (`live.js`, `tape.js`, `globe.js`).
+* `public/q-*.js` — Suite mathématique et rendu 3D du laboratoire **Quant Vault** (`q-model.js`, `q-canvas.js`, `q-hidden.js`, `q-thesis.js`).
+* `scripts/snapshot.mjs` — Générateur d'instantanés autonomes (`dist/snapshot.html`).
+
+---
+
+<div align="center">
+  <sub>Conçu pour l'analyse quantitative et l'observation des microstructures de marché. Ne constitue pas un conseil en investissement.</sub>
+</div>
