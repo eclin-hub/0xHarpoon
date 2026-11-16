@@ -1,128 +1,207 @@
 <div align="center">
 
-```text
-   ___        _   _                                    
-  / _ \ __  _| | | | __ _ _ __ _ __   ___   ___  _ __  
- | | | |\ \/ / |_| |/ _` | '__| '_ \ / _ \ / _ \| '_ \ 
- | |_| | >  <|  _  | (_| | |  | |_) | (_) | (_) | | | |
-  \___/ /_/\_\_| |_|\__,_|_|  | .__/ \___/ \___/|_| |_|
-                              |_|                      
-```
+<!-- Dark-Mode Terminal Hero Banner via Capsule Render -->
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:090d16,50:111827,100:0ea5e9&height=210&section=header&text=0xHarpoon&fontSize=72&fontColor=f8fafc&animation=fadeIn&fontAlignY=38&desc=Quantitative%20Intelligence%20%26%20Cross-Market%20Surveillance%20Terminal&descAlignY=62&descSize=18&descColor=38bdf8" width="100%" alt="0xHarpoon Banner" />
 
-# 🔱 0xHarpoon
+<p align="center">
+  <a href="https://github.com/eclin-hub/0xHarpoon">
+    <img src="https://img.shields.io/badge/Architecture-Zero--Dependency_Node.js-0f172a?style=for-the-badge&logo=node.js&logoColor=38bdf8" alt="Node.js" />
+  </a>
+  <a href="#-quant-vault-research-laboratory">
+    <img src="https://img.shields.io/badge/Quant_Engine-Kalman_%7C_GJR--GARCH_%7C_RMT-0f172a?style=for-the-badge&logo=wolframmathematica&logoColor=10b981" alt="Quant Engine" />
+  </a>
+  <a href="#-real-time-data-ingestion-matrix">
+    <img src="https://img.shields.io/badge/Live_Feeds-15%2B_Institutional_%26_On--Chain-0f172a?style=for-the-badge&logo=databricks&logoColor=f59e0b" alt="Live Feeds" />
+  </a>
+  <a href="#-local-deployment">
+    <img src="https://img.shields.io/badge/Build-2026_Edition-0f172a?style=for-the-badge&logo=github&logoColor=e2e8f0" alt="2026 Edition" />
+  </a>
+</p>
 
-### Terminal d'Intelligence Quantitative & Surveillance Multi-Marchés en Temps Réel
-*Suivi des baleines, analyse des flux d'ordres institutionnels et modélisation factorielle prédictive.*
+<br />
 
-[![Architecture](https://img.shields.io/badge/Architecture-Zero--Dependency_Node.js-10b981?style=for-the-badge)]()
-[![Edition](https://img.shields.io/badge/Édition-2026_Quantitative_Suite-3b82f6?style=for-the-badge)]()
-[![Data](https://img.shields.io/badge/Flux-Temps_Réel_&_SSE-f59e0b?style=for-the-badge)]()
-
----
+> **An institutional-grade, zero-dependency quantitative terminal engineered in 2026.**  
+> Unifying real-time on-chain whale order flow, prediction market probabilities, macroeconomic regimes, CFTC hedge fund positioning, and a 3D econometric research laboratory into a single low-latency interface.
 
 </div>
 
-## 🧭 Qu'est-ce que 0xHarpoon ?
-
-**0xHarpoon** est un terminal de recherche quantitative et de surveillance de marché conçu en **2026** pour unifier en un seul cockpit haute vitesse l'ensemble des flux financiers majeurs. 
-
-Là où les traders doivent habituellement jongler entre des dizaines d'onglets (carnets d'ordres crypto, marchés de prédiction, rapports macroéconomiques, calendriers financiers, flux d'actualités et modèles mathématiques), **0xHarpoon** agrège, croise et pondère ces sources en continu sans aucune dépendance externe lourde.
+<br />
 
 ---
 
-## 🌐 Ce que 0xHarpoon regroupe en temps réel
+## 🎯 Executive Summary
 
-Le moteur du terminal fusionne **plus de 15 sources de données institutionnelles, on-chain et alternatives** à travers 18 vues analytiques spécialisées :
+Modern quantitative trading and macro research suffer from severe data fragmentation. Analysts routinely switch across dozens of isolated terminals to reconcile on-chain order books, prediction market odds, derivatives skew, central bank liquidity, and geopolitical catalysts.
 
-### 1. 🐋 Surveillance des Baleines & Flux On-Chain (Hyperliquid & Polymarket)
-* **Cohorte Élite Hyperliquid :** Filtrage algorithmique en temps réel des 100 portefeuilles les plus performants ($> 500\text{ k\$}$ de capital, excluant le bruit des market makers) pour suivre leurs positions exactes sur les cryptos majeures et les actifs synthétiques (Or, Pétrole, Indices).
-* **Whale Tape & Inspecteur Polymarket :** Détection instantanée toutes les 30 secondes des paris à forte conviction ($\ge 10\text{ k\$}$ jusqu'à $100\text{ k\$}+$), calcul des convergences multi-baleines sur une même issue, et audit détaillé de chaque portefeuille (PnL latent/réalisé, concentration, historique sur 7 jours).
-* **Microstructure & Liquidations :** Suivi toutes les 15 à 20 secondes des prix, taux de financement (*funding rates*), *Open Interest* et carte thermique des niveaux de liquidation.
-
-### 2. 🏛️ Données Institutionnelles & Macroéconomie
-* **Régime Macroéconomique (FRED & Réserve Fédérale) :** Surveillance en continu de la courbe des taux, de la liquidité nette globale, des anticipations d'inflation, de l'emploi et des spreads de crédit.
-* **Positionnement des Hedge Funds (CFTC) :** Analyse des rapports *Commitments of Traders* sur les contrats à terme américains avec calcul des centiles historiques sur 3 ans.
-* **Marché des Options (Deribit) :** Volatilité implicite, ratio Puts/Calls, asymétrie (*skew* put − call) et calcul automatique du *Max Pain*.
-
-### 3. 🌍 Géopolitique, Actualités & Thermomètres Alternatifs
-* **Globe 3D Interactif :** Cartographie dynamique de 25 foyers de tension géopolitique mondiaux (base éditoriale 2026), flux sismiques en direct (USGS) et dépêches localisées par pays.
-* **Synthèse Directionnelle & Signaux d'Edge :** Moteur de décision pondérant automatiquement tendance, baleines, options et macro pour dégager un biais clair sur **BTC, ETH, SOL, S&P 500, Nasdaq, Or, Pétrole et Dollar (DXY)**.
-* **Indicateurs Alternatifs :** Indice Peur & Avidité, flux de liquidité des stablecoins (DefiLlama), tendances grand public (Wikipedia, classements App Store) et calendrier économique haute fréquence (ForexFactory).
-
-### 4. 🔒 Quant Vault (Laboratoire de Recherche Quantitative)
-Accessible en un clic sans rechargement, cet espace intègre un moteur mathématique et graphique 3D sur mesure :
-* **Gestion du Risque & Portefeuille (Outils 1 à 7) :** Flux Sankey Capital $\rightarrow$ Facteurs $\rightarrow$ CVaR, frontière efficiente 3D, paysages de robustesse, arbres couvrants minimaux (contagion), cônes de diffusion à sauts (modèle de Bates) et surfaces de bêta conditionnel.
-* **Extraction de Facteurs Cachés (Outil 11) :** Régression des facteurs évidents, débruitage de matrices de covariance (Marchenko-Pastur & Ledoit-Wolf) et analyse en composantes principales (ACP) sur données simulées ou cours réels Hyperliquid.
-* **Économétrie Avancée (Outils 8 à 10) :** Filtre de Kalman dynamique, régressions Fama-MacBeth avec correction Newey-West, tests GRS, modèles Factor-GJR-GARCH et backtesting de VaR (Kupiec).
+**0xHarpoon** eliminates this friction. Built from the ground up with **zero external runtime dependencies**, it operates as a self-contained analytical cockpit that ingests, normalizes, and cross-correlates **15+ live financial, on-chain, and geopolitical data streams** in real time—paired with an embedded **Quantitative Research Laboratory (Quant Vault)** capable of running Random Matrix Theory denoising, Kalman filtering, and stochastic jump-diffusion simulations directly in the browser.
 
 ---
 
-## 🏗️ Architecture du Système
+## ⚡ Real-Time Data Ingestion Matrix
+
+0xHarpoon synthesizes market microstructure, institutional filings, and alternative data across **18 specialized analytical views**:
+
+<table>
+  <thead>
+    <tr>
+      <th width="22%">Domain</th>
+      <th width="38%">Data Sources & APIs</th>
+      <th width="40%">Analytical Output & Cadence</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>🐋 On-Chain Whales</strong><br><em>(Hyperliquid DEX)</em></td>
+      <td><code>stats-data.hyperliquid.xyz</code><br><code>api.hyperliquid.xyz/info</code> (Mainnet + HIP-3)</td>
+      <td>Algorithmic cohort filtering of the <strong>Top 100 profitable wallets</strong> (&gt;$500k equity, market-maker noise stripped). Live position deltas, funding rates, OI, and liquidation heatmaps every <strong>15s–45s</strong>.</td>
+    </tr>
+    <tr>
+      <td><strong>🎲 Prediction Markets</strong><br><em>(Polymarket)</em></td>
+      <td><code>data-api.polymarket.com</code><br>Polymarket Gamma CLOB</td>
+      <td><strong>Whale Tape</strong> capturing high-conviction blocks (&ge;$10k to $100k+) every <strong>30s</strong>, multi-whale convergence alerts, and full wallet forensics (unrealized/realized PnL, 7d flow, concentration).</td>
+    </tr>
+    <tr>
+      <td><strong>🏛️ Institutional & Macro</strong><br><em>(FRED, CFTC, Deribit)</em></td>
+      <td>Federal Reserve (FRED), CFTC COT Reports, Deribit Options API</td>
+      <td>Yield curve dynamics, net USD liquidity, credit spreads, 3-year CFTC hedge fund positioning percentiles, implied volatility, Put/Call skew, and automated <strong>Max Pain</strong> calculation.</td>
+    </tr>
+    <tr>
+      <td><strong>🌍 Geopolitics & Alt-Data</strong><br><em>(USGS, News, DeFiLlama)</em></td>
+      <td>USGS Seismic Feed, ForexFactory, Google News, DeFiLlama, Alternative.me</td>
+      <td>Interactive <strong>3D Geopolitical Globe</strong> tracking 25 global flashpoints (2026 editorial baseline), live seismic events, stablecoin liquidity velocity, and high-frequency economic calendars.</td>
+    </tr>
+    <tr>
+      <td><strong>🧭 Cross-Asset Synthesis</strong><br><em>(Proprietary Engine)</em></td>
+      <td>Multi-factor weighted scoring across all ingested pipelines</td>
+      <td>Automated directional bias and anomaly ("Edge") detection across <strong>BTC, ETH, SOL, S&amp;P 500, Nasdaq, Gold, Crude Oil, and DXY</strong>.</td>
+    </tr>
+  </tbody>
+</table>
+
+---
+
+## 🔬 Quant Vault: Embedded Econometric & 3D Research Lab
+
+Toggled instantaneously without page reload via the **`🔒 QUANT VAULT`** switch, this module serves as a self-contained quantitative research environment featuring custom mathematical engines (`q-model.js`) and hardware-accelerated 3D rendering (`q-canvas.js`).
 
 ```text
-┌─────────────────────────────────────────────────────────────────────────┐
-│                         SOURCES DE DONNÉES EN DIRECT                    │
-│  Hyperliquid API • Polymarket Gamma • FRED • CFTC • Deribit • USGS/News │
-└────────────────────────────────────┬────────────────────────────────────┘
-                                     │
-                 ┌───────────────────┴───────────────────┐
-                 ▼                                       ▼
-┌─────────────────────────────────┐     ┌─────────────────────────────────┐
-│     SERVEUR LOCAL (Node.js)     │     │    COLLECTE CLOUD (GitHub)      │
-│  • Agrégation mémoire & disque  │     │  • Actions toutes les 10-20 min │
-│  • Flux temps réel SSE (/events)│     │  • Sauvegarde branche 'state'   │
-└────────────────┬────────────────┘     └────────────────┬────────────────┘
-                 │                                       │
-                 └───────────────────┬───────────────────┘
-                                     ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                     INTERFACE CLIENT (Vanilla JS & D3)                  │
-│  • Mise à jour directe navigateur (15s - 45s)                           │
-│  • Moteur mathématique & rendu 3D Canvas (Quant Vault)                  │
-└─────────────────────────────────────────────────────────────────────────┘
++---------------------------------------------------------------------------------------------------+
+|                                   QUANT VAULT ARCHITECTURE                                        |
++---------------------------------+---------------------------------+-------------------------------+
+|   PORTFOLIO & RISK TOPOLOGY     |     HIDDEN FACTOR EXTRACTION    |     ECONOMETRIC THESIS LAB    |
+|          (Tools 1 - 7)          |            (Tool 11)            |         (Tools 8 - 10)        |
++---------------------------------+---------------------------------+-------------------------------+
+| • Capital -> Factor -> CVaR     | • Orthogonal Regression of      | • Dynamic Factor Models via   |
+|   Sankey Attribution            |   Obvious Market Factors        |   Kalman Filtering            |
+| • 3D Efficient Frontier         | • Residual Covariance Denoising | • Time-Varying Betas          |
+| • Robustness Parameter Surface  |   (Marchenko-Pastur RMT &       | • Fama-MacBeth Regressions    |
+| • Minimum Spanning Tree (MST)   |    Ledoit-Wolf Shrinkage)       |   with Newey-West HAC Errors  |
+|   for Contagion & Correlation   | • PCA & Partial Correlations    | • Gibbons-Ross-Shanken (GRS)  |
+| • Bates Jump-Diffusion Cones    | • Live Hyperliquid or Synthetic | • Factor-GJR-GARCH & Kupiec   |
+| • Conditional Beta Surfaces     |   Data Ingestion                |   VaR Backtesting (CSV/JSON)  |
++---------------------------------+---------------------------------+-------------------------------+
 ```
 
 ---
 
-## 💻 Lancer 0xHarpoon sur son propre PC
+## 🏗️ Hybrid System Architecture
 
-Le projet est conçu sans aucune dépendance externe (`node_modules` inutile) pour démarrer instantanément sur n'importe quelle machine disposant de **Node.js 20 ou supérieur**.
+0xHarpoon is engineered around a resilient dual-engine pipeline: a lightweight local Node.js server using Server-Sent Events (SSE) for ultra-low-latency streaming, paired with automated GitHub Actions workflows for zero-cost cloud persistence.
 
-### 1. Cloner le dépôt et démarrer le serveur
-Ouvrez votre terminal et exécutez les commandes suivantes :
+```text
+                       [ EXTERNAL INSTITUTIONAL & ON-CHAIN APIS ]
+        Hyperliquid • Polymarket • FRED • CFTC • Deribit • USGS • DeFiLlama
+                                           │
+                     ┌─────────────────────┴─────────────────────┐
+                     ▼                                           ▼
+     ┌───────────────────────────────┐           ┌───────────────────────────────┐
+     │     LOCAL NODE.JS ENGINE      │           │   SERVERLESS CLOUD PIPELINE   │
+     │  • Zero-dependency HTTP/SSE   │           │  • GitHub Actions (10-20m)    │
+     │  • Rate-limited request queue │           │  • Persistent 'state' branch  │
+     │  • Disk persistence (/data)   │           │  • Static Edge Deployment     │
+     └───────────────┬───────────────┘           └───────────────┬───────────────┘
+                     │                                           │
+                     └─────────────────────┬─────────────────────┘
+                                           ▼
+                     ┌───────────────────────────────────────────┐
+                     │        CLIENT TERMINAL (VANILLA JS)       │
+                     │  • Direct browser polling (15s - 45s)     │
+                     │  • 45s SWR cache + LocalStorage forensics │
+                     │  • D3.js & Custom 3D Canvas Engine        │
+                     └───────────────────────────────────────────┘
+```
+
+### Engineering Highlights
+* **Zero External Dependencies:** Runs natively on **Node.js 20+** without `npm install` bloat—eliminating supply-chain vulnerabilities and ensuring instant portability.
+* **Intelligent Queue & Backoff Controller (`pmapi.js` / `pm.mjs`):** Enforces strict concurrency limits (max 2 parallel requests), exponential backoff on rate limits, and a 45-second stale-while-revalidate (SWR) browser cache.
+* **State Survival:** Views mount once and preserve internal state across tab switches; background engines (`live.js`, `tape.js`) operate independently of the UI thread and automatically throttle when the tab loses focus.
+
+---
+
+## 💻 Local Deployment
+
+Deploy the full terminal locally on Windows, macOS, or Linux in under 15 seconds:
 
 ```bash
+# 1. Clone the repository
 git clone https://github.com/eclin-hub/0xHarpoon.git
 cd 0xHarpoon
+
+# 2. Launch the zero-dependency server (Requires Node.js >= 20)
 node server.mjs
 ```
 
-### 2. Accéder au terminal
-Une fois le serveur lancé, ouvrez simplement votre navigateur à l'adresse :
-👉 **[http://localhost:8787](http://localhost:8787)**
+Open your browser to **[`http://localhost:8787`](http://localhost:8787)**. All historical snapshots and whale activity logs are persisted locally in `data/`.
 
-> *Note : L'historique des positions et le flux d'activité sont automatiquement sauvegardés dans le dossier local `data/` et survivent au redémarrage de votre ordinateur.*
+### Runtime Configuration (Optional)
 
-### 3. Personnalisation avancée (Optionnel)
-Vous pouvez ajuster la puissance de collecte locale via des variables d'environnement au lancement :
+Tune ingestion frequency and sample depth via environment variables:
 
 ```bash
-# Exemple : doublage de la vitesse de rafraîchissement et suivi de 150 baleines
+# Double refresh speed and expand Hyperliquid whale cohort to 150 wallets
 PORT=8787 HL_COHORT=150 REFRESH_SCALE=0.5 node server.mjs
+```
+
+### Standalone Static Snapshot
+
+Generate a self-contained, portable HTML snapshot of the current market state without running a persistent server:
+
+```bash
+node scripts/snapshot.mjs   # Outputs to dist/snapshot.html
 ```
 
 ---
 
-## 📁 Structure du Projet
+## 📂 Repository Blueprint
 
-* `server.mjs` — Serveur HTTP natif, gestionnaire de cache et diffuseur temps réel SSE.
-* `lib/` — Connecteurs d'ingestion de données (`hl.mjs`, `pm.mjs`, `macro.mjs`, `odds.mjs`, `world.mjs`, `synth.mjs`...).
-* `public/` — Interface utilisateur complète, vues analytiques (`views1.js` à `views4.js`) et moteurs en direct (`live.js`, `tape.js`, `globe.js`).
-* `public/q-*.js` — Suite mathématique et rendu 3D du laboratoire **Quant Vault** (`q-model.js`, `q-canvas.js`, `q-hidden.js`, `q-thesis.js`).
-* `scripts/snapshot.mjs` — Générateur d'instantanés autonomes (`dist/snapshot.html`).
+```text
+0xHarpoon/
+├── server.mjs                 # Native HTTP server, cache layer & SSE real-time broadcaster
+├── lib/                       # Server-side data connectors & quantitative aggregators
+│   ├── hl.mjs                 # Hyperliquid leaderboard & cohort filtering engine
+│   ├── pm.mjs                 # Polymarket Gamma/CLOB queue & position parser
+│   ├── macro.mjs              # FRED yield curve, liquidity & credit spread ingestion
+│   ├── odds.mjs               # Deribit options surface, skew & Max Pain solver
+│   ├── synth.mjs              # Cross-asset directional weighting & edge detector
+│   └── world.mjs              # Geopolitical flashpoints & USGS seismic monitor
+├── public/                    # Frontend terminal & visualization engines
+│   ├── index.html             # Single-page analytical shell
+│   ├── live.js & tape.js      # Real-time WebSocket/polling & Whale Tape engines
+│   ├── globe.js               # Interactive 3D D3/TopoJSON geopolitical globe
+│   ├── views1.js .. views4.js # 18 specialized market & institutional dashboards
+│   └── q-*.js                 # Quant Vault math core, 3D renderer, RMT & Kalman labs
+├── scripts/
+│   └── snapshot.mjs           # Standalone HTML report compiler
+└── .github/workflows/         # Automated data collection & GitHub Pages CI/CD
+```
 
 ---
 
 <div align="center">
-  <sub>Conçu pour l'analyse quantitative et l'observation des microstructures de marché. Ne constitue pas un conseil en investissement.</sub>
+
+**Engineered by [@eclin-hub](https://github.com/eclin-hub) • 2026**  
+*Built for quantitative research, market microstructure analysis, and institutional surveillance.*
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:0ea5e9,50:111827,100:090d16&height=90&section=footer" width="100%" alt="Footer" />
+
 </div>
