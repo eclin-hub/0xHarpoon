@@ -1,0 +1,63 @@
+name: Mise à jour des données
+
+# Collecte toutes les sources et publie le site sur GitHub Pages.
+# GitHub lance les tâches planifiées « au mieux » : comptez 10 à 20 minutes entre deux mises à jour.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: boussole
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Récupérer l'historique (branche state)
+        run: |
+          mkdir -p data
+          if git fetch --depth=1 origin state 2>/dev/null; then
+            git --work-tree=data checkout FETCH_HEAD -- . && git reset -q
+          else
+            echo "Pas encore d'historique : première exécution."
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Collecter les données et construire le site
+        run: node scripts/snapshot.mjs --site
+        env:
+          X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
+          TWITTERAPI_IO_KEY: ${{ secrets.TWITTERAPI_IO_KEY }}
+
+      - name: Sauvegarder l'historique (branche state)
+        run: |
+          cd data
+          git init -q -b state
+          git add -A
+          git -c user.name="boussole-bot" -c user.email="boussole-bot@users.noreply.github.com" commit -qm "état $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" state
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4
