@@ -84,7 +84,7 @@ Tous les fichiers ci-dessous ont été créés ou modifiés au fil du projet.
 
 ## 3. Prochaine étape : agent de paper trading autonome
 
-Spécification complète dans `SPEC.md` (elle prime sur cette section). Implémentation en cours sur la branche `feat/paper-trading` : étapes 1 à 4 faites. Un agent gère 10 000 $ fictifs à partir des signaux du terminal, pour une compétition avec d'autres participants. Stratégie : copy whale confirmé par la macro, plus raisonnement macro. Tout doit rester 100 % gratuit.
+Spécification complète dans `SPEC.md` (elle prime sur cette section). Implémentation en cours sur la branche `feat/paper-trading` : étapes 1 à 5 faites. Un agent gère 10 000 $ fictifs à partir des signaux du terminal, pour une compétition avec d'autres participants. Stratégie : copy whale confirmé par la macro, plus raisonnement macro. Tout doit rester 100 % gratuit.
 
 ### Conception retenue
 
@@ -125,7 +125,7 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 2. ✅ Données : `hl.fetchOhlc`, `hl.atr` (Wilder), `hl.fetchL2Book`, `hl.fetchSpotBalances` ; `token` conservé dans les positions Polymarket, `pm.fetchBook`, `pm.fetchResolution`, `pm.payoutOf` ; `lib/paper/loader.mjs` (dernier relevé, `entryVwap`, `recentEntries`, `enrich`). 16 tests ; Hyperliquid vérifié en réel, Polymarket seulement avec des réponses simulées.
 3. ✅ Simulateur `lib/paper/simulator.mjs` (fonctions pures) : `walkBook` (parcours du carnet, limite de glissement), `openHl`/`closeHl` (frais taker, fermeture forcée complétée au prix dégradé si le carnet est trop mince), `applyFunding` (une fois par heure pleine, taux courant), `openPm`/`closePm` (vente partielle si peu d'acheteurs), `settlePm` (1 $ / 0 $), `markToMarket` (mark HL, milieu du carnet PM, sommet, drawdown), `dueExits` (stops, échéances), `tick`. Branché dans `scripts/paper.mjs` (journaux `trades_history.jsonl`, `equity_curve.jsonl`). 28 tests ; cycle réel vérifié sur le carnet BTC.
 4. ✅ Moteur de risque `lib/paper/risk.mjs` : `nextMode` (freins 10 / 20 / 25 %, arrêt d'urgence définitif), `riskPerTrade` (R selon la conviction), `hlStop` (2 × ATR, borné 3 à 15 %), `riskState`, `sizeHl`, `sizePm`, `sizePair` (chaque ordre indique la limite qui a joué), `killExits`. Les freins sont appliqués dans `tick` à chaque cycle. 38 tests.
-5. Notes des baleines.
+5. ✅ Notes des baleines `lib/paper/scorer.mjs` : catégories, score par position résolue (Hyperliquid : PnL / notionnel ; Polymarket : issue − prix moyen), moyenne mobile par catégorie, phase de démarrage de 30 jours, poids de départ tirés des classements, exclusion sur creux cumulé. Les événements Polymarket portent désormais `cid`, `token` et `avg`. Branché dans le cycle (`whale_scores.json`). 47 tests ; vérifié sur 10 vraies baleines Hyperliquid.
 6. Candidats et signaux (paires, décalage Polymarket → Hyperliquid).
 7. IA : schéma, routeur, vote, arbitre, secours.
 8. Métriques.

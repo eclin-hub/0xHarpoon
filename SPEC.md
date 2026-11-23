@@ -42,6 +42,13 @@ Chaque baleine $w$ dispose d'un poids $W_{w,c} \in [0.5, 2.0]$ **par catégorie*
 - Mise à jour automatique à chaque trade résolu via une moyenne mobile exponentielle (EMA) du PnL ajusté du risque (Hyperliquid) ou du Brier Score inversé (Polymarket).
 - **Filtre anti-survivant :** seules les baleines ayant au moins $N \ge 15$ positions résolues et un drawdown historique maîtrisé sont éligibles.
 - **Démarrage à froid (warm-up) :** tant qu'une baleine a moins de 15 positions résolues relevées par nos soins, $W_{w,c}$ part de **1.0**, ajusté par son PnL déjà connu du terminal (Hyperliquid : PnL/ROI mois et all-time du classement ; Polymarket : PnL du classement par catégorie), borné à $[0.75, 1.25]$. Le filtre strict $N \ge 15$ s'applique baleine par baleine dès que son historique l'atteint. Le dossier envoyé aux LLM indique pour chaque baleine `warmup: true|false`.
+- **Implémentation (`lib/paper/scorer.mjs`) :**
+  - Score d'une position résolue $s in [-1, 1]$. Hyperliquid : $s = 	anh(	ext{PnL}/	ext{notionnel} / 5%)$. Polymarket : avantage réalisé $s = 	ext{issue} - 	ext{prix moyen}$ (issue 1 ou 0) si le marché est résolu, sinon $s = 	ext{dernier prix} - 	ext{prix moyen}$. Ce score remplace le « Brier inversé » : la probabilité que la baleine avait en tête est inconnue, seul le prix payé l'est ; un Brier calculé sur ce prix pénaliserait les paris gagnants achetés bon marché. Le score de Brier reste utilisé pour les prédictions de l'agent (§7).
+  - Poids : $W leftarrow (1-alpha)W + alpha(1+s)$, $alpha = 0.2$, borné à $[0.5, 2]$.
+  - Catégories : Hyperliquid crypto (marché principal), commodities (dex `xyz`, PAXG), macro (`xyz:DXY`, `EUR`, `JPY`) ; Polymarket selon le thème et la catégorie du titre (sport et divers exclus).
+  - Phase de démarrage : 30 jours après la création de `whale_scores.json`. Après, une baleine a besoin de 15 positions résolues dans la catégorie.
+  - « Drawdown maîtrisé » : creux de la somme des scores $le 4$, sinon exclue.
+  - Poids de départ, rafraîchis chaque jour pour les baleines du relevé : Hyperliquid selon le ROI du mois ($pm 50%$ → bornes), Polymarket selon le rang dans le classement mensuel de la catégorie.
 
 ### 3.2 Filtres Obligatoires par Candidat
 Un candidat est **rejeté automatiquement par le code** s'il échoue à l'un de ces critères :
