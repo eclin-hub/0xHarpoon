@@ -84,7 +84,7 @@ Tous les fichiers ci-dessous ont été créés ou modifiés au fil du projet.
 
 ## 3. Prochaine étape : agent de paper trading autonome
 
-Spécification complète dans `SPEC.md` (elle prime sur cette section). Implémentation en cours sur la branche `feat/paper-trading` : étapes 1 et 2 faites. Un agent gère 10 000 $ fictifs à partir des signaux du terminal, pour une compétition avec d'autres participants. Stratégie : copy whale confirmé par la macro, plus raisonnement macro. Tout doit rester 100 % gratuit.
+Spécification complète dans `SPEC.md` (elle prime sur cette section). Implémentation en cours sur la branche `feat/paper-trading` : étapes 1 à 3 faites. Un agent gère 10 000 $ fictifs à partir des signaux du terminal, pour une compétition avec d'autres participants. Stratégie : copy whale confirmé par la macro, plus raisonnement macro. Tout doit rester 100 % gratuit.
 
 ### Conception retenue
 
@@ -123,7 +123,7 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 
 1. ✅ Socle : `lib/paper/config.mjs` (tous les seuils), `lib/paper/store.mjs` (JSON atomique, JSONL), `scripts/paper.mjs` (`--dry-run`, `--no-net`, `--data=`).
 2. ✅ Données : `hl.fetchOhlc`, `hl.atr` (Wilder), `hl.fetchL2Book`, `hl.fetchSpotBalances` ; `token` conservé dans les positions Polymarket, `pm.fetchBook`, `pm.fetchResolution`, `pm.payoutOf` ; `lib/paper/loader.mjs` (dernier relevé, `entryVwap`, `recentEntries`, `enrich`). 16 tests ; Hyperliquid vérifié en réel, Polymarket seulement avec des réponses simulées.
-3. Simulateur (orderbook walking, frais, funding, résolutions, mark-to-market).
+3. ✅ Simulateur `lib/paper/simulator.mjs` (fonctions pures) : `walkBook` (parcours du carnet, limite de glissement), `openHl`/`closeHl` (frais taker, fermeture forcée complétée au prix dégradé si le carnet est trop mince), `applyFunding` (une fois par heure pleine, taux courant), `openPm`/`closePm` (vente partielle si peu d'acheteurs), `settlePm` (1 $ / 0 $), `markToMarket` (mark HL, milieu du carnet PM, sommet, drawdown), `dueExits` (stops, échéances), `tick`. Branché dans `scripts/paper.mjs` (journaux `trades_history.jsonl`, `equity_curve.jsonl`). 28 tests ; cycle réel vérifié sur le carnet BTC.
 4. Moteur de risque.
 5. Notes des baleines.
 6. Candidats et signaux (paires, décalage Polymarket → Hyperliquid).
