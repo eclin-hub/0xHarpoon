@@ -122,6 +122,13 @@ Appliqué strictement par le code (`lib/paper/risk.mjs`) **après** la décision
   - Si $\text{DD} \ge 20\%$ : mode *Reduce-Only* (aucune nouvelle ouverture).
   - Si $\text{DD} \ge 25\%$ : arrêt d'urgence (*Kill Switch* global).
 - **Kill Switch temporel (Poche Border) :** clôture automatique à la date $T$ du catalyseur si l'événement n'a pas eu lieu.
+- **Conventions de mesure (implémentation, `lib/paper/risk.mjs`) :**
+  - Levier brut : notionnel HL au mark + valeur des parts PM, rapporté à l'equity.
+  - Facteurs : $ert{}sum	ext{notionnel signé}ert{}$ des positions HL du facteur ; les paris Polymarket n'y entrent pas (perte bornée à la mise).
+  - Occupation d'une poche : coût restant des positions PM + marge des positions HL (notionnel / $3	imes$ ; poche Border sans levier : notionnel entier).
+  - Portage : mise $= 5% 	imes E 	imes R / R_{max}$, plafonnée à $5%$ de l'equity **par marché** ; Border : mise $= 300$ 	imes R / R_{max}$ ; toute ouverture Border exige une date de catalyseur.
+  - Conviction < 60 : aucune ouverture. Ordre < 25 $ : refusé.
+  - L'arrêt d'urgence est définitif : seul un humain le lève (champ `mode` de `portfolio_state.json`).
 
 ---
 
