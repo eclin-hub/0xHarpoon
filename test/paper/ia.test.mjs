@@ -225,3 +225,16 @@ test("DEFAULT_PROVIDERS : modèles en service, Groq + OpenRouter = 3 votants et 
   assert.deepEqual(vg.results.map((x) => x.family), ["gpt-oss", "qwen3.8", "gemini"]);
   assert.equal((await g.collect(1, [], (j) => ({ ok: true, value: j }), { excludeFamilies: ["gpt-oss", "qwen3.8", "gemini"] })).results.length, 0);
 });
+
+test("OpenRouter : modèles :free seulement ; si nemotron-3-ultra échoue, nemotron-3.5-lightning prend le relais", async () => {
+  const { DEFAULT_PROVIDERS } = await import("../../lib/paper/router.mjs");
+  assert.ok(DEFAULT_PROVIDERS.find((p) => p.name === "openrouter").models.every((m) => m.id.endsWith(":free")));
+  const f = async (url, init) => { const m = JSON.parse(init.body).model;
+    return m === "nvidia/nemotron-3-ultra-550b-a55b:free" ? new Response('{"error":{"message":"Rate limit exceeded: free-models-per-day"}}', { status: 429 }) : new Response(JSON.stringify({ choices: [{ message: { content: '{"votes":[]}' } }] }), { status: 200 }); };
+  const r = new LLMRouter({ env: { GROQ_API_KEY: "k", OPENROUTER_API_KEY: "o" }, fetch: f });
+  const v = await r.collect(3, [], (j) => ({ ok: true, value: j }));
+  assert.deepEqual(v.results.map((x) => x.model), ["openai/gpt-oss-120b", "qwen/qwen3.8-27b", "nvidia/nemotron-3.5-lightning:free"]);
+  assert.match(v.errors[0], /HTTP 429 : .*free-models-per-day/);
+  const a = await r.collect(1, [], (j) => ({ ok: true, value: j }), { excludeFamilies: v.results.map((x) => x.family) });
+  assert.equal(a.results[0].model, "google/gemma-4-31b-it:free");
+});
