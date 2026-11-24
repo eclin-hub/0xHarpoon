@@ -84,7 +84,7 @@ Tous les fichiers ci-dessous ont été créés ou modifiés au fil du projet.
 
 ## 3. Prochaine étape : agent de paper trading autonome
 
-Spécification complète dans `SPEC.md` (elle prime sur cette section). Implémentation en cours sur la branche `feat/paper-trading` : étapes 1 à 6 faites. Un agent gère 10 000 $ fictifs à partir des signaux du terminal, pour une compétition avec d'autres participants. Stratégie : copy whale confirmé par la macro, plus raisonnement macro. Tout doit rester 100 % gratuit.
+Spécification complète dans `SPEC.md` (elle prime sur cette section). Implémentation en cours sur la branche `feat/paper-trading` : étapes 1 à 7 faites. Un agent gère 10 000 $ fictifs à partir des signaux du terminal, pour une compétition avec d'autres participants. Stratégie : copy whale confirmé par la macro, plus raisonnement macro. Tout doit rester 100 % gratuit.
 
 ### Conception retenue
 
@@ -109,7 +109,8 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 
 ### Reste à faire de ton côté
 
-- Compte Groq gratuit, avec sa clé dans les secrets du dépôt GitHub ; GitHub Models ne demande rien de plus.
+- Compte Groq gratuit, avec sa clé `GROQ_API_KEY` dans les secrets du dépôt GitHub ; GitHub Models utilise le `GITHUB_TOKEN` du workflow (permission `models: read`).
+- Vérifier que les identifiants de modèles de `lib/paper/router.mjs` existent toujours chez chaque fournisseur (ils changent souvent).
 
 ### Données : solutions retenues
 
@@ -127,6 +128,6 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 4. ✅ Moteur de risque `lib/paper/risk.mjs` : `nextMode` (freins 10 / 20 / 25 %, arrêt d'urgence définitif), `riskPerTrade` (R selon la conviction), `hlStop` (2 × ATR, borné 3 à 15 %), `riskState`, `sizeHl`, `sizePm`, `sizePair` (chaque ordre indique la limite qui a joué), `killExits`. Les freins sont appliqués dans `tick` à chaque cycle. 38 tests.
 5. ✅ Notes des baleines `lib/paper/scorer.mjs` : catégories, score par position résolue (Hyperliquid : PnL / notionnel ; Polymarket : issue − prix moyen), moyenne mobile par catégorie, phase de démarrage de 30 jours, poids de départ tirés des classements, exclusion sur creux cumulé. Les événements Polymarket portent désormais `cid`, `token` et `avg`. Branché dans le cycle (`whale_scores.json`). 47 tests ; vérifié sur 10 vraies baleines Hyperliquid.
 6. ✅ Candidats et signaux : `lib/paper/candidates.mjs` (regroupement, comptes couverts, poids de position ≥ 5 %, convergence sur entrées détectées, fraîcheur, contrariant, mur de liquidations, score, sélection des 5 meilleurs) et `lib/paper/cross.mjs` (paires par sentiment et corrélation, décalage Polymarket → Hyperliquid sur historique de 48 h). Dossier écrit dans `candidates.json`. 57 tests ; vérifié sur la vraie cohorte de 100 comptes (entrées simulées).
-7. IA : schéma, routeur, vote, arbitre, secours.
+7. ✅ IA : `schema.mjs` (validation stricte, vérification des métriques citées), `router.mjs` (6 fournisseurs gratuits, familles distinctes, repli automatique, mode JSON optionnel), `decision.mjs` (réveil, prompts, quorum, arbitre, secours), `execute.mjs` (taille par le moteur de risque, exécution sur le carnet réel, jambe orpheline refermée). Votes et décisions dans `model_votes.jsonl` ; option `--no-llm`. 68 tests avec un faux fournisseur ; **jamais appelé avec de vraies clés** (aucune clé sur le poste).
 8. Métriques.
 9. Intégration : `trading_loop.yml`, copie dans `site/`, page `views5.js`, propositions border.

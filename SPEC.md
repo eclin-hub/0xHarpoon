@@ -116,6 +116,16 @@ Implémenter une classe `LLMRouter` (`lib/paper/router.mjs`) avec fallback autom
    - **Contrôle par le code :** un `REJECT` dont `cited_risk_metric` ne correspond à aucune clé et valeur chiffrée du dossier est écarté avant l'arbitrage. Pas d'avocat du diable désigné.
 4. **Traçabilité :** chaque vote individuel est loggué dans `data/model_votes.jsonl` pour calculer le **PnL contrefactuel** de chaque modèle seul.
 
+### 4.3 Implémentation (`lib/paper/schema.mjs`, `router.mjs`, `decision.mjs`, `execute.mjs`)
+- **Un appel par modèle et par cycle :** chaque votant reçoit tous les candidats et toutes les positions ouvertes, et renvoie `{"votes":[…]}` (un vote au schéma du §4.2 par identifiant). Tout champ inconnu, manquant ou hors bornes invalide le vote ; un bulletin sans vote valide compte comme une absence de réponse.
+- **Familles :** chaque modèle a une famille (`llama-3.3-70b`, `gpt-4o-mini`, `qwen3-32b`, `deepseek-v3`…). Les 3 votants sont de familles distinctes ; l'arbitre est d'une 4ᵉ famille. Avec seulement GitHub Models et Groq, GitHub fournit 4 familles (`gpt-4o-mini`, `llama-3.3-70b`, `deepseek-v3`, `gpt-4.1-mini`) et Groq ajoute `qwen3-32b`.
+- **Clés (secrets du dépôt) :** `GITHUB_TOKEN` (GitHub Models ; le workflow doit déclarer `permissions: models: read`), `GROQ_API_KEY`, et en option `CEREBRAS_API_KEY`, `SAMBANOVA_API_KEY`, `OPENROUTER_API_KEY`, `GEMINI_API_KEY`. La liste des modèles se remplace par la variable `PAPER_LLM_PROVIDERS` (JSON) sans toucher au code.
+- **Citation :** `cited_risk_metric` est vérifiée par le code : nom d'une métrique du bloc `metrics` du candidat **et** sa valeur (tolérance 2 %, ou exprimée en pourcentage). Seuls les `REJECT` sont écartés si la citation échoue ; `HOLD` sur un candidat vaut « ne pas ouvrir ».
+- **Positions ouvertes :** fermeture à la majorité stricte des votes valides `CLOSE` (un seul vote suffit si un seul modèle a répondu).
+- **Secours (aucun vote valide, ou aucune clé) :** ni ouverture ni fermeture discrétionnaire ; stops, échéances et freins de drawdown restent appliqués à chaque cycle.
+- **Exécution :** fermetures d'abord, puis ouvertures une par une (chaque ouverture modifie les plafonds de la suivante). La conviction retenue (moyenne en cas d'unanimité, celle de l'arbitre sinon) est passée au moteur de risque. Une paire dont la seconde jambe échoue est refermée aussitôt.
+- **Réveil :** candidat au-dessus du seuil, position à moins de 25 % de la distance entrée – stop, ou revue quotidienne (première exécution après 14 h UTC).
+
 ---
 
 ## 5. Moteur de Risque Déterministe (Hard-Coded)

@@ -2,9 +2,10 @@
 //   node scripts/paper.mjs             -> un cycle complet, écrit dans data/paper/
 //   node scripts/paper.mjs --dry-run   -> même cycle, n'écrit rien
 //   node scripts/paper.mjs --no-net    -> n'appelle aucune API (relevé local seulement)
+//   node scripts/paper.mjs --no-llm    -> n'appelle aucun LLM (agent de secours)
 //   --data=<dossier>                   -> autre dossier de données que ./data
 // Étapes branchées : socle, données, simulateur (funding, résolutions, stops, échéances, valorisation),
-// freins de drawdown, notes des baleines, candidats et signaux (data/paper/candidates.json). L'IA arrive ensuite.
+// freins de drawdown, notes des baleines, candidats et signaux (data/paper/candidates.json), vote des LLM et exécution.
 import { Store, DEFAULT_DATA_DIR, FILES, utcNow } from "../lib/paper/store.mjs";
 import { loadSnapshot, enrich, fetchPriorSources } from "../lib/paper/loader.mjs";
 import { tick } from "../lib/paper/simulator.mjs";
@@ -12,9 +13,15 @@ import { emptyScores, updateScores, setPriors, priorsFromHl, priorsFromPm, keyOf
 import { gatherHl, gatherPm, finalizeHl, finalizePm, selectCandidates } from "../lib/paper/candidates.mjs";
 import { coinSentiment, partnersOf, findPairs, updateHistory, movedMarkets, detectLeadLag } from "../lib/paper/cross.mjs";
 import { CONFIG } from "../lib/paper/config.mjs";
+import { LLMRouter } from "../lib/paper/router.mjs";
+import { wakeReasons, decide } from "../lib/paper/decision.mjs";
+import { executeDecisions } from "../lib/paper/execute.mjs";
+import { markToMarket } from "../lib/paper/simulator.mjs";
+import { fetchL2Book } from "../lib/hl.mjs";
+import { fetchBook } from "../lib/pm.mjs";
 
 const args = process.argv.slice(2);
-const dry = args.includes("--dry-run"), noNet = args.includes("--no-net");
+const dry = args.includes("--dry-run"), noNet = args.includes("--no-net"), noLlm = args.includes("--no-llm");
 const dataDir = args.find((a) => a.startsWith("--data="))?.slice(7) || DEFAULT_DATA_DIR;
 const PRIORS_EVERY = 24 * 3600e3;
 
@@ -63,16 +70,36 @@ const ll = detectLeadLag(history, data.ohlc, now);
 rejected.push(...ll.rejected);
 const sel = selectCandidates([...hlFinal, ...pmFinal, ...pairs, ...ll.candidates], t.portfolio);
 const dossier = { at: new Date(now).toISOString(), wakeLLM: sel.wakeLLM, minScore: CONFIG.signals.minScore, candidates: sel.candidates, rejected: [...sel.rejected, ...rejected].slice(0, 80) };
-const next = { ...t.portfolio, lastTick: utcNow(), ticks: (portfolio.ticks || 0) + 1 };
 problems.push(...t.problems);
+
+// IA (SPEC §4) : réveillée seulement sur événement ; l'exécution passe par le moteur de risque puis le simulateur
+let p = t.portfolio, point = t.point;
+const trades = [...t.trades], votesLog = [];
+const wake = wakeReasons({ dossier, portfolio: p, markets: extra.markets, now });
+const ai = { wake, mode: noNet || noLlm ? "désactivé" : wake.length ? null : "en veille", decisions: [], refused: [], models: [] };
+if (!ai.mode) {
+  const router = new LLMRouter();
+  if (!router.available().length) { ai.mode = "secours"; problems.push("aucune clé LLM (GITHUB_TOKEN, GROQ_API_KEY…) : agent de secours, aucune ouverture"); }
+  else {
+    const d = await decide({ router, dossier, portfolio: p, markets: extra.markets, now });
+    const ex = await executeDecisions(p, d.decisions, dossier, { markets: extra.markets, deps: { fetchL2Book, fetchBook }, now });
+    p = ex.portfolio; trades.push(...ex.trades); votesLog.push(...d.votes, ...d.records);
+    Object.assign(ai, { mode: d.mode, decisions: d.decisions.map((x) => `${x.action} ${x.id} (${x.via})`), refused: ex.refused, models: router.log });
+    problems.push(...d.errors);
+    if (d.mode !== "fallback" && wake.includes("revue quotidienne")) p = { ...p, lastReviewDay: new Date(now).toISOString().slice(0, 10) };
+    if (ex.trades.length) { const m = markToMarket(p, { markets: extra.markets, pmBooks: extra.pmBooks }, now); p = m.portfolio; point = { ...m.point, mode: p.mode }; }
+  }
+}
+const next = { ...p, lastTick: utcNow(), ticks: (portfolio.ticks || 0) + 1 };
 
 const summary = {
   at: next.lastTick, dryRun: dry,
   snapshot: { ageMin: snap.ageMin == null ? null : Math.round(snap.ageMin), fresh: snap.fresh, hl: snap.hl.length, pm: snap.pm.length, events: snap.events.length },
-  portfolio: { equity: t.point.equity, cash: t.point.cash, drawdown: t.point.drawdown, positions: next.positions.length, mode: next.mode },
-  trades: t.trades.map((x) => `${x.type} ${x.id || ""} ${x.coin || x.title || x.token || x.to || ""} ${x.reason || ""} pnl=${x.pnl == null ? "-" : x.pnl.toFixed(2)}`),
+  portfolio: { equity: point.equity, cash: point.cash, drawdown: point.drawdown, positions: next.positions.length, mode: next.mode },
+  trades: trades.map((x) => `${x.type} ${x.id || ""} ${x.coin || x.title || x.token || x.to || ""} ${x.reason || ""} pnl=${x.pnl == null ? "-" : x.pnl.toFixed(2)}`),
   funding: t.funding.length,
   candidates: { kept: sel.candidates.map((c) => `${c.id} score=${c.score}`), wakeLLM: sel.wakeLLM, rejected: dossier.rejected.length },
+  ai,
   whales: { tracked: Object.keys(scores.whales).length, newOutcomes: sc.applied.length, skipped: sc.skipped.length, warmupEndsAt: scores.warmupEndsAt },
   enrich: noNet ? "désactivé" : { markets: Object.keys(extra.markets).length, hlBooks: Object.keys(extra.hlBooks).length, pmBooks: Object.keys(extra.pmBooks).length, resolutions: Object.keys(extra.resolutions).length },
   problems,
@@ -80,8 +107,9 @@ const summary = {
 console.log(JSON.stringify(summary, null, 1));
 
 if (!dry) {
-  await store.appendJsonl(FILES.trades, t.trades);
-  await store.appendJsonl(FILES.equity, t.point);
+  await store.appendJsonl(FILES.trades, trades);
+  await store.appendJsonl(FILES.equity, point);
+  await store.appendJsonl(FILES.votes, votesLog);
   await store.writeJson(FILES.whaleScores, scores);
   await store.writeJson(FILES.history, history);
   await store.writeJson(FILES.candidates, dossier);
