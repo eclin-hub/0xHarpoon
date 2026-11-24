@@ -1,0 +1,143 @@
+// Point d'entrée horaire de l'agent de paper trading (SPEC.md).
+//   node scripts/paper.mjs             -> un cycle complet, écrit dans data/paper/
+//   node scripts/paper.mjs --dry-run   -> même cycle, n'écrit rien
+//   node scripts/paper.mjs --no-net    -> n'appelle aucune API (relevé local seulement)
+//   node scripts/paper.mjs --no-llm    -> n'appelle aucun LLM (agent de secours)
+//   --data=<dossier>                   -> autre dossier de données que ./data
+// Étapes branchées : socle, données, simulateur (funding, résolutions, stops, échéances, valorisation),
+// freins de drawdown, notes des baleines, candidats et signaux (data/paper/candidates.json), vote des LLM et exécution,
+// PnL contrefactuel par modèle (shadow_book.json) et métriques (metrics.json).
+import { Store, DEFAULT_DATA_DIR, FILES, utcNow } from "../lib/paper/store.mjs";
+import { loadSnapshot, enrich, fetchPriorSources } from "../lib/paper/loader.mjs";
+import { tick } from "../lib/paper/simulator.mjs";
+import { emptyScores, updateScores, setPriors, priorsFromHl, priorsFromPm, keyOf } from "../lib/paper/scorer.mjs";
+import { gatherHl, gatherPm, finalizeHl, finalizePm, selectCandidates } from "../lib/paper/candidates.mjs";
+import { coinSentiment, partnersOf, findPairs, updateHistory, movedMarkets, detectLeadLag } from "../lib/paper/cross.mjs";
+import { CONFIG } from "../lib/paper/config.mjs";
+import { LLMRouter } from "../lib/paper/router.mjs";
+import { wakeReasons, decide } from "../lib/paper/decision.mjs";
+import { executeDecisions } from "../lib/paper/execute.mjs";
+import { markToMarket } from "../lib/paper/simulator.mjs";
+import { fetchL2Book } from "../lib/hl.mjs";
+import { fetchBook } from "../lib/pm.mjs";
+import { emptyShadow, addShadows, updateShadows, modelStats } from "../lib/paper/shadow.mjs";
+import { summarize } from "../lib/paper/metrics.mjs";
+import { borderCandidates, borderNeeds, markSeen } from "../lib/paper/border.mjs";
+
+const args = process.argv.slice(2);
+const dry = args.includes("--dry-run"), noNet = args.includes("--no-net"), noLlm = args.includes("--no-llm");
+const dataDir = args.find((a) => a.startsWith("--data="))?.slice(7) || DEFAULT_DATA_DIR;
+const PRIORS_EVERY = 24 * 3600e3;
+
+const now = Date.now();
+const store = new Store(dataDir);
+const portfolio = await store.loadPortfolio();
+let scores = (await store.readJson(FILES.whaleScores)) ?? emptyScores(now);
+const snap = await loadSnapshot(dataDir, now);
+let shadow = (await store.readJson(FILES.shadow)) ?? emptyShadow();
+const borderFile = await store.readJson(FILES.border).catch((e) => ({ proposals: [], error: e.message }));   // écrit par la tâche Claude (branche border)
+const borderSeen = portfolio.borderSeen || [], bNeeds = borderNeeds(borderFile, borderSeen);
+
+// données utiles : positions ouvertes de l'agent + marchés des baleines Polymarket fermées depuis le dernier cycle
+const open = portfolio.positions || [];
+const coins = open.filter((p) => p.venue === "hl").map((p) => p.coin);
+const tokens = [...open.filter((p) => p.venue === "pm").map((p) => p.token), ...bNeeds.tokens];
+const newPmCloses = snap.events.filter((e) => e.t > scores.cursor && e.kind === "close" && e.src === "pm" && e.cid);
+const cids = [...open.filter((p) => p.venue === "pm").map((p) => p.cid), ...newPmCloses.map((e) => e.cid), ...shadow.open.filter((s) => s.venue === "pm").map((s) => s.cid)];
+const extra = noNet ? { markets: {}, hlBooks: {}, pmBooks: {}, resolutions: {}, errors: [] } : await enrich({ coins, tokens, cids });
+const problems = [...snap.problems, ...extra.errors];
+
+// notes des baleines : poids de départ une fois par jour (baleines du relevé seulement), puis fermetures récentes
+if (!noNet && (!scores.priorsAt || now - Date.parse(scores.priorsAt) > PRIORS_EVERY) && (snap.hl.length || snap.pm.length)) {
+  const src = await fetchPriorSources();
+  const known = new Set([...snap.hl.map((a) => keyOf("hl", a.addr)), ...snap.pm.map((w) => keyOf("pm", w.addr))]);
+  const all = { ...priorsFromHl(src.hlRows), ...priorsFromPm(src.pmBoards) };
+  scores = { ...setPriors(scores, Object.fromEntries(Object.entries(all).filter(([k]) => known.has(k)))), priorsAt: new Date(now).toISOString() };
+  problems.push(...src.errors);
+}
+const sc = updateScores(scores, snap.events, { resolutions: extra.resolutions });
+scores = sc.scores;
+
+const t = tick(portfolio, extra, now);
+
+// positions fantômes des modèles : sorties (stop, horizon, résolution) avant les nouveaux votes
+const pmPrices = {};
+for (const w of snap.pm) for (const q of w.positions) if (q.cid && q.price > 0) pmPrices[`${q.cid}|${q.outcome}`] = q.price;
+const sh = updateShadows(shadow, { markets: extra.markets, resolutions: extra.resolutions, pmPrices }, now);
+shadow = sh.book;
+
+// candidats (SPEC §3) : regroupement et convergence sans réseau, puis ATR pour les meilleurs groupes seulement
+const ghl = gatherHl(snap, scores, now), gpm = gatherPm(snap, scores, now);
+const history = updateHistory(await store.readJson(FILES.history), snap, extra.markets, now);
+const moved = movedMarkets(history, now), pre = ghl.pass.slice(0, CONFIG.signals.prefilterMax);
+const atrCoins = [...pre.map((g) => g.coin), ...pre.flatMap((g) => partnersOf(g.coin)), ...moved.map((m) => m.coin), ...bNeeds.coins];
+const ex2 = noNet || !atrCoins.length ? { ohlc: {}, errors: [] } : await enrich({ atrCoins, markets: extra.markets });
+problems.push(...ex2.errors);
+const data = { markets: extra.markets, ohlc: { ...extra.ohlc, ...ex2.ohlc } };
+const rejected = [...ghl.rejected, ...gpm.rejected, ...ghl.pass.slice(CONFIG.signals.prefilterMax).map((g) => ({ id: g.id, reason: "hors des groupes préfiltrés" }))];
+const hlFinal = [], pmFinal = [];
+for (const g of pre) { const r = finalizeHl(g, data, snap.hl); r.ok ? hlFinal.push(r.cand) : rejected.push({ id: r.id, reason: r.reason }); }
+for (const g of gpm.pass) { const r = finalizePm(g, now); r.ok ? pmFinal.push(r.cand) : rejected.push({ id: r.id, reason: r.reason }); }
+const pairs = findPairs(hlFinal, coinSentiment(ghl.all), data.ohlc, data.markets);
+const ll = detectLeadLag(history, data.ohlc, now);
+rejected.push(...ll.rejected);
+const sel = selectCandidates([...hlFinal, ...pmFinal, ...pairs, ...ll.candidates], t.portfolio);
+const border = borderCandidates(borderFile, borderSeen, { markets: extra.markets, ohlc: data.ohlc, pmBooks: extra.pmBooks }, now);   // en plus des 5 meilleurs
+if (borderFile?.error) problems.push(`border_proposals.json : ${borderFile.error}`);
+const dossier = { at: new Date(now).toISOString(), wakeLLM: sel.wakeLLM || border.candidates.length > 0, minScore: CONFIG.signals.minScore,
+  candidates: [...sel.candidates, ...border.candidates], rejected: [...sel.rejected, ...border.rejected, ...rejected].slice(0, 80) };
+problems.push(...t.problems);
+
+// IA (SPEC §4) : réveillée seulement sur événement ; l'exécution passe par le moteur de risque puis le simulateur
+let p = t.portfolio, point = t.point;
+const trades = [...t.trades], votesLog = [];
+const wake = wakeReasons({ dossier, portfolio: p, markets: extra.markets, now });
+const ai = { wake, mode: noNet || noLlm ? "désactivé" : wake.length ? null : "en veille", decisions: [], refused: [], models: [] };
+if (!ai.mode) {
+  const router = new LLMRouter();
+  if (!router.available().length) { ai.mode = "secours"; problems.push("aucune clé LLM (GITHUB_TOKEN, GROQ_API_KEY…) : agent de secours, aucune ouverture"); }
+  else {
+    const d = await decide({ router, dossier, portfolio: p, markets: extra.markets, now });
+    const ex = await executeDecisions(p, d.decisions, dossier, { markets: extra.markets, deps: { fetchL2Book, fetchBook }, now });
+    p = ex.portfolio; trades.push(...ex.trades); votesLog.push(...d.votes, ...d.records);
+    shadow = addShadows(shadow, d.votes, dossier, now).book;
+    if (d.mode !== "fallback") p = { ...p, borderSeen: markSeen(borderSeen, border.candidates.map((c) => c.proposalId)) };   // une proposition n'est votée qu'une fois
+    Object.assign(ai, { mode: d.mode, decisions: d.decisions.map((x) => `${x.action} ${x.id} (${x.via})`), refused: ex.refused, models: router.log });
+    problems.push(...d.errors);
+    if (d.mode !== "fallback" && wake.includes("revue quotidienne")) p = { ...p, lastReviewDay: new Date(now).toISOString().slice(0, 10) };
+    if (ex.trades.length) { const m = markToMarket(p, { markets: extra.markets, pmBooks: extra.pmBooks }, now); p = m.portfolio; point = { ...m.point, mode: p.mode }; }
+  }
+}
+const next = { ...p, lastTick: utcNow(), ticks: (portfolio.ticks || 0) + 1 };
+point = { ...point, bench: { BTC: extra.markets.BTC?.mark ?? null, GOLD: extra.markets["xyz:GOLD"]?.mark ?? null } };   // références passives (SPEC §7)
+
+// métriques sur tout l'historique (SPEC §7)
+const metrics = summarize({ points: [...(await store.readJsonl(FILES.equity)), point], trades: [...(await store.readJsonl(FILES.trades)), ...trades],
+  shadow: modelStats(shadow, extra.markets), startCapital: next.startCapital });
+
+const summary = {
+  at: next.lastTick, dryRun: dry,
+  snapshot: { ageMin: snap.ageMin == null ? null : Math.round(snap.ageMin), fresh: snap.fresh, hl: snap.hl.length, pm: snap.pm.length, events: snap.events.length },
+  portfolio: { equity: point.equity, cash: point.cash, drawdown: point.drawdown, positions: next.positions.length, mode: next.mode },
+  trades: trades.map((x) => `${x.type} ${x.id || ""} ${x.coin || x.title || x.token || x.to || ""} ${x.reason || ""} pnl=${x.pnl == null ? "-" : x.pnl.toFixed(2)}`),
+  funding: t.funding.length,
+  candidates: { kept: sel.candidates.map((c) => `${c.id} score=${c.score}`), wakeLLM: sel.wakeLLM, rejected: dossier.rejected.length },
+  ai,
+  metrics: { sharpe: metrics.performance.sharpe, maxDrawdown: metrics.performance.maxDrawdown, closedTrades: metrics.trades.closed, shadowOpen: shadow.open.length, shadowClosed: sh.closed.length },
+  whales: { tracked: Object.keys(scores.whales).length, newOutcomes: sc.applied.length, skipped: sc.skipped.length, warmupEndsAt: scores.warmupEndsAt },
+  enrich: noNet ? "désactivé" : { markets: Object.keys(extra.markets).length, hlBooks: Object.keys(extra.hlBooks).length, pmBooks: Object.keys(extra.pmBooks).length, resolutions: Object.keys(extra.resolutions).length },
+  problems,
+};
+console.log(JSON.stringify(summary, null, 1));
+
+if (!dry) {
+  await store.appendJsonl(FILES.trades, trades);
+  await store.appendJsonl(FILES.equity, point);
+  await store.appendJsonl(FILES.votes, votesLog);
+  await store.writeJson(FILES.whaleScores, scores);
+  await store.writeJson(FILES.history, history);
+  await store.writeJson(FILES.candidates, dossier);
+  await store.writeJson(FILES.shadow, shadow);
+  await store.writeJson(FILES.metrics, metrics);
+  await store.savePortfolio(next);
+}

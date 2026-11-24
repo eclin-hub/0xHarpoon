@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Boussole des baleines : Hyperliquid + Polymarket, positions en direct et sentiment croisé",
   "type": "module",
-  "scripts": { "start": "node server.mjs", "snapshot": "node scripts/snapshot.mjs" },
+  "scripts": { "start": "node server.mjs", "snapshot": "node scripts/snapshot.mjs", "paper": "node scripts/paper.mjs", "test": "node --test" },
   "engines": { "node": ">=20" },
   "license": "MIT"
 }

@@ -13,6 +13,7 @@ import { fetchOdds } from "./lib/odds.mjs";
 import { CONFLICTS, WATCH, COUNTRIES } from "./lib/world.mjs";
 import { directions, edgeSignals } from "./lib/synth.mjs";
 import { pool } from "./lib/util.mjs";
+import { PUBLIC_PAPER_FILES } from "./lib/paper/store.mjs";
 
 const PORT = Number(process.env.PORT || 8787);
 const COHORT_SIZE = Number(process.env.HL_COHORT || 100);
@@ -219,6 +220,13 @@ const server = http.createServer(async (req, res) => {
     const data = hit && Date.now() - hit.t < 30_000 ? hit.d : await hl.fetchPositions(addr).catch(() => null);
     if (data) cache.set(addr, { t: Date.now(), d: data });
     res.writeHead(data ? 200 : 502, { "content-type": "application/json" }); return res.end(JSON.stringify(data));
+  }
+  // agent de paper trading : fichiers de data/paper (liste fermée), lus par la page « Paper trading »
+  if (url.pathname.startsWith("/api/paper/")) {
+    const name = url.pathname.slice(11);
+    if (!PUBLIC_PAPER_FILES.includes(name)) { res.writeHead(404); return res.end("not found"); }
+    try { const b = await readFile(path.join(DATA, "paper", name)); res.writeHead(200, { "content-type": name.endsWith(".json") ? "application/json" : "application/x-ndjson", "cache-control": "no-cache" }); return res.end(b); }
+    catch { res.writeHead(404); return res.end("not found"); }
   }
   const file = url.pathname === "/" ? "/index.html" : url.pathname;
   const full = path.join(ROOT, "public", path.normalize(file).replace(/^(\.\.[/\\])+/, ""));

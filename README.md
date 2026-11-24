@@ -178,6 +178,25 @@ Open **`http://localhost:8787`** in your browser. Historical snapshots and activ
 
 ---
 
+## 06 // Autonomous Paper Trading Agent
+
+A $10,000 **simulated** portfolio driven by the terminal's whale signals (full specification in [`SPEC.md`](SPEC.md), progress in [`PROGRESS.md`](PROGRESS.md)). No real money is ever involved.
+
+- **Deterministic engine** (`lib/paper/`): candidate filters, whale scoring, risk sizing, drawdown brakes, order-book-walking execution, metrics. The code alone sets sizes and limits.
+- **AI layer**: three independent free LLMs vote, an arbiter of a fourth model family breaks 2-vs-1 splits, objections must cite a numeric metric from the dossier. Without any key, a deterministic fallback opens nothing.
+- **Hourly workflow** `.github/workflows/trading_loop.yml`: shares the `boussole` concurrency group with `update.yml`, reads and writes `paper/` on the `state` branch, never pushes if `state` could not be fetched.
+- **Dashboard**: *Paper trading* page (equity vs BTC and 50/50 BTC-gold, positions, candidates, model votes, counterfactual PnL per model).
+
+Setup:
+
+1. **Settings → Secrets and variables → Actions**: add `GROQ_API_KEY` (free). GitHub Models uses the workflow's own `GITHUB_TOKEN`. Optional: `CEREBRAS_API_KEY`, `SAMBANOVA_API_KEY`, `OPENROUTER_API_KEY`, `GEMINI_API_KEY`; override the model list with the `PAPER_LLM_PROVIDERS` variable (JSON) when a model id is retired.
+2. Run **`Agent de paper trading`** once from the **Actions** tab (after `Mise à jour des données` has created the `state` branch).
+3. Optional *Border* pocket: schedule a Claude task 3–4 times a day with the instructions in [`scripts/border_prompt.md`](scripts/border_prompt.md); it writes `border_proposals.json` to a dedicated `border` branch.
+
+Local run: `node scripts/paper.mjs --dry-run` (no write), `--no-llm`, `--no-net`. Tests: `node --test`.
+
+---
+
 <div align="center">
   <sub><strong>0xHarpoon</strong> — Built for quantitative transparency, cross-market synthesis, and zero-dependency resilience.</sub>
 </div>
