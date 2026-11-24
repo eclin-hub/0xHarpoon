@@ -65,9 +65,20 @@ Un candidat est **rejeté automatiquement par le code** s'il échoue à l'un de 
    - *V1 :* ratio directionnel net sur les perps $= \vert{}\text{Long}_N - \text{Short}_N\vert{} / (\text{Long}_N + \text{Short}_N)$ ; exclusion si $< 0.3$ (seuil configurable). Les market makers sont déjà écartés par `selectCohort` (volume mensuel / capital).
    - *Option :* appel `spotClearinghouseState` (une requête de plus par baleine candidate, pas par baleine de la cohorte) pour soustraire les soldes au comptant couvrant un short perp.
 
+### 3.2 bis Score et dossier (implémentation, `lib/paper/candidates.mjs`)
+- Score $= sum_{	ext{entrées dans la fenêtre}} W + 0.5 sum_{	ext{déjà en position}} W$, $	imes 1.2$ si contrariant, $	imes (1 - 0.5 cdot 	ext{distance}/	ext{seuil de fraîcheur})$. Il n'est pas borné : 29 baleines de poids 1 donnent environ 30. Seuil de réveil des LLM : **2**.
+- Fraîcheur « dans le sens du trade » : seul un prix déjà parti dans le sens du trade est pénalisé ou rejeté.
+- Contrariant : funding horaire $le 0$ pour un long, $ge 0.003,%$ pour un short. Encombré (rejet) : le sens du trade paie un funding $ge 0.005,%$/h **et** au moins 25 % du notionnel de la cohorte dans ce sens est liquidable à moins de 1 ATR.
+- Polymarket : poids de la position = valeur / valeur totale des positions relevées de la baleine ; cote > 0,95 rejetée ; cote 0,88 – 0,95 à 14 jours au plus → poche Portage, sinon Core.
+- ATR demandé seulement pour les 8 meilleurs groupes Hyperliquid, leurs partenaires de paire et les actifs liés aux cotes qui ont bougé.
+- Un candidat déjà en portefeuille est écarté ; le dossier (`paper/candidates.json`) garde les 5 meilleurs et la raison de chaque rejet.
+
 ### 3.3 Signaux Avancés (Alpha Structurel)
 - **Relative Value (Long/Short) :** si les baleines sont fortement Long sur un actif $A$ et neutres/Short sur un actif corrélé $B$ ($\rho > 0.6$), générer un candidat *paire neutre* (`Long A / Short B` de même valeur notionnelle).
 - **Lead-Lag (Polymarket $\leftrightarrow$ Hyperliquid) :** si une probabilité Polymarket liée à un catalyseur macro/géopolitique varie de $\ge 10\%$ en moins de 2 heures sans réaction proportionnelle de l'actif Hyperliquid associé (pétrole, or, BTC), générer un candidat prioritaire.
+- **Implémentation (`lib/paper/cross.mjs`) :**
+  - Paires : sentiment d'un actif $= (L - S)/(L + S)$ sur les notionnels pondérés des baleines qualifiées ; actif A $ge 0.6$ dans le sens du candidat, partenaire B du même facteur $le 0.2$ dans ce sens, $ho$ sur 30 rendements quotidiens. Score de la paire = score de A $	imes ho$.
+  - Décalage : historique de 48 h (`paper/market_history.json`) des cotes Polymarket liées à un actif et des prix mark. « Réaction proportionnelle » = mouvement de même sens d'au moins 0,25 ATR quotidien. Score fixe 3 (prioritaire). Le cycle étant horaire, la fenêtre de 2 h ne contient que 2 ou 3 relevés.
 
 ---
 

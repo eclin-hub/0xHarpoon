@@ -4,11 +4,14 @@
 //   node scripts/paper.mjs --no-net    -> n'appelle aucune API (relevé local seulement)
 //   --data=<dossier>                   -> autre dossier de données que ./data
 // Étapes branchées : socle, données, simulateur (funding, résolutions, stops, échéances, valorisation),
-// freins de drawdown, notes des baleines. Signaux et IA arrivent ensuite.
+// freins de drawdown, notes des baleines, candidats et signaux (data/paper/candidates.json). L'IA arrive ensuite.
 import { Store, DEFAULT_DATA_DIR, FILES, utcNow } from "../lib/paper/store.mjs";
 import { loadSnapshot, enrich, fetchPriorSources } from "../lib/paper/loader.mjs";
 import { tick } from "../lib/paper/simulator.mjs";
 import { emptyScores, updateScores, setPriors, priorsFromHl, priorsFromPm, keyOf } from "../lib/paper/scorer.mjs";
+import { gatherHl, gatherPm, finalizeHl, finalizePm, selectCandidates } from "../lib/paper/candidates.mjs";
+import { coinSentiment, partnersOf, findPairs, updateHistory, movedMarkets, detectLeadLag } from "../lib/paper/cross.mjs";
+import { CONFIG } from "../lib/paper/config.mjs";
 
 const args = process.argv.slice(2);
 const dry = args.includes("--dry-run"), noNet = args.includes("--no-net");
@@ -42,6 +45,24 @@ const sc = updateScores(scores, snap.events, { resolutions: extra.resolutions })
 scores = sc.scores;
 
 const t = tick(portfolio, extra, now);
+
+// candidats (SPEC §3) : regroupement et convergence sans réseau, puis ATR pour les meilleurs groupes seulement
+const ghl = gatherHl(snap, scores, now), gpm = gatherPm(snap, scores, now);
+const history = updateHistory(await store.readJson(FILES.history), snap, extra.markets, now);
+const moved = movedMarkets(history, now), pre = ghl.pass.slice(0, CONFIG.signals.prefilterMax);
+const atrCoins = [...pre.map((g) => g.coin), ...pre.flatMap((g) => partnersOf(g.coin)), ...moved.map((m) => m.coin)];
+const ex2 = noNet || !atrCoins.length ? { ohlc: {}, errors: [] } : await enrich({ atrCoins, markets: extra.markets });
+problems.push(...ex2.errors);
+const data = { markets: extra.markets, ohlc: { ...extra.ohlc, ...ex2.ohlc } };
+const rejected = [...ghl.rejected, ...gpm.rejected, ...ghl.pass.slice(CONFIG.signals.prefilterMax).map((g) => ({ id: g.id, reason: "hors des groupes préfiltrés" }))];
+const hlFinal = [], pmFinal = [];
+for (const g of pre) { const r = finalizeHl(g, data, snap.hl); r.ok ? hlFinal.push(r.cand) : rejected.push({ id: r.id, reason: r.reason }); }
+for (const g of gpm.pass) { const r = finalizePm(g, now); r.ok ? pmFinal.push(r.cand) : rejected.push({ id: r.id, reason: r.reason }); }
+const pairs = findPairs(hlFinal, coinSentiment(ghl.all), data.ohlc, data.markets);
+const ll = detectLeadLag(history, data.ohlc, now);
+rejected.push(...ll.rejected);
+const sel = selectCandidates([...hlFinal, ...pmFinal, ...pairs, ...ll.candidates], t.portfolio);
+const dossier = { at: new Date(now).toISOString(), wakeLLM: sel.wakeLLM, minScore: CONFIG.signals.minScore, candidates: sel.candidates, rejected: [...sel.rejected, ...rejected].slice(0, 80) };
 const next = { ...t.portfolio, lastTick: utcNow(), ticks: (portfolio.ticks || 0) + 1 };
 problems.push(...t.problems);
 
@@ -51,6 +72,7 @@ const summary = {
   portfolio: { equity: t.point.equity, cash: t.point.cash, drawdown: t.point.drawdown, positions: next.positions.length, mode: next.mode },
   trades: t.trades.map((x) => `${x.type} ${x.id || ""} ${x.coin || x.title || x.token || x.to || ""} ${x.reason || ""} pnl=${x.pnl == null ? "-" : x.pnl.toFixed(2)}`),
   funding: t.funding.length,
+  candidates: { kept: sel.candidates.map((c) => `${c.id} score=${c.score}`), wakeLLM: sel.wakeLLM, rejected: dossier.rejected.length },
   whales: { tracked: Object.keys(scores.whales).length, newOutcomes: sc.applied.length, skipped: sc.skipped.length, warmupEndsAt: scores.warmupEndsAt },
   enrich: noNet ? "désactivé" : { markets: Object.keys(extra.markets).length, hlBooks: Object.keys(extra.hlBooks).length, pmBooks: Object.keys(extra.pmBooks).length, resolutions: Object.keys(extra.resolutions).length },
   problems,
@@ -61,5 +83,7 @@ if (!dry) {
   await store.appendJsonl(FILES.trades, t.trades);
   await store.appendJsonl(FILES.equity, t.point);
   await store.writeJson(FILES.whaleScores, scores);
+  await store.writeJson(FILES.history, history);
+  await store.writeJson(FILES.candidates, dossier);
   await store.savePortfolio(next);
 }
