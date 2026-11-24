@@ -22,9 +22,6 @@ jobs:
   update:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -64,5 +61,25 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: site
+
+  # Déploiement dans un job séparé, comme le modèle officiel de GitHub Pages.
+  # Dans le même job, deploy-pages partait une seconde après l'envoi et ne voyait parfois pas encore l'artefact
+  # (« No artifacts named "github-pages" were found »), alors qu'il était bien présent dans l'exécution.
+  # Un second essai couvre le cas où l'artefact n'est toujours pas visible.
+  deploy:
+    needs: update
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.retry.outputs.page_url || steps.deploy.outputs.page_url }}
+    steps:
       - id: deploy
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+      - name: Attendre avant un second essai
+        if: steps.deploy.outcome == 'failure'
+        run: sleep 30
+      - id: retry
+        if: steps.deploy.outcome == 'failure'
         uses: actions/deploy-pages@v4
