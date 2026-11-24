@@ -84,7 +84,7 @@ Tous les fichiers ci-dessous ont été créés ou modifiés au fil du projet.
 
 ## 3. Prochaine étape : agent de paper trading autonome
 
-Spécification complète dans `SPEC.md` (elle prime sur cette section). Implémentation en cours sur la branche `feat/paper-trading` : étapes 1 à 8 faites. Un agent gère 10 000 $ fictifs à partir des signaux du terminal, pour une compétition avec d'autres participants. Stratégie : copy whale confirmé par la macro, plus raisonnement macro. Tout doit rester 100 % gratuit.
+Spécification complète dans `SPEC.md` (elle prime sur cette section). Implémentation en cours sur la branche `feat/paper-trading` : étapes 1 à 9 faites : l'agent est complet, il reste à le mettre en service. Un agent gère 10 000 $ fictifs à partir des signaux du terminal, pour une compétition avec d'autres participants. Stratégie : copy whale confirmé par la macro, plus raisonnement macro. Tout doit rester 100 % gratuit.
 
 ### Conception retenue
 
@@ -130,4 +130,12 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 6. ✅ Candidats et signaux : `lib/paper/candidates.mjs` (regroupement, comptes couverts, poids de position ≥ 5 %, convergence sur entrées détectées, fraîcheur, contrariant, mur de liquidations, score, sélection des 5 meilleurs) et `lib/paper/cross.mjs` (paires par sentiment et corrélation, décalage Polymarket → Hyperliquid sur historique de 48 h). Dossier écrit dans `candidates.json`. 57 tests ; vérifié sur la vraie cohorte de 100 comptes (entrées simulées).
 7. ✅ IA : `schema.mjs` (validation stricte, vérification des métriques citées), `router.mjs` (6 fournisseurs gratuits, familles distinctes, repli automatique, mode JSON optionnel), `decision.mjs` (réveil, prompts, quorum, arbitre, secours), `execute.mjs` (taille par le moteur de risque, exécution sur le carnet réel, jambe orpheline refermée). Votes et décisions dans `model_votes.jsonl` ; option `--no-llm`. 68 tests avec un faux fournisseur ; **jamais appelé avec de vraies clés** (aucune clé sur le poste).
 8. ✅ Métriques : `lib/paper/metrics.mjs` (Sharpe, Sortino, Calmar, drawdown max, rendement annualisé, PSR, espérance, profit factor, Brier agent contre marché, références BTC et 50/50 BTC-or) et `lib/paper/shadow.mjs` (positions fantômes par modèle, mesurées en R). La conviction est conservée sur les positions et les trades. Écrit chaque cycle dans `metrics.json` et `shadow_book.json`. 80 tests.
-9. Intégration : `trading_loop.yml`, copie dans `site/`, page `views5.js`, propositions border.
+9. ✅ Intégration : `.github/workflows/trading_loop.yml` (horaire, groupe de concurrence `boussole`, garde-fou sur `state`, `models: read`, tests avant le cycle), même garde-fou ajouté à `update.yml`, copie de `data/paper` dans `site/paper/` (liste fermée), route locale `/api/paper/…`, page « Paper trading » (`public/views5.js`), propositions border (`lib/paper/border.mjs`, branche `border`, instructions `scripts/border_prompt.md`). 84 tests ; page vérifiée dans le navigateur en local et en mode GitHub Pages sur un jeu de démonstration.
+
+### Mise en service (à faire)
+
+1. Ajouter `GROQ_API_KEY` dans les secrets du dépôt.
+2. Vérifier les identifiants de modèles de `lib/paper/router.mjs` (ou les remplacer par la variable `PAPER_LLM_PROVIDERS`).
+3. Fusionner la branche `feat/paper-trading`, puis lancer « Agent de paper trading » à la main dans l'onglet Actions et lire le résumé du cycle.
+4. Créer la tâche Claude planifiée pour la poche Border (`scripts/border_prompt.md`).
+5. Premiers vrais votes : vérifier dans `model_votes.jsonl` que les modèles respectent le format et citent bien les métriques.

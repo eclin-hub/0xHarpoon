@@ -22,6 +22,7 @@ import { fetchL2Book } from "../lib/hl.mjs";
 import { fetchBook } from "../lib/pm.mjs";
 import { emptyShadow, addShadows, updateShadows, modelStats } from "../lib/paper/shadow.mjs";
 import { summarize } from "../lib/paper/metrics.mjs";
+import { borderCandidates, borderNeeds, markSeen } from "../lib/paper/border.mjs";
 
 const args = process.argv.slice(2);
 const dry = args.includes("--dry-run"), noNet = args.includes("--no-net"), noLlm = args.includes("--no-llm");
@@ -34,11 +35,13 @@ const portfolio = await store.loadPortfolio();
 let scores = (await store.readJson(FILES.whaleScores)) ?? emptyScores(now);
 const snap = await loadSnapshot(dataDir, now);
 let shadow = (await store.readJson(FILES.shadow)) ?? emptyShadow();
+const borderFile = await store.readJson(FILES.border).catch((e) => ({ proposals: [], error: e.message }));   // écrit par la tâche Claude (branche border)
+const borderSeen = portfolio.borderSeen || [], bNeeds = borderNeeds(borderFile, borderSeen);
 
 // données utiles : positions ouvertes de l'agent + marchés des baleines Polymarket fermées depuis le dernier cycle
 const open = portfolio.positions || [];
 const coins = open.filter((p) => p.venue === "hl").map((p) => p.coin);
-const tokens = open.filter((p) => p.venue === "pm").map((p) => p.token);
+const tokens = [...open.filter((p) => p.venue === "pm").map((p) => p.token), ...bNeeds.tokens];
 const newPmCloses = snap.events.filter((e) => e.t > scores.cursor && e.kind === "close" && e.src === "pm" && e.cid);
 const cids = [...open.filter((p) => p.venue === "pm").map((p) => p.cid), ...newPmCloses.map((e) => e.cid), ...shadow.open.filter((s) => s.venue === "pm").map((s) => s.cid)];
 const extra = noNet ? { markets: {}, hlBooks: {}, pmBooks: {}, resolutions: {}, errors: [] } : await enrich({ coins, tokens, cids });
@@ -67,7 +70,7 @@ shadow = sh.book;
 const ghl = gatherHl(snap, scores, now), gpm = gatherPm(snap, scores, now);
 const history = updateHistory(await store.readJson(FILES.history), snap, extra.markets, now);
 const moved = movedMarkets(history, now), pre = ghl.pass.slice(0, CONFIG.signals.prefilterMax);
-const atrCoins = [...pre.map((g) => g.coin), ...pre.flatMap((g) => partnersOf(g.coin)), ...moved.map((m) => m.coin)];
+const atrCoins = [...pre.map((g) => g.coin), ...pre.flatMap((g) => partnersOf(g.coin)), ...moved.map((m) => m.coin), ...bNeeds.coins];
 const ex2 = noNet || !atrCoins.length ? { ohlc: {}, errors: [] } : await enrich({ atrCoins, markets: extra.markets });
 problems.push(...ex2.errors);
 const data = { markets: extra.markets, ohlc: { ...extra.ohlc, ...ex2.ohlc } };
@@ -79,7 +82,10 @@ const pairs = findPairs(hlFinal, coinSentiment(ghl.all), data.ohlc, data.markets
 const ll = detectLeadLag(history, data.ohlc, now);
 rejected.push(...ll.rejected);
 const sel = selectCandidates([...hlFinal, ...pmFinal, ...pairs, ...ll.candidates], t.portfolio);
-const dossier = { at: new Date(now).toISOString(), wakeLLM: sel.wakeLLM, minScore: CONFIG.signals.minScore, candidates: sel.candidates, rejected: [...sel.rejected, ...rejected].slice(0, 80) };
+const border = borderCandidates(borderFile, borderSeen, { markets: extra.markets, ohlc: data.ohlc, pmBooks: extra.pmBooks }, now);   // en plus des 5 meilleurs
+if (borderFile?.error) problems.push(`border_proposals.json : ${borderFile.error}`);
+const dossier = { at: new Date(now).toISOString(), wakeLLM: sel.wakeLLM || border.candidates.length > 0, minScore: CONFIG.signals.minScore,
+  candidates: [...sel.candidates, ...border.candidates], rejected: [...sel.rejected, ...border.rejected, ...rejected].slice(0, 80) };
 problems.push(...t.problems);
 
 // IA (SPEC §4) : réveillée seulement sur événement ; l'exécution passe par le moteur de risque puis le simulateur
@@ -95,6 +101,7 @@ if (!ai.mode) {
     const ex = await executeDecisions(p, d.decisions, dossier, { markets: extra.markets, deps: { fetchL2Book, fetchBook }, now });
     p = ex.portfolio; trades.push(...ex.trades); votesLog.push(...d.votes, ...d.records);
     shadow = addShadows(shadow, d.votes, dossier, now).book;
+    if (d.mode !== "fallback") p = { ...p, borderSeen: markSeen(borderSeen, border.candidates.map((c) => c.proposalId)) };   // une proposition n'est votée qu'une fois
     Object.assign(ai, { mode: d.mode, decisions: d.decisions.map((x) => `${x.action} ${x.id} (${x.via})`), refused: ex.refused, models: router.log });
     problems.push(...d.errors);
     if (d.mode !== "fallback" && wake.includes("revue quotidienne")) p = { ...p, lastReviewDay: new Date(now).toISOString().slice(0, 10) };

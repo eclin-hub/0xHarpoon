@@ -15,7 +15,7 @@ Construire un moteur de paper trading autonome (capital fictif : **10 000 $**) b
   - Exécute le pipeline de détection de candidats.
   - **Règle anti-overtrading :** ne réveille les LLM que si au moins un candidat dépasse le seuil de score requis, si une position ouverte approche de son invalidation, ou lors de la revue quotidienne fixe (ex. 14h00 UTC).
 - **Tâches cognitives lourdes (Claude Code planifié, 3–4×/jour) :**
-  - Exécute le module *Border* (recherche web + thèses asymétriques) et écrit ses propositions validées dans `paper/border_proposals.json` sur la branche `state`, relues par le moteur horaire.
+  - Exécute le module *Border* (recherche web + thèses asymétriques) et écrit ses propositions dans `border_proposals.json` d'une branche dédiée `border` (jamais `state`, réécrite à chaque exécution des workflows), relues par le moteur horaire ; elles passent par le même vote que les autres candidats (au plus 2 par cycle, en plus des 5 meilleurs) et par le moteur de risque. Format et instructions : `lib/paper/border.mjs`, `scripts/border_prompt.md`.
 - **Stockage & Frontend :**
   - `data/` reste hors de `main` (`.gitignore`). L'état du paper trading vit dans `data/paper/`, sauvegardé sur la branche `state` comme le reste de l'historique (`paper/portfolio_state.json`, `paper/trades_history.jsonl`, `paper/model_votes.jsonl`, `paper/whale_scores.json`, `paper/equity_curve.jsonl`).
   - Un seul déploiement Pages, celui de `update.yml` : `scripts/snapshot.mjs --site` copie `data/paper/*` dans `site/paper/`, et une nouvelle page du terminal (« Paper trading ») les affiche. Les ordres horaires apparaissent donc sur le site à la collecte suivante (10 à 20 min).
@@ -230,5 +230,11 @@ Branche state (= dossier data/ en local)
     ├── trades_history.jsonl
     ├── model_votes.jsonl
     ├── whale_scores.json
-    └── border_proposals.json     # écrit par Claude Code (3-4×/jour)
+    ├── candidates.json, metrics.json, shadow_book.json, market_history.json
+    └── border_proposals.json     # copié depuis la branche border à chaque cycle
+
+Branche border (écrite par la tâche Claude 3-4×/jour)
+└── border_proposals.json
 ```
+
+Fichiers publiés sur le site (`site/paper/`, route locale `/api/paper/…`) : liste fermée `PUBLIC_PAPER_FILES` de `lib/paper/store.mjs` (jamais `whale_scores.json` ni `market_history.json`).

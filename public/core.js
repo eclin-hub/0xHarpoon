@@ -124,10 +124,10 @@ const ICONS = {
   flux: "M3 12h4l3-8 4 16 3-8h4", liq: "M12 3c3 4 6 6 6 10a6 6 0 01-12 0c0-4 3-6 6-10z", funding: "M5 20V11M11 20V4M17 20v-6M2 20h20", histo: "M3 3v18h18M7 15l4-4 3 3 5-6", calc: "M6 3h12v18H6zM9 7h6M9 12h1M12.5 12h1M9 16h1M12.5 16h1",
   dirs: "M12 3v18M12 3l-5 5M12 3l5 5M5 21h14", edge: "M13 2L4 14h7l-1 8 9-12h-7z", globe: "M12 3a9 9 0 100 18 9 9 0 000-18zM3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18", news: "M4 5h13v14H6a2 2 0 01-2-2zM17 9h3v8a2 2 0 01-2 2M7 9h7M7 13h7M7 16h4",
   social: "M4 5h16v11H9l-5 4z", cal: "M4 6h16v14H4zM4 10h16M8 3v4M16 3v4", odds: "M4 20V4M4 20h16M8 16l3-5 3 3 5-8", macro: "M3 20h18M6 20V10M10 20V6M14 20v-7M18 20V4", xasset: "M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z",
-  cot: "M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z", tape: "M4 5h16M4 10h10M4 15h16M4 20h7M18 9l3 3-3 3", opts: "M3 18c4 0 5-12 9-12s5 12 9 12",
+  cot: "M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z", tape: "M4 5h16M4 10h10M4 15h16M4 20h7M18 9l3 3-3 3", opts: "M3 18c4 0 5-12 9-12s5 12 9 12", paper: "M3 17l5-5 4 3 7-8M15 7h4v4M3 21h18",
 };
 const ROUTES = [
-  { id: "dash", t: "Tableau de bord", g: "Synthèse" }, { id: "dirs", t: "Directions", g: "Synthèse" }, { id: "edge", t: "Signaux d'edge", g: "Synthèse" },
+  { id: "dash", t: "Tableau de bord", g: "Synthèse" }, { id: "dirs", t: "Directions", g: "Synthèse" }, { id: "edge", t: "Signaux d'edge", g: "Synthèse" }, { id: "paper", t: "Paper trading", g: "Synthèse" },
   { id: "globe", t: "Globe", g: "Monde" }, { id: "news", t: "Infos et réseaux", g: "Monde" }, { id: "cal", t: "Calendrier", g: "Monde" }, { id: "odds", t: "Probabilités", g: "Monde" },
   { id: "macro", t: "Macro", g: "Marchés" }, { id: "xasset", t: "Prix et funding", g: "Marchés" }, { id: "cot", t: "Hedge funds", g: "Marchés" }, { id: "opts", t: "Options", g: "Marchés" }, { id: "liq", t: "Liquidations", g: "Marchés" },
   { id: "sent", t: "Sentiment", g: "Baleines" }, { id: "hl", t: "Hyperliquid", g: "Baleines" }, { id: "pm", t: "Polymarket", g: "Baleines" }, { id: "flux", t: "Flux en direct", g: "Baleines" }, { id: "tape", t: "Whale Tape", g: "Baleines" },

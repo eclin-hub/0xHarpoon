@@ -28,7 +28,7 @@ const data = raw.replace(/</g, "\\u003c");
 const pub = (f) => readFile(path.join(root, "public", f), "utf8");
 let html = await pub("index.html");
 const css = await pub("app.css");
-const files = ["vendor/d3.min.js", "vendor/topojson-client.min.js", "charts.js", "charts2.js", "geodata.js", "globe.js", "core.js", "drawer.js", "pmapi.js", "pmwhale.js", "views1.js", "views2.js", "views3.js", "views4.js", "tape.js", "main.js", "live.js", "q-model.js", "q-canvas.js", "q-tools.js", "q-hidden.js", "q-thesis.js", "q-vault.js"];
+const files = ["vendor/d3.min.js", "vendor/topojson-client.min.js", "charts.js", "charts2.js", "geodata.js", "globe.js", "core.js", "drawer.js", "pmapi.js", "pmwhale.js", "views1.js", "views2.js", "views3.js", "views4.js", "views5.js", "tape.js", "main.js", "live.js", "q-model.js", "q-canvas.js", "q-tools.js", "q-hidden.js", "q-thesis.js", "q-vault.js"];
 const world = (await pub("vendor/world.json")).replace(/</g, "\\u003c");
 const js = (await Promise.all(files.map(pub))).map((c) => `<script>\n${c}\n</script>`).join("\n");
 html = html.replace(/<link rel="stylesheet" href="app\.css">/, () => `<style>\n${css}\n</style>`)
@@ -42,6 +42,18 @@ if (process.argv.includes("--site")) {
   await writeFile(path.join(site, ".nojekyll"), "");
   // positions complètes de la dernière collecte : la page s'en sert pour montrer ce qui a bougé depuis
   try { const last = JSON.parse(await readFile(path.join(root, "data", "last.json"), "utf8")); await writeFile(path.join(site, "positions.json"), JSON.stringify({ at: last.at, hl: last.hl })); } catch {}
+  // agent de paper trading : la page « Paper trading » relit ces fichiers (votes limités aux 1 000 dernières lignes)
+  const { PUBLIC_PAPER_FILES } = await import("../lib/paper/store.mjs");
+  await mkdir(path.join(site, "paper"), { recursive: true });
+  let nPaper = 0;
+  for (const f of PUBLIC_PAPER_FILES) {
+    try {
+      let b = await readFile(path.join(root, "data", "paper", f), "utf8");
+      if (f === "model_votes.jsonl") b = b.trimEnd().split(/\r?\n/).slice(-1000).join("\n") + "\n";
+      await writeFile(path.join(site, "paper", f), b); nPaper++;
+    } catch {}
+  }
+  console.log("site/paper :", nPaper, "fichiers");
   console.log("site/index.html", (html.length / 1024) | 0, "KB · site/state.json", (raw.length / 1024) | 0, "KB");
 } else if (process.argv.includes("--artifact")) {
   const head = html.match(/<head>([\s\S]*?)<\/head>/)[1].replace(/<meta charset[^>]*>\s*|<meta name="viewport"[^>]*>\s*/g, "");
