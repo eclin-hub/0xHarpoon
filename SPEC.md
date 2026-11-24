@@ -179,6 +179,13 @@ Calculées automatiquement à chaque mise à jour et exposées sur le site :
 - **Qualité de prédiction :** Brier Score (Polymarket), Expectancy, Profit Factor.
 - **Benchmarks passifs :** comparaison sur la même période contre *Buy & Hold BTC* et un panier *50/50 BTC-Or*.
 - **Significativité statistique :** calcul du *Probabilistic Sharpe Ratio (PSR)* et du PnL contrefactuel par modèle IA (dès $N \ge 30$ trades indépendants).
+- **Implémentation (`lib/paper/metrics.mjs`, `shadow.mjs`) :**
+  - Rendements quotidiens (dernier point de chaque jour UTC), annualisation sur 365 jours ; drawdown max sur tous les points horaires ; pas de rendement annualisé ni de Calmar avant 7 jours d'historique.
+  - Trade terminé = fermeture complète ou résolution Polymarket ; espérance et profit factor sur le résultat net (frais et funding compris).
+  - Brier : la conviction retenue (0 – 100) est lue comme la probabilité que le pari gagne, comparée au Brier du prix payé ($\text{skill} = \text{Brier}_{\text{marché}} - \text{Brier}_{\text{agent}}$). Marchés résolus seulement.
+  - Références : chaque point de la courbe porte les prix de BTC et de `xyz:GOLD` ; achat-conservation BTC et panier 50/50 sans rééquilibrage, depuis le premier point qui a les deux prix.
+  - PnL contrefactuel : chaque vote `OPEN` valide ouvre une position fantôme pour son modèle (`paper/shadow_book.json`), mesurée en R (multiple du risque) pour ne pas dépendre des plafonds : Hyperliquid, rendement / distance du stop (2 × ATR), sortie à −1 R ou à l'horizon voté ; Polymarket, $R = (\text{sortie} - \text{entrée})/\text{entrée}$ à la résolution ou à l'horizon. Équivalent en dollars : 1 R = 1 % du capital de départ.
+  - Synthèse recalculée à chaque cycle dans `paper/metrics.json` ; `significant` passe à `true` à 30 trades terminés.
 
 ---
 
