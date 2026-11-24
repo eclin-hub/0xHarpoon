@@ -87,7 +87,7 @@ Remplace le débat séquentiel par une architecture parallèle pour éliminer la
 
 ### 4.1 Routeur LLM Multi-Providers (100 % Gratuit)
 Implémenter une classe `LLMRouter` (`lib/paper/router.mjs`) avec fallback automatique et validation stricte du JSON renvoyé (schéma maison dans `lib/paper/schema.mjs`, sans dépendance, pour garder le projet installable sans `npm install` ; Zod reste possible si on accepte un `npm ci` dans les workflows). Une réponse invalide compte comme une absence de réponse. Les 3 votants doivent être **3 modèles distincts** ; le routeur les prend dans l'ordre des fournisseurs ci-dessous et passe au suivant en cas d'erreur, de limite ou de JSON invalide :
-1. **GitHub Models** (GPT-4o-mini / Llama-3.3-70B)
+1. ~~**GitHub Models**~~ : service retiré le 30 juillet 2026, plus utilisé
 2. **Groq** (Llama-3.3-70B / Qwen-2.5)
 3. **Cerebras / SambaNova** (offres gratuites rapides)
 4. **OpenRouter** (modèles `:free`) / **Gemini Free** (dernier secours)
@@ -118,8 +118,9 @@ Implémenter une classe `LLMRouter` (`lib/paper/router.mjs`) avec fallback autom
 
 ### 4.3 Implémentation (`lib/paper/schema.mjs`, `router.mjs`, `decision.mjs`, `execute.mjs`)
 - **Un appel par modèle et par cycle :** chaque votant reçoit tous les candidats et toutes les positions ouvertes, et renvoie `{"votes":[…]}` (un vote au schéma du §4.2 par identifiant). Tout champ inconnu, manquant ou hors bornes invalide le vote ; un bulletin sans vote valide compte comme une absence de réponse.
-- **Familles :** chaque modèle a une famille (`llama-3.3-70b`, `gpt-4o-mini`, `qwen3-32b`, `deepseek-v3`…). Les 3 votants sont de familles distinctes ; l'arbitre est d'une 4ᵉ famille. Avec seulement GitHub Models et Groq, GitHub fournit 4 familles (`gpt-4o-mini`, `llama-3.3-70b`, `deepseek-v3`, `gpt-4.1-mini`) et Groq ajoute `qwen3-32b`.
-- **Clés (secrets du dépôt) :** `GITHUB_TOKEN` (GitHub Models ; le workflow doit déclarer `permissions: models: read`), `GROQ_API_KEY`, et en option `CEREBRAS_API_KEY`, `SAMBANOVA_API_KEY`, `OPENROUTER_API_KEY`, `GEMINI_API_KEY`. La liste des modèles se remplace par la variable `PAPER_LLM_PROVIDERS` (JSON) sans toucher au code.
+- **Familles :** chaque modèle a une famille (`gpt-oss`, `qwen3.8`, `llama-3.1`…). Les 3 votants sont de familles distinctes ; l'arbitre est d'une 4ᵉ famille. Groq seul fournit 3 familles (`openai/gpt-oss-120b` et `gpt-oss-20b` → `gpt-oss`, `qwen/qwen3.8-27b` → `qwen3.8`, `llama-3.1-8b-instant` → `llama-3.1`) : 3 votants, pas d'arbitre. GitHub Models, retiré le 30 juillet 2026, n'est plus utilisé.
+- **Erreurs :** en cas de HTTP ≥ 400 ou de réponse non JSON, le message du routeur reprend les 200 premiers caractères du corps (modèle retiré ou renommé, quota, clé…).
+- **Clés (secrets du dépôt) :** `GROQ_API_KEY` (Groq seul : 3 familles, donc 3 votants mais pas d'arbitre ; un 2 contre 1 n'ouvre rien), et en option `CEREBRAS_API_KEY`, `SAMBANOVA_API_KEY`, `OPENROUTER_API_KEY`, `GEMINI_API_KEY`. La liste des modèles se remplace par la variable `PAPER_LLM_PROVIDERS` (JSON) sans toucher au code.
 - **Citation :** `cited_risk_metric` est vérifiée par le code : nom d'une métrique du bloc `metrics` du candidat **et** sa valeur (tolérance 2 %, ou exprimée en pourcentage). Seuls les `REJECT` sont écartés si la citation échoue ; `HOLD` sur un candidat vaut « ne pas ouvrir ».
 - **Positions ouvertes :** fermeture à la majorité stricte des votes valides `CLOSE` (un seul vote suffit si un seul modèle a répondu).
 - **Secours (aucun vote valide, ou aucune clé) :** ni ouverture ni fermeture discrétionnaire ; stops, échéances et freins de drawdown restent appliqués à chaque cycle.

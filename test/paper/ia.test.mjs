@@ -190,3 +190,24 @@ test("executeDecisions : Polymarket au meilleur ask, paire, jambe orpheline refe
   const c = await executeDecisions(r.portfolio, [{ id: "hl-2", action: "CLOSE", via: "2/3 votes" }], ds, { markets: mk, deps: deps({ BTC: deep(100) }), now: NOW });
   assert.equal(c.trades[0].type, "close"); assert.equal(c.trades[0].reason, "vote"); assert.equal(c.portfolio.positions.length, 2);
 });
+
+test("LLMRouter : erreurs avec le début du corps (modèle retiré, réponse non JSON)", async () => {
+  const gone = '{"error":{"message":"The model `qwen/qwen3-32b` has been decommissioned","type":"invalid_request_error","code":"model_decommissioned"}}';
+  const f = fakeFetch((model) => (model === "D" ? new Response(gone, { status: 404 }) : model === "E" ? new Response("OK\r\n", { status: 200, headers: { "content-type": "text/plain" } }) : new Response("", { status: 503 })));
+  const r = new LLMRouter({ env: { K3: "k" }, providers: [PROVIDERS[2]], fetch: f });
+  const out = await r.collect(3, [], (j) => ({ ok: true, value: j }));
+  assert.equal(out.results.length, 0);
+  assert.match(out.errors[0], /^p3\/D : HTTP 404 : \{"error":\{"message":"The model `qwen\/qwen3-32b` has been decommissioned/);
+  assert.equal(out.errors[1], "p3/E : réponse non JSON (HTTP 200) : OK");
+  assert.equal(out.errors[2], "p3/F : HTTP 503 : (corps vide)");
+  assert.ok(out.errors[0].length <= "p3/D : HTTP 404 : ".length + 200);
+});
+
+test("DEFAULT_PROVIDERS : GitHub Models retiré, Groq sur des modèles en service, 3 familles", async () => {
+  const { DEFAULT_PROVIDERS } = await import("../../lib/paper/router.mjs");
+  assert.ok(!DEFAULT_PROVIDERS.some((p) => p.name === "github" || /models\.github\.ai/.test(p.url)));
+  const groq = DEFAULT_PROVIDERS.find((p) => p.name === "groq");
+  assert.ok(!groq.models.some((m) => ["llama-3.3-70b-versatile", "qwen/qwen3-32b"].includes(m.id)));
+  assert.equal(new Set(groq.models.map((m) => m.family)).size, 3);
+  assert.deepEqual(new LLMRouter({ env: { GROQ_API_KEY: "k", GITHUB_TOKEN: "t" }, fetch: async () => null }).available().map((x) => x.provider), ["groq", "groq", "groq", "groq"]);
+});

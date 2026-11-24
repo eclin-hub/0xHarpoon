@@ -109,7 +109,8 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 
 ### Reste à faire de ton côté
 
-- Compte Groq gratuit, avec sa clé `GROQ_API_KEY` dans les secrets du dépôt GitHub ; GitHub Models utilise le `GITHUB_TOKEN` du workflow (permission `models: read`).
+- Compte Groq gratuit, avec sa clé `GROQ_API_KEY` dans les secrets du dépôt GitHub (fait).
+- GitHub Models a été retiré le 30 juillet 2026 : il n'est plus utilisé. Avec Groq seul (`openai/gpt-oss-120b`, `qwen/qwen3.8-27b`, `llama-3.1-8b-instant`), il y a 3 votants mais pas d'arbitre. Ajouter une clé gratuite d'un autre fournisseur (Cerebras, OpenRouter ou Gemini) pour une 4e famille, après avoir vérifié ses identifiants de modèles.
 - Vérifier que les identifiants de modèles de `lib/paper/router.mjs` existent toujours chez chaque fournisseur (ils changent souvent).
 
 ### Données : solutions retenues

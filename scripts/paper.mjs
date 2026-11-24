@@ -95,7 +95,7 @@ const wake = wakeReasons({ dossier, portfolio: p, markets: extra.markets, now })
 const ai = { wake, mode: noNet || noLlm ? "désactivé" : wake.length ? null : "en veille", decisions: [], refused: [], models: [] };
 if (!ai.mode) {
   const router = new LLMRouter();
-  if (!router.available().length) { ai.mode = "secours"; problems.push("aucune clé LLM (GITHUB_TOKEN, GROQ_API_KEY…) : agent de secours, aucune ouverture"); }
+  if (!router.available().length) { ai.mode = "secours"; problems.push("aucune clé LLM (GROQ_API_KEY, CEREBRAS_API_KEY…) : agent de secours, aucune ouverture"); }
   else {
     const d = await decide({ router, dossier, portfolio: p, markets: extra.markets, now });
     const ex = await executeDecisions(p, d.decisions, dossier, { markets: extra.markets, deps: { fetchL2Book, fetchBook }, now });

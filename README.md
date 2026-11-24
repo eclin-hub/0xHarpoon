@@ -189,7 +189,7 @@ A $10,000 **simulated** portfolio driven by the terminal's whale signals (full s
 
 Setup:
 
-1. **Settings → Secrets and variables → Actions**: add `GROQ_API_KEY` (free). GitHub Models uses the workflow's own `GITHUB_TOKEN`. Optional: `CEREBRAS_API_KEY`, `SAMBANOVA_API_KEY`, `OPENROUTER_API_KEY`, `GEMINI_API_KEY`; override the model list with the `PAPER_LLM_PROVIDERS` variable (JSON) when a model id is retired.
+1. **Settings → Secrets and variables → Actions**: add `GROQ_API_KEY` (free; Groq alone gives three voters but no arbiter, so 2-vs-1 splits open nothing). GitHub Models was retired on July 30, 2026 and is no longer used. Optional, for a fourth model family (arbiter): `CEREBRAS_API_KEY`, `SAMBANOVA_API_KEY`, `OPENROUTER_API_KEY`, `GEMINI_API_KEY`; override the model list with the `PAPER_LLM_PROVIDERS` variable (JSON) when a model id is retired.
 2. Run **`Agent de paper trading`** once from the **Actions** tab (after `Mise à jour des données` has created the `state` branch).
 3. Optional *Border* pocket: schedule a Claude task 3–4 times a day with the instructions in [`scripts/border_prompt.md`](scripts/border_prompt.md); it writes `border_proposals.json` to a dedicated `border` branch.
 
