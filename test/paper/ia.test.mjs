@@ -203,11 +203,25 @@ test("LLMRouter : erreurs avec le début du corps (modèle retiré, réponse non
   assert.ok(out.errors[0].length <= "p3/D : HTTP 404 : ".length + 200);
 });
 
-test("DEFAULT_PROVIDERS : GitHub Models retiré, Groq sur des modèles en service, 3 familles", async () => {
+test("DEFAULT_PROVIDERS : modèles en service, Groq + OpenRouter = 3 votants et un arbitre", async () => {
   const { DEFAULT_PROVIDERS } = await import("../../lib/paper/router.mjs");
   assert.ok(!DEFAULT_PROVIDERS.some((p) => p.name === "github" || /models\.github\.ai/.test(p.url)));
   const groq = DEFAULT_PROVIDERS.find((p) => p.name === "groq");
-  assert.ok(!groq.models.some((m) => ["llama-3.3-70b-versatile", "qwen/qwen3-32b"].includes(m.id)));
-  assert.equal(new Set(groq.models.map((m) => m.family)).size, 3);
-  assert.deepEqual(new LLMRouter({ env: { GROQ_API_KEY: "k", GITHUB_TOKEN: "t" }, fetch: async () => null }).available().map((x) => x.provider), ["groq", "groq", "groq", "groq"]);
+  assert.ok(!groq.models.some((m) => ["llama-3.3-70b-versatile", "qwen/qwen3-32b", "llama-3.1-8b-instant"].includes(m.id)));
+  assert.equal(new Set(groq.models.map((m) => m.family)).size, 2);
+  assert.ok(!DEFAULT_PROVIDERS.some((p) => p.models.some((m) => ["gemini-2.0-flash", "deepseek/deepseek-chat-v3-0324:free", "meta-llama/llama-3.3-70b-instruct:free"].includes(m.id))));
+  assert.deepEqual(new LLMRouter({ env: { GROQ_API_KEY: "k", GITHUB_TOKEN: "t" }, fetch: async () => null }).available().map((x) => x.provider), ["groq", "groq", "groq"]);
+  // Groq + OpenRouter : votants gpt-oss, qwen3.8, nemotron ; arbitre gemma
+  const ok = '{"votes":[]}';
+  const f = async (url, init) => new Response(JSON.stringify({ choices: [{ message: { content: ok } }] }), { status: 200 });
+  const r = new LLMRouter({ env: { GROQ_API_KEY: "k", OPENROUTER_API_KEY: "o" }, fetch: f });
+  const v = await r.collect(3, [], (j) => ({ ok: true, value: j }));
+  assert.deepEqual(v.results.map((x) => x.family), ["gpt-oss", "qwen3.8", "nemotron"]);
+  const a = await r.collect(1, [], (j) => ({ ok: true, value: j }), { excludeFamilies: v.results.map((x) => x.family) });
+  assert.equal(a.results[0].model, "google/gemma-4-31b-it:free");
+  // Groq + Gemini : 3 votants, pas d'arbitre
+  const g = new LLMRouter({ env: { GROQ_API_KEY: "k", GEMINI_API_KEY: "g" }, fetch: f });
+  const vg = await g.collect(3, [], (j) => ({ ok: true, value: j }));
+  assert.deepEqual(vg.results.map((x) => x.family), ["gpt-oss", "qwen3.8", "gemini"]);
+  assert.equal((await g.collect(1, [], (j) => ({ ok: true, value: j }), { excludeFamilies: ["gpt-oss", "qwen3.8", "gemini"] })).results.length, 0);
 });
