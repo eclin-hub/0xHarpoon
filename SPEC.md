@@ -90,8 +90,9 @@ Implémenter une classe `LLMRouter` (`lib/paper/router.mjs`) avec fallback autom
 1. ~~**GitHub Models**~~ : service retiré le 30 juillet 2026, plus utilisé
 2. **Groq** (`openai/gpt-oss-120b`, `qwen/qwen3.8-27b` : 2 votants)
 3. **Gemini**, API directe Google AI Studio (`gemini-3.8-flash`, secours `gemini-3.6-flash`, `gemini-3.5-flash-lite` : 3e votant)
-4. **Cerebras / SambaNova** (offres gratuites rapides, si leurs clés existent ; identifiants non vérifiés)
-5. **OpenRouter** (modèles `:free` seulement, simple secours ; fournit l'arbitre quand son pool gratuit répond)
+4. **Gemma 4** sur l'API Gemini, même clé, API native `generateContent` (`gemma-4-31b-it`, secours `gemma-4-26b-a4b-it` : arbitre)
+5. **Cerebras / SambaNova** (offres gratuites rapides, si leurs clés existent ; identifiants non vérifiés)
+6. **OpenRouter** (modèles `:free` seulement, dernier recours pour l'arbitre)
 
 ### 4.2 Processus de Décision
 1. **Vote Parallèle Indépendant (3 modèles distincts) :**
@@ -119,7 +120,7 @@ Implémenter une classe `LLMRouter` (`lib/paper/router.mjs`) avec fallback autom
 
 ### 4.3 Implémentation (`lib/paper/schema.mjs`, `router.mjs`, `decision.mjs`, `execute.mjs`)
 - **Un appel par modèle et par cycle :** chaque votant reçoit tous les candidats et toutes les positions ouvertes, et renvoie `{"votes":[…]}` (un vote au schéma du §4.2 par identifiant). Tout champ inconnu, manquant ou hors bornes invalide le vote ; un bulletin sans vote valide compte comme une absence de réponse.
-- **Familles :** chaque modèle a une famille (`gpt-oss`, `qwen3.8`, `gemini`, `gemma`, `ernie`…). Les 3 votants sont de familles distinctes ; l'arbitre est d'une 4ᵉ famille. Groq fournit 2 familles (`openai/gpt-oss-120b` et `gpt-oss-20b` → `gpt-oss`, `qwen/qwen3.8-27b` → `qwen3.8`) et Gemini la 3ᵉ (`gemini-3.8-flash`, `gemini-3.6-flash`, `gemini-3.5-flash-lite` → `gemini` ; `gemini-2.5-flash` et `gemini-2.5-pro` sont dépréciés et redirigés à partir du 01/12/2026). L'arbitre vient d'OpenRouter (`google/gemma-4-31b-it:free` → `gemma`, `baidu/ernie-5.5-flash-preview:free` → `ernie`) : si son pool gratuit est saturé (HTTP 429), il n'y a pas d'arbitre et un 2 contre 1 n'ouvre rien. Cycle du 24/11/2026 : `nemotron-3-ultra` (60 s) et `nemotron-3.5-lightning` (réponse vide) retirés. GitHub Models, retiré le 30 juillet 2026, n'est plus utilisé.
+- **Familles :** chaque modèle a une famille (`gpt-oss`, `qwen3.8`, `gemini`, `gemma`, `ernie`…). Les 3 votants sont de familles distinctes ; l'arbitre est d'une 4ᵉ famille. Groq fournit 2 familles (`openai/gpt-oss-120b` et `gpt-oss-20b` → `gpt-oss`, `qwen/qwen3.8-27b` → `qwen3.8`) et Gemini la 3ᵉ (`gemini-3.8-flash`, `gemini-3.6-flash`, `gemini-3.5-flash-lite` → `gemini` ; `gemini-2.5-flash` et `gemini-2.5-pro` sont dépréciés et redirigés à partir du 01/12/2026). L'arbitre est Gemma 4 servi par Google avec la même clé (`gemma-4-31b-it`, puis `gemma-4-26b-a4b-it` → `gemma`), appelé par l'API native `generateContent` (clé dans l'en-tête `x-goog-api-key`, partie « thought » ignorée), car l'endpoint compatible OpenAI n'est pas documenté pour Gemma ; OpenRouter (`gemma-4-31b-it:free`, `ernie-5.5-flash-preview:free`) n'est plus qu'un dernier recours. Cycle du 24/11/2026 : `nemotron-3-ultra` (60 s) et `nemotron-3.5-lightning` (réponse vide) retirés. GitHub Models, retiré le 30 juillet 2026, n'est plus utilisé.
 - **Erreurs :** en cas de HTTP ≥ 400 ou de réponse non JSON, le message du routeur reprend les 200 premiers caractères du corps (modèle retiré ou renommé, quota, clé…).
 - **Clés (secrets du dépôt) :** `GROQ_API_KEY` (2 votants à lui seul : aucune ouverture sans un second fournisseur), et en option `CEREBRAS_API_KEY`, `SAMBANOVA_API_KEY`, `OPENROUTER_API_KEY`, `GEMINI_API_KEY`. La liste des modèles se remplace par la variable `PAPER_LLM_PROVIDERS` (JSON) sans toucher au code.
 - **Citation :** `cited_risk_metric` est vérifiée par le code : nom d'une métrique du bloc `metrics` du candidat **et** sa valeur (tolérance 2 %, ou exprimée en pourcentage). Seuls les `REJECT` sont écartés si la citation échoue ; `HOLD` sur un candidat vaut « ne pas ouvrir ».

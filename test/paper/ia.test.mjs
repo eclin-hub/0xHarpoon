@@ -205,7 +205,8 @@ test("LLMRouter : erreurs avec le début du corps (modèle retiré, réponse non
 
 test("DEFAULT_PROVIDERS : ordre Groq, Gemini, OpenRouter en secours ; modèles retirés absents", async () => {
   const { DEFAULT_PROVIDERS } = await import("../../lib/paper/router.mjs");
-  assert.deepEqual(DEFAULT_PROVIDERS.map((p) => p.name), ["groq", "gemini", "cerebras", "sambanova", "openrouter"]);
+  assert.deepEqual(DEFAULT_PROVIDERS.map((p) => p.name), ["groq", "gemini", "gemma", "cerebras", "sambanova", "openrouter"]);
+  assert.equal(DEFAULT_PROVIDERS.find((p) => p.name === "gemma").keyEnv, "GEMINI_API_KEY");
   assert.ok(!DEFAULT_PROVIDERS.some((p) => p.name === "github" || /models\.github\.ai/.test(p.url)));
   const ids = DEFAULT_PROVIDERS.flatMap((p) => p.models.map((m) => m.id));
   for (const gone of ["llama-3.3-70b-versatile", "qwen/qwen3-32b", "llama-3.1-8b-instant", "gemini-2.0-flash", "gemini-2.5-flash", "gemini-2.5-pro",
@@ -213,26 +214,43 @@ test("DEFAULT_PROVIDERS : ordre Groq, Gemini, OpenRouter en secours ; modèles r
   assert.ok(DEFAULT_PROVIDERS.find((p) => p.name === "openrouter").models.every((m) => m.id.endsWith(":free")));
 });
 
-const okBallot = async () => new Response(JSON.stringify({ choices: [{ message: { content: '{"votes":[]}' } }] }), { status: 200 });
 const pass = (j) => ({ ok: true, value: j });
+// faux serveur qui parle les deux formats : chat completions (OpenAI) et generateContent (Google natif)
+const BALLOT = '{"votes":[]}';
+const okBallot = async (url) => new Response(JSON.stringify(/:generateContent$/.test(url)
+  ? { candidates: [{ content: { parts: [{ text: "réflexion", thought: true }, { text: BALLOT }] } }] }
+  : { choices: [{ message: { content: BALLOT } }] }), { status: 200 });
 
-test("Groq + Gemini + OpenRouter : votants gpt-oss, qwen3.8, gemini ; arbitre gemma", async () => {
-  const r = new LLMRouter({ env: { GROQ_API_KEY: "k", GEMINI_API_KEY: "g", OPENROUTER_API_KEY: "o" }, fetch: okBallot });
-  const v = await r.collect(3, [], pass);
+test("Groq + Gemini : votants gpt-oss, qwen3.8, gemini ; arbitre Gemma par l'API native de Google", async () => {
+  const calls = [];
+  const f = async (url, init) => { calls.push({ url, headers: init.headers, body: JSON.parse(init.body) }); return okBallot(url); };
+  const r = new LLMRouter({ env: { GROQ_API_KEY: "k", GEMINI_API_KEY: "secret-g" }, fetch: f });
+  const sys = [{ role: "system", content: "Règles" }, { role: "user", content: "Dossier" }];
+  const v = await r.collect(3, sys, pass);
   assert.deepEqual(v.results.map((x) => x.model), ["openai/gpt-oss-120b", "qwen/qwen3.8-27b", "gemini-3.8-flash"]);
-  const a = await r.collect(1, [], pass, { excludeFamilies: v.results.map((x) => x.family) });
-  assert.equal(a.results[0].model, "google/gemma-4-31b-it:free");
+  const a = await r.collect(1, sys, pass, { excludeFamilies: v.results.map((x) => x.family) });
+  assert.equal(a.results[0].model, "gemma-4-31b-it"); assert.deepEqual(a.results[0].value, { votes: [] });   // la partie « thought » est ignorée
+  const g = calls.at(-1);
+  assert.equal(g.url, "https://generativelanguage.googleapis.com/v1beta/models/gemma-4-31b-it:generateContent");
+  assert.equal(g.headers["x-goog-api-key"], "secret-g"); assert.ok(!g.url.includes("secret-g")); assert.equal(g.headers.authorization, undefined);
+  assert.deepEqual(g.body.systemInstruction, { parts: [{ text: "Règles" }] });
+  assert.deepEqual(g.body.contents, [{ role: "user", parts: [{ text: "Dossier" }] }]);
+  assert.equal(g.body.generationConfig.responseMimeType, "application/json");
 });
 
-test("secours : Gemini 3.8 en échec → Gemini 3.6 ; OpenRouter saturé → pas d'arbitre, sans bloquer le vote", async () => {
-  const f = async (url, init) => { const m = JSON.parse(init.body).model;
-    if (m === "gemini-3.8-flash") return new Response('{"error":{"code":503,"message":"The model is overloaded"}}', { status: 503 });
-    if (url.includes("openrouter")) return new Response('{"error":{"message":"Provider returned error","code":429}}', { status: 429 });
-    return okBallot(); };
+test("secours : Gemini 3.8 en échec → Gemini 3.6 ; Gemma 31b en 429 → Gemma 26b ; Google indisponible → OpenRouter", async () => {
+  const f = async (url, init) => {
+    if (/gemini-3\.8-flash/.test(init.body)) return new Response('{"error":{"code":503,"message":"The model is overloaded"}}', { status: 503 });
+    if (url.includes("gemma-4-31b-it:generateContent")) return new Response('{"error":{"code":429,"message":"Resource exhausted"}}', { status: 429 });
+    return okBallot(url); };
   const r = new LLMRouter({ env: { GROQ_API_KEY: "k", GEMINI_API_KEY: "g", OPENROUTER_API_KEY: "o" }, fetch: f });
   const v = await r.collect(3, [], pass);
   assert.deepEqual(v.results.map((x) => x.model), ["openai/gpt-oss-120b", "qwen/qwen3.8-27b", "gemini-3.6-flash"]);
   assert.match(v.errors[0], /gemini\/gemini-3\.8-flash : HTTP 503 : .*overloaded/);
   const a = await r.collect(1, [], pass, { excludeFamilies: v.results.map((x) => x.family) });
-  assert.equal(a.results.length, 0); assert.equal(a.errors.length, 2); assert.ok(a.errors.every((e) => /HTTP 429/.test(e)));
+  assert.equal(a.results[0].model, "gemma-4-26b-a4b-it"); assert.match(a.errors[0], /gemma\/gemma-4-31b-it : HTTP 429/);
+  // Google entièrement indisponible pour Gemma : OpenRouter (même famille gemma, puis ernie) en dernier recours
+  const down = async (url) => (url.includes(":generateContent") ? new Response("", { status: 500 }) : okBallot(url));
+  const r2 = new LLMRouter({ env: { GEMINI_API_KEY: "g", OPENROUTER_API_KEY: "o" }, fetch: down });
+  assert.equal((await r2.collect(1, [], pass, { excludeFamilies: ["gemini", "gpt-oss", "qwen3.8"] })).results[0].model, "google/gemma-4-31b-it:free");
 });
