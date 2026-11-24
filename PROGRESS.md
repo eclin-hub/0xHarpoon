@@ -110,7 +110,7 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 ### Reste à faire de ton côté
 
 - Compte Groq gratuit, avec sa clé `GROQ_API_KEY` dans les secrets du dépôt GitHub (fait).
-- GitHub Models a été retiré le 30 juillet 2026 : il n'est plus utilisé. Groq (`openai/gpt-oss-120b`, `qwen/qwen3.8-27b`, vérifiés en réel) fournit 2 votants ; `llama-3.1-8b-instant` (404) est retiré. OpenRouter (`nemotron`, `gemma`) apporte le 3e votant et l'arbitre ; Gemini seulement un 3e votant. Identifiants OpenRouter et Gemini vérifiés dans leurs catalogues le 24/11/2026, pas encore par un appel réel ; ceux de Cerebras et SambaNova ne sont pas vérifiés.
+- GitHub Models a été retiré le 30 juillet 2026 : il n'est plus utilisé. Votants : Groq (`openai/gpt-oss-120b`, `qwen/qwen3.8-27b`, vérifiés en réel, ~2,5 s) et Gemini (`gemini-3.8-flash`, clé ajoutée, pas encore vérifié en réel). Arbitre : OpenRouter (`gemma-4-31b-it:free`, `ernie-5.5-flash-preview:free`), en 429 au cycle du 24/11/2026 ; tant que son pool gratuit est saturé, un 2 contre 1 n'ouvre rien. `nemotron-3-ultra` (60 s) et `nemotron-3.5-lightning` (réponse vide) retirés. Cerebras et SambaNova : identifiants non vérifiés.
 - Vérifier que les identifiants de modèles de `lib/paper/router.mjs` existent toujours chez chaque fournisseur (ils changent souvent).
 
 ### Données : solutions retenues

@@ -88,9 +88,10 @@ Remplace le débat séquentiel par une architecture parallèle pour éliminer la
 ### 4.1 Routeur LLM Multi-Providers (100 % Gratuit)
 Implémenter une classe `LLMRouter` (`lib/paper/router.mjs`) avec fallback automatique et validation stricte du JSON renvoyé (schéma maison dans `lib/paper/schema.mjs`, sans dépendance, pour garder le projet installable sans `npm install` ; Zod reste possible si on accepte un `npm ci` dans les workflows). Une réponse invalide compte comme une absence de réponse. Les 3 votants doivent être **3 modèles distincts** ; le routeur les prend dans l'ordre des fournisseurs ci-dessous et passe au suivant en cas d'erreur, de limite ou de JSON invalide :
 1. ~~**GitHub Models**~~ : service retiré le 30 juillet 2026, plus utilisé
-2. **Groq** (Llama-3.3-70B / Qwen-2.5)
-3. **Cerebras / SambaNova** (offres gratuites rapides)
-4. **OpenRouter** (modèles `:free`) / **Gemini Free** (dernier secours)
+2. **Groq** (`openai/gpt-oss-120b`, `qwen/qwen3.8-27b` : 2 votants)
+3. **Gemini**, API directe Google AI Studio (`gemini-3.8-flash`, secours `gemini-3.6-flash`, `gemini-3.5-flash-lite` : 3e votant)
+4. **Cerebras / SambaNova** (offres gratuites rapides, si leurs clés existent ; identifiants non vérifiés)
+5. **OpenRouter** (modèles `:free` seulement, simple secours ; fournit l'arbitre quand son pool gratuit répond)
 
 ### 4.2 Processus de Décision
 1. **Vote Parallèle Indépendant (3 modèles distincts) :**
@@ -118,7 +119,7 @@ Implémenter une classe `LLMRouter` (`lib/paper/router.mjs`) avec fallback autom
 
 ### 4.3 Implémentation (`lib/paper/schema.mjs`, `router.mjs`, `decision.mjs`, `execute.mjs`)
 - **Un appel par modèle et par cycle :** chaque votant reçoit tous les candidats et toutes les positions ouvertes, et renvoie `{"votes":[…]}` (un vote au schéma du §4.2 par identifiant). Tout champ inconnu, manquant ou hors bornes invalide le vote ; un bulletin sans vote valide compte comme une absence de réponse.
-- **Familles :** chaque modèle a une famille (`gpt-oss`, `qwen3.8`, `nemotron`, `gemma`, `gemini`…). Les 3 votants sont de familles distinctes ; l'arbitre est d'une 4ᵉ famille. Groq fournit 2 familles (`openai/gpt-oss-120b` et `gpt-oss-20b` → `gpt-oss`, `qwen/qwen3.8-27b` → `qwen3.8`). OpenRouter, en modèles `:free` uniquement, en ajoute 2 (`nvidia/nemotron-3-ultra-550b-a55b:free` → `nemotron`, avec `nvidia/nemotron-3.5-lightning:free` en secours ; `google/gemma-4-31b-it:free` → `gemma` ; `baidu/ernie-5.5-flash-preview:free` en dernier recours) : Groq + OpenRouter donnent 3 votants et un arbitre. Gemini n'en ajoute qu'une (`gemini-3.8-flash`, `gemini-3.6-flash`, `gemini-3.5-flash-lite` → `gemini`) : Groq + Gemini donnent 3 votants sans arbitre. GitHub Models, retiré le 30 juillet 2026, n'est plus utilisé.
+- **Familles :** chaque modèle a une famille (`gpt-oss`, `qwen3.8`, `gemini`, `gemma`, `ernie`…). Les 3 votants sont de familles distinctes ; l'arbitre est d'une 4ᵉ famille. Groq fournit 2 familles (`openai/gpt-oss-120b` et `gpt-oss-20b` → `gpt-oss`, `qwen/qwen3.8-27b` → `qwen3.8`) et Gemini la 3ᵉ (`gemini-3.8-flash`, `gemini-3.6-flash`, `gemini-3.5-flash-lite` → `gemini` ; `gemini-2.5-flash` et `gemini-2.5-pro` sont dépréciés et redirigés à partir du 01/12/2026). L'arbitre vient d'OpenRouter (`google/gemma-4-31b-it:free` → `gemma`, `baidu/ernie-5.5-flash-preview:free` → `ernie`) : si son pool gratuit est saturé (HTTP 429), il n'y a pas d'arbitre et un 2 contre 1 n'ouvre rien. Cycle du 24/11/2026 : `nemotron-3-ultra` (60 s) et `nemotron-3.5-lightning` (réponse vide) retirés. GitHub Models, retiré le 30 juillet 2026, n'est plus utilisé.
 - **Erreurs :** en cas de HTTP ≥ 400 ou de réponse non JSON, le message du routeur reprend les 200 premiers caractères du corps (modèle retiré ou renommé, quota, clé…).
 - **Clés (secrets du dépôt) :** `GROQ_API_KEY` (2 votants à lui seul : aucune ouverture sans un second fournisseur), et en option `CEREBRAS_API_KEY`, `SAMBANOVA_API_KEY`, `OPENROUTER_API_KEY`, `GEMINI_API_KEY`. La liste des modèles se remplace par la variable `PAPER_LLM_PROVIDERS` (JSON) sans toucher au code.
 - **Citation :** `cited_risk_metric` est vérifiée par le code : nom d'une métrique du bloc `metrics` du candidat **et** sa valeur (tolérance 2 %, ou exprimée en pourcentage). Seuls les `REJECT` sont écartés si la citation échoue ; `HOLD` sur un candidat vaut « ne pas ouvrir ».
