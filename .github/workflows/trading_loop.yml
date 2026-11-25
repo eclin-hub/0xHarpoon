@@ -2,10 +2,8 @@ name: Agent de paper trading
 
 # Un cycle par heure (SPEC.md) : valorisation, funding, résolutions, stops, notes des baleines, candidats,
 # vote des LLM sur événement, exécution simulée, métriques. L'état vit dans la branche `state` (dossier paper/).
-# GitHub lance les tâches planifiées « au mieux » : le cycle peut partir avec quelques minutes de retard.
+# Déclenché de l'extérieur par cron-job.org (workflow_dispatch) à :10 chaque heure, après « Mise à jour des données » (:00).
 on:
-  schedule:
-    - cron: "0 * * * *"
   workflow_dispatch:
 
 permissions:
