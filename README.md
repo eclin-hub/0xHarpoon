@@ -174,7 +174,8 @@ Open **`http://localhost:8787`** in your browser. Historical snapshots and activ
 
 1. Push the repository to GitHub (public repository) and set **Settings → Pages → Source** to `GitHub Actions`.
 2. Enable **Read and write permissions** under **Settings → Actions → General → Workflow permissions**.
-3. Trigger **`Mise à jour des données`** in the **Actions** tab. GitHub executes `scripts/snapshot.mjs` every 15 minutes and persists historical state to the `state` branch.
+3. Trigger **`Mise à jour des données`** in the **Actions** tab once. The workflow also runs on every push to `main` and persists historical state to the `state` branch.
+4. Schedule it externally: GitHub's own cron runs late, so both workflows only accept `workflow_dispatch`. An external scheduler (we use [cron-job.org](https://cron-job.org)) sends `POST https://api.github.com/repos/<owner>/<repo>/actions/workflows/<file>/dispatches` with body `{"ref":"main"}`, headers `Accept: application/vnd.github+json` and `Authorization: Bearer <token>` (fine-grained token limited to this repository, permission *Actions: Read and write*): `update.yml` at :00 every hour, `trading_loop.yml` at :10.
 
 ---
 
@@ -184,7 +185,7 @@ A $10,000 **simulated** portfolio driven by the terminal's whale signals (full s
 
 - **Deterministic engine** (`lib/paper/`): candidate filters, whale scoring, risk sizing, drawdown brakes, order-book-walking execution, metrics. The code alone sets sizes and limits.
 - **AI layer**: three independent free LLMs vote, an arbiter of a fourth model family breaks 2-vs-1 splits, objections must cite a numeric metric from the dossier. Without any key, a deterministic fallback opens nothing.
-- **Hourly workflow** `.github/workflows/trading_loop.yml`: shares the `boussole` concurrency group with `update.yml`, reads and writes `paper/` on the `state` branch, never pushes if `state` could not be fetched.
+- **Hourly workflow** `.github/workflows/trading_loop.yml` (dispatched at :10 by the external scheduler): shares the `boussole` concurrency group with `update.yml`, reads and writes `paper/` on the `state` branch, never pushes if `state` could not be fetched.
 - **Dashboard**: *Paper trading* page (equity vs BTC and 50/50 BTC-gold, positions, candidates, model votes, counterfactual PnL per model).
 
 Setup:

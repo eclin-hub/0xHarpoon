@@ -9,7 +9,7 @@ Terminal web de suivi des « baleines » (Hyperliquid, Polymarket) enrichi de do
 | Mode | Lancement | Données |
 |---|---|---|
 | Local | `node server.mjs` puis http://localhost:8787 | collecte en direct (SSE), bouton Actualiser |
-| En ligne (GitHub Pages) | `.github/workflows/update.yml`, toutes les 10 à 20 min | analyses recalculées par GitHub ; prix, positions Hyperliquid et Whale Tape rafraîchis en direct par le navigateur |
+| En ligne (GitHub Pages) | `.github/workflows/update.yml`, chaque heure à :00 (cron-job.org) et à chaque push sur `main` ; agent `trading_loop.yml` à :10 | analyses recalculées par GitHub ; prix, positions Hyperliquid et Whale Tape rafraîchis en direct par le navigateur |
 | Instantané (artefact Claude) | `node scripts/snapshot.mjs --artifact` | figé ; le bouton Actualiser demande à Claude de republier |
 
 ### Pages (18)

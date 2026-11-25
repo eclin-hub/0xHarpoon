@@ -8,7 +8,7 @@ Construire un moteur de paper trading autonome (capital fictif : **10 000 $**) b
 **Principe fondamental :** séparation stricte entre le **moteur déterministe** (Node.js : filtrage statistique, calcul de risque, exécution simulée, comptabilité) et la **couche cognitive** (LLM : synthèse de thèse, arbitrage, détection de catalyseurs). **Aucun LLM ne peut contourner les règles de risque ni modifier directement la taille d'une position au-delà des bornes calculées par le code.**
 
 ### Cadence & Infrastructure (100 % gratuit)
-- **Moteur horaire (GitHub Actions `trading_loop.yml`, `cron: "0 * * * *"`) :**
+- **Moteur horaire (GitHub Actions `trading_loop.yml`, lancé à :10 chaque heure par cron-job.org via `workflow_dispatch`, après `update.yml` à :00) :**
   - Partage le groupe de concurrence `boussole` avec `update.yml` : les deux workflows ne tournent jamais en même temps, aucun ne peut écraser la branche `state` de l'autre.
   - Ne pousse **jamais** si la récupération de la branche `state` a échoué (sinon l'historique serait remplacé par un état vide).
   - Met à jour le mark-to-market, le funding Hyperliquid, les résolutions Polymarket et vérifie les stops/kill-switches.
@@ -18,7 +18,7 @@ Construire un moteur de paper trading autonome (capital fictif : **10 000 $**) b
   - Exécute le module *Border* (recherche web + thèses asymétriques) et écrit ses propositions dans `border_proposals.json` d'une branche dédiée `border` (jamais `state`, réécrite à chaque exécution des workflows), relues par le moteur horaire ; elles passent par le même vote que les autres candidats (au plus 2 par cycle, en plus des 5 meilleurs) et par le moteur de risque. Format et instructions : `lib/paper/border.mjs`, `scripts/border_prompt.md`.
 - **Stockage & Frontend :**
   - `data/` reste hors de `main` (`.gitignore`). L'état du paper trading vit dans `data/paper/`, sauvegardé sur la branche `state` comme le reste de l'historique (`paper/portfolio_state.json`, `paper/trades_history.jsonl`, `paper/model_votes.jsonl`, `paper/whale_scores.json`, `paper/equity_curve.jsonl`).
-  - Un seul déploiement Pages, celui de `update.yml` : `scripts/snapshot.mjs --site` copie `data/paper/*` dans `site/paper/`, et une nouvelle page du terminal (« Paper trading ») les affiche. Les ordres horaires apparaissent donc sur le site à la collecte suivante (10 à 20 min).
+  - Un seul déploiement Pages, celui de `update.yml` : `scripts/snapshot.mjs --site` copie `data/paper/*` dans `site/paper/`, et une nouvelle page du terminal (« Paper trading ») les affiche. Les ordres du cycle de :10 apparaissent donc sur le site à la collecte suivante, à l'heure pile (environ 50 min plus tard).
 
 ---
 
@@ -201,7 +201,7 @@ Le terminal existant reste en place ; l'agent s'ajoute dans `lib/paper/`. Aucune
 ├── server.mjs                    # inchangé (route /api/paper en local)
 ├── .github/workflows/
 │   ├── update.yml                # existant : collecte + Pages (copie data/paper → site/paper)
-│   └── trading_loop.yml          # nouveau : cron horaire, même groupe de concurrence, pousse sur state
+│   └── trading_loop.yml          # nouveau : horaire (cron-job.org, :10), même groupe de concurrence, pousse sur state
 ├── lib/
 │   ├── hl.mjs                    # + l2Book, bougies OHLC (ATR), spotClearinghouseState optionnel
 │   ├── pm.mjs                    # + token_id conservé, carnet CLOB, résolution des marchés
