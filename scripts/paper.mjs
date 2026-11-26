@@ -19,7 +19,8 @@ import { wakeReasons, decide } from "../lib/paper/decision.mjs";
 import { executeDecisions } from "../lib/paper/execute.mjs";
 import { markToMarket } from "../lib/paper/simulator.mjs";
 import { fetchL2Book } from "../lib/hl.mjs";
-import { fetchBook } from "../lib/pm.mjs";
+import { fetchBook, fetchGammaMarket } from "../lib/pm.mjs";
+import { pmInfoFromSnapshot, resolvePmInfo, annotatePm } from "../lib/paper/pminfo.mjs";
 import { emptyShadow, addShadows, updateShadows, modelStats } from "../lib/paper/shadow.mjs";
 import { summarize } from "../lib/paper/metrics.mjs";
 import { borderCandidates, borderNeeds, markSeen } from "../lib/paper/border.mjs";
@@ -88,6 +89,14 @@ const dossier = { at: new Date(now).toISOString(), wakeLLM: sel.wakeLLM || borde
   candidates: [...sel.candidates, ...border.candidates], rejected: [...sel.rejected, ...border.rejected, ...rejected].slice(0, 80) };
 problems.push(...t.problems);
 
+// intitulés lisibles des marchés Polymarket (titre, échéance, lien) : candidats, positions ouvertes, et rattrapage des
+// lignes récentes de l'historique et des votes (la page relit pm_markets.json pour celles écrites sans intitulé)
+const pastTrades = await store.readJsonl(FILES.trades), pastVotes = (await store.readJsonl(FILES.votes)).slice(-1000);
+const pmWanted = [...t.portfolio.positions, ...dossier.candidates, ...dossier.rejected, ...pastTrades.slice(-500), ...pastVotes.filter((v) => v.type === "decision")];
+const pmi = await resolvePmInfo(pmWanted, await store.readJson(FILES.pmMarkets), { known: pmInfoFromSnapshot(snap, history), fetchGamma: noNet ? null : fetchGammaMarket, now });
+problems.push(...pmi.errors);
+dossier.candidates = dossier.candidates.map((c) => annotatePm(c, pmi.cache));
+
 // IA (SPEC §4) : réveillée seulement sur événement ; l'exécution passe par le moteur de risque puis le simulateur
 let p = t.portfolio, point = t.point;
 const trades = [...t.trades], votesLog = [];
@@ -108,11 +117,14 @@ if (!ai.mode) {
     if (ex.trades.length) { const m = markToMarket(p, { markets: extra.markets, pmBooks: extra.pmBooks }, now); p = m.portfolio; point = { ...m.point, mode: p.mode }; }
   }
 }
+p = { ...p, positions: p.positions.map((q) => annotatePm(q, pmi.cache)) };   // y compris les positions ouvertes avant cette mise à jour
+trades.splice(0, trades.length, ...trades.map((x) => annotatePm(x, pmi.cache)));
+votesLog.splice(0, votesLog.length, ...votesLog.map((x) => annotatePm(x, pmi.cache)));
 const next = { ...p, lastTick: utcNow(), ticks: (portfolio.ticks || 0) + 1 };
 point = { ...point, bench: { BTC: extra.markets.BTC?.mark ?? null, GOLD: extra.markets["xyz:GOLD"]?.mark ?? null } };   // références passives (SPEC §7)
 
 // métriques sur tout l'historique (SPEC §7)
-const metrics = summarize({ points: [...(await store.readJsonl(FILES.equity)), point], trades: [...(await store.readJsonl(FILES.trades)), ...trades],
+const metrics = summarize({ points: [...(await store.readJsonl(FILES.equity)), point], trades: [...pastTrades, ...trades],
   shadow: modelStats(shadow, extra.markets), startCapital: next.startCapital });
 
 const summary = {
@@ -125,7 +137,7 @@ const summary = {
   ai,
   metrics: { sharpe: metrics.performance.sharpe, maxDrawdown: metrics.performance.maxDrawdown, closedTrades: metrics.trades.closed, shadowOpen: shadow.open.length, shadowClosed: sh.closed.length },
   whales: { tracked: Object.keys(scores.whales).length, newOutcomes: sc.applied.length, skipped: sc.skipped.length, warmupEndsAt: scores.warmupEndsAt },
-  enrich: noNet ? "désactivé" : { markets: Object.keys(extra.markets).length, hlBooks: Object.keys(extra.hlBooks).length, pmBooks: Object.keys(extra.pmBooks).length, resolutions: Object.keys(extra.resolutions).length },
+  enrich: noNet ? "désactivé" : { markets: Object.keys(extra.markets).length, hlBooks: Object.keys(extra.hlBooks).length, pmBooks: Object.keys(extra.pmBooks).length, resolutions: Object.keys(extra.resolutions).length, pmTitles: Object.keys(pmi.cache).length, gammaCalls: pmi.calls },
   problems,
 };
 console.log(JSON.stringify(summary, null, 1));
@@ -139,5 +151,6 @@ if (!dry) {
   await store.writeJson(FILES.candidates, dossier);
   await store.writeJson(FILES.shadow, shadow);
   await store.writeJson(FILES.metrics, metrics);
+  await store.writeJson(FILES.pmMarkets, pmi.cache);
   await store.savePortfolio(next);
 }

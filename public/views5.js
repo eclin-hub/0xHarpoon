@@ -11,7 +11,39 @@ App.views.paper = (() => {
   const f2 = (x, d = 2) => (x == null || !Number.isFinite(x) ? "—" : x.toFixed(d));
   const pctOr = (x, d = 1) => (x == null || !Number.isFinite(x) ? "—" : pct(x, d));
   const when = (iso) => (iso ? new Date(iso).toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "—");
-  const market = (x) => x.coin ? coinName(x.coin) : x.title || x.token || x.id;
+  // Marchés Polymarket : intitulé lisible (lien vers Polymarket, échéance), le conditionId 0x… seulement en info-bulle
+  // et en sous-texte discret. Les lignes écrites avant l'enregistrement des intitulés passent par pm_markets.json.
+  const cidOf = (x) => String((typeof x === "string" ? x : x && (x.cid || x.pm?.cid || x.candidateId || x.candidate_id || x.id)) || "").match(/0x[0-9a-f]{64}/i)?.[0]?.toLowerCase() || null;
+  const shortCid = (c) => c.slice(0, 6) + "…" + c.slice(-4);
+  const day = (iso) => (iso ? new Date(iso).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" }) : null);
+  function pmOf(x) {
+    const cid = cidOf(x); if (!cid) return null;
+    const own = x.venue === "pm" ? x : x.pm || {}, c = D.pm?.[cid] || {}, id = String(x.candidateId || x.candidate_id || x.id || "");
+    return { cid, outcome: own.outcome ?? x.outcome ?? x.metrics?.pm_outcome ?? (id.split("|")[2] || null), title: own.title || x.metrics?.pm_title || c.title || null,
+      endDate: own.endDate || own.end || c.endDate || null, url: own.url || c.url || null };
+  }
+  function pmLabel(i, { lead = null } = {}) {
+    const t = i.title || shortCid(i.cid), name = i.url ? h("a", { href: i.url, target: "_blank", rel: "noopener noreferrer", title: i.cid, style: "color:inherit" }, t) : h("span", { title: i.cid }, t);
+    return h("span", { style: "display:inline-block;min-width:240px;max-width:360px;white-space:normal" }, lead, lead ? h("span", { class: "muted" }, " · signal ") : null, i.title ? name : h("span", { class: "mono" }, name),
+      i.outcome ? h("span", { class: "chip neutral", style: "margin-left:6px" }, i.outcome) : null,
+      h("div", { class: "muted", style: "font-size:.72rem;font-weight:400" }, i.endDate ? `échéance ${day(i.endDate)} · ` : "", h("span", { class: "mono", title: i.cid }, shortCid(i.cid))));
+  }
+  // cellule « Marché » : actif Hyperliquid (et le pari Polymarket qui l'a déclenché, s'il y en a un) ou marché Polymarket
+  function market(x) {
+    const i = pmOf(x);
+    if (x.coin) return i ? pmLabel(i, { lead: h("b", {}, coinName(x.coin)) }) : h("b", {}, coinName(x.coin));
+    if (i) return h("b", {}, pmLabel(i));
+    return h("b", {}, x.title || x.token || x.id);
+  }
+  // identifiant de candidat (journal des votes) : retrouvé dans le dossier ou les positions, sinon lu dans l'identifiant
+  function idLabel(rec) {
+    const id = rec.candidate_id, c = D.cd?.candidates.find((x) => x.id === id) || D.pf?.positions.find((x) => x.id === id || x.candidateId === id);
+    if (c?.type === "pair") return h("b", { title: id }, `${coinName(c.long.coin)} / ${coinName(c.short.coin)}`);
+    if (c) return market(c);
+    if (cidOf(id)) return market({ ...rec, coin: null });
+    const [kind, coin, side] = String(id).split("|");
+    return kind === "hl" && coin ? h("span", { title: id }, h("b", {}, coinName(coin)), " ", sideChip(side)) : h("b", { class: "mono" }, id);
+  }
   const sideChip = (s) => (s ? h("span", { class: "chip " + (s === "long" ? "up" : "down") }, s === "long" ? "LONG" : "SHORT") : null);
   const table = (heads, rows) => h("div", { class: "scroll" }, h("table", {}, h("thead", {}, h("tr", {}, heads.map((t) => h("th", { scope: "col" }, t)))), h("tbody", {}, rows)));
   const jsonl = (txt) => txt.split(/\r?\n/).filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
@@ -20,8 +52,8 @@ App.views.paper = (() => {
     const b = base(); if (!b) return;
     const get = async (f, kind) => { const r = await fetch(b + f + (App.PAGES ? "?t=" + Date.now() : ""), { cache: "no-store" }); if (!r.ok) return kind === "jsonl" ? [] : null; return kind === "jsonl" ? jsonl(await r.text()) : r.json(); };
     try {
-      const [pf, mt, cd, eq, tr, vt] = await Promise.all([get("portfolio_state.json"), get("metrics.json"), get("candidates.json"), get("equity_curve.jsonl", "jsonl"), get("trades_history.jsonl", "jsonl"), get("model_votes.jsonl", "jsonl")]);
-      Object.assign(D, { pf, mt, cd, eq, tr, vt, at: Date.now(), err: pf ? null : "Aucun état trouvé : l'agent n'a pas encore tourné." });
+      const [pf, mt, cd, eq, tr, vt, pm] = await Promise.all([get("portfolio_state.json"), get("metrics.json"), get("candidates.json"), get("equity_curve.jsonl", "jsonl"), get("trades_history.jsonl", "jsonl"), get("model_votes.jsonl", "jsonl"), get("pm_markets.json")]);
+      Object.assign(D, { pf, mt, cd, eq, tr, vt, pm: pm || {}, at: Date.now(), err: pf ? null : "Aucun état trouvé : l'agent n'a pas encore tourné." });
     } catch (e) { D.err = "Lecture impossible : " + e.message; D.at = Date.now(); }
     render();
   }
@@ -61,9 +93,9 @@ App.views.paper = (() => {
     if (!ps.length) return panel("Positions ouvertes", {}, empty("Aucune position ouverte."));
     return panel("Positions ouvertes", { sub: "valorisées au dernier cycle" }, table(["Marché", "Poche", "Sens", "Entrée", "Prix", "PnL latent", "Stop", "Échéance", "Invalidation"], ps.map((q) => {
       const pnl = q.venue === "hl" ? q.upnl : q.value - q.cost;
-      return h("tr", {}, h("td", {}, h("b", {}, market(q)), q.outcome ? h("span", { class: "chip neutral", style: "margin-left:6px" }, q.outcome) : null), h("td", {}, POCKET[q.pocket] || q.pocket), h("td", {}, sideChip(q.side)),
+      return h("tr", {}, h("td", {}, market(q)), h("td", {}, POCKET[q.pocket] || q.pocket), h("td", {}, sideChip(q.side)),
         h("td", { class: "mono" }, px(q.entryPx)), h("td", { class: "mono" }, px(q.mark)), h("td", { class: "mono " + cls(pnl) }, signed(pnl)),
-        h("td", { class: "mono" }, q.stopPx ? px(q.stopPx) : "—"), h("td", {}, q.expiresAt ? when(q.expiresAt) : "—"), h("td", { class: "muted", style: "max-width:280px" }, q.invalidation || "—"));
+        h("td", { class: "mono" }, q.stopPx ? px(q.stopPx) : "—"), h("td", {}, q.expiresAt ? when(q.expiresAt) : pmOf(q)?.endDate && q.venue === "pm" ? day(pmOf(q).endDate) : "—"), h("td", { class: "muted", style: "max-width:280px" }, q.invalidation || "—"));
     })));
   }
 
@@ -71,12 +103,12 @@ App.views.paper = (() => {
     const c = D.cd;
     if (!c) return panel("Candidats", {}, empty("Pas encore de dossier."));
     const body = c.candidates.length ? table(["Candidat", "Type", "Poche", "Score", "Indicateurs"], c.candidates.map((x) => h("tr", {},
-      h("td", {}, h("b", {}, market(x.type === "pair" ? { title: `${coinName(x.long.coin)} / ${coinName(x.short.coin)}` } : x)), " ", sideChip(x.side)),
+      h("td", {}, x.type === "pair" ? h("b", {}, `${coinName(x.long.coin)} / ${coinName(x.short.coin)}`) : market(x), " ", sideChip(x.side)),
       h("td", {}, x.type), h("td", {}, POCKET[x.pocket] || x.pocket), h("td", { class: "mono" }, f2(x.score)),
       h("td", { class: "mono muted", style: "font-size:.75rem;max-width:420px" }, Object.entries(x.metrics || {}).filter(([, v]) => typeof v === "number").slice(0, 7).map(([k, v]) => `${k} ${+v.toFixed(4)}`).join(" · "))))) : empty("Aucun candidat retenu à ce cycle.");
     const rej = c.rejected.slice(0, 15);
     return panel("Candidats du dernier cycle", { sub: `${when(c.at)} · ${c.wakeLLM ? "LLM réveillés" : "LLM en veille"} (seuil de score ${c.minScore})` }, body,
-      rej.length ? h("details", { style: "margin-top:10px" }, h("summary", { class: "muted" }, `${c.rejected.length} rejet(s)`), h("ul", { class: "muted", style: "font-size:.8rem;margin:6px 0 0 18px" }, rej.map((r) => h("li", {}, h("span", { class: "mono" }, r.id), " : ", r.reason)))) : null);
+      rej.length ? h("details", { style: "margin-top:10px" }, h("summary", { class: "muted" }, `${c.rejected.length} rejet(s)`), h("ul", { class: "muted", style: "font-size:.8rem;margin:6px 0 0 18px" }, rej.map((r) => h("li", {}, cidOf(r.id) ? pmLabel(pmOf({ id: r.id })) : h("span", { class: "mono" }, r.id), " : ", r.reason)))) : null);
   }
 
   function votes() {
@@ -84,7 +116,7 @@ App.views.paper = (() => {
     if (!last) return panel("Votes des modèles", {}, empty("Aucun vote pour l'instant (les LLM ne sont réveillés que sur événement, ou faute de clé l'agent de secours décide seul)."));
     const cycle = all.filter((v) => v.at === last), dec = cycle.filter((v) => v.type === "decision"), vs = cycle.filter((v) => v.type !== "decision");
     return panel("Votes du dernier réveil", { sub: when(last) }, ...dec.map((d) => h("div", { style: "margin-bottom:14px" },
-      h("div", {}, h("b", { class: "mono" }, d.candidate_id), " → ", h("span", { class: "chip " + (d.decision === "OPEN" ? "up" : d.decision === "CLOSE" ? "down" : "neutral") }, d.decision), " ", h("span", { class: "muted" }, d.via || ""), d.arbiter ? h("span", { class: "muted" }, ` · arbitre ${d.arbiter.model} : ${d.arbiter.reason}`) : null),
+      h("div", {}, idLabel(d), " → ", h("span", { class: "chip " + (d.decision === "OPEN" ? "up" : d.decision === "CLOSE" ? "down" : "neutral") }, d.decision), " ", h("span", { class: "muted" }, d.via || ""), d.arbiter ? h("span", { class: "muted" }, ` · arbitre ${d.arbiter.model} : ${d.arbiter.reason}`) : null),
       table(["Modèle", "Vote", "Conviction", "Métrique citée", "Invalidation"], vs.filter((v) => v.candidate_id === d.candidate_id).map((v) => h("tr", {},
         h("td", { class: "mono" }, v.model), h("td", {}, h("span", { class: "chip " + (v.action === "OPEN" ? "up" : v.action === "HOLD" ? "neutral" : "down") }, v.action), v.valid ? null : h("span", { class: "muted", title: v.invalid_reason }, " écarté")),
         h("td", { class: "mono" }, v.conviction), h("td", {}, v.citation_ok ? "✓ " : "✗ ", h("span", { class: "muted" }, v.cited_risk_metric)), h("td", { class: "muted", style: "max-width:300px" }, v.invalidation_condition)))))));
