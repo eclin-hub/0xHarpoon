@@ -28,7 +28,7 @@ const data = raw.replace(/</g, "\\u003c");
 const pub = (f) => readFile(path.join(root, "public", f), "utf8");
 let html = await pub("index.html");
 const css = await pub("app.css");
-const files = ["vendor/d3.min.js", "vendor/topojson-client.min.js", "charts.js", "charts2.js", "geodata.js", "globe.js", "core.js", "drawer.js", "pmapi.js", "pmwhale.js", "views1.js", "views2.js", "views3.js", "views4.js", "views5.js", "tape.js", "main.js", "live.js", "q-model.js", "q-canvas.js", "q-tools.js", "q-hidden.js", "q-thesis.js", "q-vault.js"];
+const files = ["vendor/d3.min.js", "vendor/topojson-client.min.js", "charts.js", "charts2.js", "geodata.js", "globe.js", "core.js", "drawer.js", "pmapi.js", "pmwhale.js", "views1.js", "views2.js", "views3.js", "views4.js", "views5.js", "views6.js", "tape.js", "main.js", "live.js", "q-model.js", "q-canvas.js", "q-tools.js", "q-hidden.js", "q-thesis.js", "q-vault.js"];
 const world = (await pub("vendor/world.json")).replace(/</g, "\\u003c");
 const js = (await Promise.all(files.map(pub))).map((c) => `<script>\n${c}\n</script>`).join("\n");
 html = html.replace(/<link rel="stylesheet" href="app\.css">/, () => `<style>\n${css}\n</style>`)

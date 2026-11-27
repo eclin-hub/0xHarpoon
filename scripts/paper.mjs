@@ -3,6 +3,7 @@
 //   node scripts/paper.mjs --dry-run   -> même cycle, n'écrit rien
 //   node scripts/paper.mjs --no-net    -> n'appelle aucune API (relevé local seulement)
 //   node scripts/paper.mjs --no-llm    -> n'appelle aucun LLM (agent de secours)
+//   node scripts/paper.mjs --no-x      -> sans collecte X (flux ε / ∞)
 //   --data=<dossier>                   -> autre dossier de données que ./data
 // Étapes branchées : socle, données, simulateur (funding, résolutions, stops, échéances, valorisation),
 // freins de drawdown, notes des baleines, candidats et signaux (data/paper/candidates.json), vote des LLM et exécution,
@@ -25,9 +26,10 @@ import { exitKey } from "../lib/paper/risk.mjs";
 import { emptyShadow, addShadows, updateShadows, modelStats } from "../lib/paper/shadow.mjs";
 import { summarize } from "../lib/paper/metrics.mjs";
 import { borderCandidates, borderNeeds, markSeen } from "../lib/paper/border.mjs";
+import { runXAlpha, promptContext } from "../lib/paper/x_scraper.mjs";
 
 const args = process.argv.slice(2);
-const dry = args.includes("--dry-run"), noNet = args.includes("--no-net"), noLlm = args.includes("--no-llm");
+const dry = args.includes("--dry-run"), noNet = args.includes("--no-net"), noLlm = args.includes("--no-llm"), noX = args.includes("--no-x");
 const dataDir = args.find((a) => a.startsWith("--data="))?.slice(7) || DEFAULT_DATA_DIR;
 const PRIORS_EVERY = 24 * 3600e3;
 
@@ -98,6 +100,12 @@ const pmi = await resolvePmInfo(pmWanted, await store.readJson(FILES.pmMarkets),
 problems.push(...pmi.errors);
 dossier.candidates = dossier.candidates.map((c) => annotatePm(c, pmi.cache));
 
+// X (Twitter) : flux ε (contexte des votants, demi-vie < 4 h) et flux ∞ (Blueprints de stratégies). Jamais bloquant.
+const prevX = await store.readJson(FILES.xAlpha).catch(() => null);
+const xr = noX ? { alpha: prevX, cache: null } : await runXAlpha({ prev: prevX, cache: (await store.readJson(FILES.xCache).catch(() => null)) ?? {}, now, net: !noNet,
+  extract: noNet || noLlm ? null : undefined }).catch((e) => { problems.push(`X : ${e.message || e}`); return { alpha: prevX, cache: null }; });
+const xContext = xr.alpha ? promptContext(xr.alpha.epsilon?.tickers, now) : null;
+
 // IA (SPEC §4) : réveillée seulement sur événement ; l'exécution passe par le moteur de risque puis le simulateur
 let p = t.portfolio, point = t.point;
 const trades = [...t.trades], votesLog = [];
@@ -107,7 +115,8 @@ if (!ai.mode) {
   const router = new LLMRouter();
   if (!router.available().length) { ai.mode = "secours"; problems.push("aucune clé LLM (GROQ_API_KEY, CEREBRAS_API_KEY…) : agent de secours, aucune ouverture"); }
   else {
-    const d = await decide({ router, dossier, portfolio: p, markets: extra.markets, now });
+    const d = await decide({ router, dossier, portfolio: p, markets: extra.markets, now, xContext });
+    if (xr.alpha && d.mode !== "fallback") xr.alpha.epsilon.router = { injected: d.xInjected.length > 0, at: new Date(now).toISOString(), tickers: d.xInjected };
     const exits = {};   // dernière fermeture complète par actif ou marché (délai de ré-entrée)
     for (const x of [...pastTrades, ...t.trades]) if (x.type === "close" || x.type === "settle") exits[exitKey(x)] = x.at;
     const ex = await executeDecisions(p, d.decisions, dossier, { markets: extra.markets, deps: { fetchL2Book, fetchBook }, now, exits });
@@ -142,6 +151,7 @@ const summary = {
   candidates: { kept: sel.candidates.map((c) => `${c.id} score=${c.score}`), wakeLLM: sel.wakeLLM, rejected: dossier.rejected.length },
   ai,
   metrics: { sharpe: metrics.performance.sharpe, maxDrawdown: metrics.performance.maxDrawdown, closedTrades: metrics.trades.closed, shadowOpen: shadow.open.length, shadowClosed: sh.closed.length },
+  x: xr.alpha ? { status: xr.alpha.status, epsilon: Object.keys(xContext || {}), blueprints: xr.alpha.infinity?.blueprints?.length ?? 0, stats: xr.alpha.stats } : "désactivé",
   whales: { tracked: Object.keys(scores.whales).length, newOutcomes: sc.applied.length, skipped: sc.skipped.length, warmupEndsAt: scores.warmupEndsAt },
   enrich: noNet ? "désactivé" : { markets: Object.keys(extra.markets).length, hlBooks: Object.keys(extra.hlBooks).length, pmBooks: Object.keys(extra.pmBooks).length, resolutions: Object.keys(extra.resolutions).length, pmTitles: Object.keys(pmi.cache).length, gammaCalls: pmi.calls },
   problems,
@@ -158,5 +168,10 @@ if (!dry) {
   await store.writeJson(FILES.shadow, shadow);
   await store.writeJson(FILES.metrics, metrics);
   await store.writeJson(FILES.pmMarkets, pmi.cache);
+  if (xr.alpha && !noX) {
+    if (xr.alpha.epsilon && !xr.alpha.epsilon.router.at && prevX?.epsilon?.router?.at) xr.alpha.epsilon.router = prevX.epsilon.router;   // dernier réveil connu
+    await store.writeJson(FILES.xAlpha, xr.alpha);
+  }
+  if (xr.cache) await store.writeJson(FILES.xCache, xr.cache);
   await store.savePortfolio(next);
 }

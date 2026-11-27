@@ -63,6 +63,12 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           PAPER_LLM_PROVIDERS: ${{ vars.PAPER_LLM_PROVIDERS }}
+          # Collecte X (page X Alpha) : agent-reach n'est pas installé ici (il lit X avec les cookies d'une session),
+          # le flux reste donc neutre, sauf clé API X ou twitterapi.io. X_REACH_CMD / X_TIER1 : réglages facultatifs.
+          X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
+          TWITTERAPI_IO_KEY: ${{ secrets.TWITTERAPI_IO_KEY }}
+          X_REACH_CMD: ${{ vars.X_REACH_CMD }}
+          X_TIER1: ${{ vars.X_TIER1 }}
 
       - name: Sauvegarder l'état (branche state)
         run: |

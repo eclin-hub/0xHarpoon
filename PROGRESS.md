@@ -138,6 +138,10 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 - Garde-fous : pas de sortie par vote avant 8 h, pas de ré-entrée avant 4 h, 3 positions au plus par sens dans le panier crypto/semi corrélé, barrières Polymarket à plus de 8 % du prix écartées (SPEC §4.3).
 - Page : lieu d'exécution (Hyperliquid ou Polymarket) sur chaque position et trade ; cote du signal Polymarket (entrée → maintenant) sur les positions lead-lag.
 
+### Collecte X et page X Alpha (27/11/2026)
+- `x_scraper.mjs` : agent-reach (ou API X / twitterapi.io), filtre anti-spam, déduplication, poids crédibilité × engagement ; flux ε par ticker injecté dans le dossier des votants ; flux ∞ traduit en Blueprints JSON déclaratifs (`blueprint.mjs`). Page « X Alpha (ε / ∞) » (`views6.js`), emplacement réservé aux 3 Ligues.
+- À faire de ton côté pour un flux réel en CI : agent-reach demande les cookies d'une session X, ce qui n'est pas prévu dans le workflow ; sinon ajouter le secret `TWITTERAPI_IO_KEY` ou `X_BEARER_TOKEN`.
+
 ### Mise en service (à faire)
 
 1. Ajouter `GROQ_API_KEY` dans les secrets du dépôt.
