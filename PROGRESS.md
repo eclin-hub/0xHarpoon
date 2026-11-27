@@ -140,7 +140,7 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 
 ### Collecte X et page X Alpha (27/11/2026)
 - `x_scraper.mjs` : agent-reach (ou API X / twitterapi.io), filtre anti-spam, déduplication, poids crédibilité × engagement ; flux ε par ticker injecté dans le dossier des votants ; flux ∞ traduit en Blueprints JSON déclaratifs (`blueprint.mjs`). Page « X Alpha (ε / ∞) » (`views6.js`), emplacement réservé aux 3 Ligues.
-- À faire de ton côté pour un flux réel en CI : agent-reach demande les cookies d'une session X, ce qui n'est pas prévu dans le workflow ; sinon ajouter le secret `TWITTERAPI_IO_KEY` ou `X_BEARER_TOKEN`.
+- Flux réel en CI : twitter-cli (version figée) installé par le workflow, cookies X lus dans les secrets `X_AUTH_TOKEN` / `X_CT0`, collecte réutilisée pendant 45 min (anti-ban), option `force_x` au lancement manuel. agent-reach reste utilisable en local seulement (connexion manuelle dans son navigateur). Cookies à renouveler quand la page affiche « cookies X expirés ».
 
 ### Mise en service (à faire)
 

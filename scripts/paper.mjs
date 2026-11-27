@@ -4,6 +4,7 @@
 //   node scripts/paper.mjs --no-net    -> n'appelle aucune API (relevé local seulement)
 //   node scripts/paper.mjs --no-llm    -> n'appelle aucun LLM (agent de secours)
 //   node scripts/paper.mjs --no-x      -> sans collecte X (flux ε / ∞)
+//   node scripts/paper.mjs --x-force   -> collecte X même si la dernière a moins de 45 min (aussi : X_FORCE=true)
 //   --data=<dossier>                   -> autre dossier de données que ./data
 // Étapes branchées : socle, données, simulateur (funding, résolutions, stops, échéances, valorisation),
 // freins de drawdown, notes des baleines, candidats et signaux (data/paper/candidates.json), vote des LLM et exécution,
@@ -102,7 +103,8 @@ dossier.candidates = dossier.candidates.map((c) => annotatePm(c, pmi.cache));
 
 // X (Twitter) : flux ε (contexte des votants, demi-vie < 4 h) et flux ∞ (Blueprints de stratégies). Jamais bloquant.
 const prevX = await store.readJson(FILES.xAlpha).catch(() => null);
-const xr = noX ? { alpha: prevX, cache: null } : await runXAlpha({ prev: prevX, cache: (await store.readJson(FILES.xCache).catch(() => null)) ?? {}, now, net: !noNet,
+const xForce = args.includes("--x-force") || /^(1|true)$/i.test(process.env.X_FORCE || "");
+const xr = noX ? { alpha: prevX, cache: null } : await runXAlpha({ prev: prevX, cache: (await store.readJson(FILES.xCache).catch(() => null)) ?? {}, now, net: !noNet, force: xForce,
   extract: noNet || noLlm ? null : undefined }).catch((e) => { problems.push(`X : ${e.message || e}`); return { alpha: prevX, cache: null }; });
 const xContext = xr.alpha ? promptContext(xr.alpha.epsilon?.tickers, now) : null;
 
@@ -151,7 +153,7 @@ const summary = {
   candidates: { kept: sel.candidates.map((c) => `${c.id} score=${c.score}`), wakeLLM: sel.wakeLLM, rejected: dossier.rejected.length },
   ai,
   metrics: { sharpe: metrics.performance.sharpe, maxDrawdown: metrics.performance.maxDrawdown, closedTrades: metrics.trades.closed, shadowOpen: shadow.open.length, shadowClosed: sh.closed.length },
-  x: xr.alpha ? { status: xr.alpha.status, epsilon: Object.keys(xContext || {}), blueprints: xr.alpha.infinity?.blueprints?.length ?? 0, stats: xr.alpha.stats } : "désactivé",
+  x: xr.alpha ? { status: xr.alpha.status, notes: xr.alpha.notes, collectedAt: xr.alpha.collectedAt, epsilon: Object.keys(xContext || {}), blueprints: xr.alpha.infinity?.blueprints?.length ?? 0, stats: xr.alpha.stats } : "désactivé",
   whales: { tracked: Object.keys(scores.whales).length, newOutcomes: sc.applied.length, skipped: sc.skipped.length, warmupEndsAt: scores.warmupEndsAt },
   enrich: noNet ? "désactivé" : { markets: Object.keys(extra.markets).length, hlBooks: Object.keys(extra.hlBooks).length, pmBooks: Object.keys(extra.pmBooks).length, resolutions: Object.keys(extra.resolutions).length, pmTitles: Object.keys(pmi.cache).length, gammaCalls: pmi.calls },
   problems,

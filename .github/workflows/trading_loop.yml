@@ -5,6 +5,11 @@ name: Agent de paper trading
 # Déclenché de l'extérieur par cron-job.org (workflow_dispatch) à :10 chaque heure, après « Mise à jour des données » (:00).
 on:
   workflow_dispatch:
+    inputs:
+      force_x:
+        description: "Forcer la collecte X même si la dernière a moins de 45 min"
+        type: boolean
+        default: false
 
 permissions:
   contents: write   # pousser la branche state (GitHub Models, retiré le 30/07/2026, n'est plus utilisé)
@@ -54,6 +59,19 @@ jobs:
       - name: Tests
         run: node --test
 
+      # Collecte X : twitter-cli lit X avec les cookies d'une session (secrets X_AUTH_TOKEN et X_CT0).
+      # agent-reach ne prend pas ces cookies (sa recherche X passe par un navigateur connecté à la main) : il n'est pas
+      # installé ici. Une installation ratée ne bloque pas le cycle : le flux X reste neutre.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: .github/x-requirements.txt
+
+      - name: Installer twitter-cli (collecte X)
+        continue-on-error: true
+        run: pip install --disable-pip-version-check --quiet -r .github/x-requirements.txt && twitter --help >/dev/null && echo "twitter-cli installé."
+
       - name: Cycle horaire
         run: node scripts/paper.mjs
         env:
@@ -63,8 +81,12 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           PAPER_LLM_PROVIDERS: ${{ vars.PAPER_LLM_PROVIDERS }}
-          # Collecte X (page X Alpha) : agent-reach n'est pas installé ici (il lit X avec les cookies d'une session),
-          # le flux reste donc neutre, sauf clé API X ou twitterapi.io. X_REACH_CMD / X_TIER1 : réglages facultatifs.
+          # Collecte X (page X Alpha). Cookies de session lus par twitter-cli ; GitHub masque les secrets dans les journaux
+          # et aucune étape ne les affiche. Collecte réutilisée si la dernière réussie a moins de 45 min (anti-ban),
+          # sauf lancement manuel avec « force_x ». Cookies expirés : flux neutre, raison dans le journal, cycle poursuivi.
+          TWITTER_AUTH_TOKEN: ${{ secrets.X_AUTH_TOKEN }}
+          TWITTER_CT0: ${{ secrets.X_CT0 }}
+          X_FORCE: ${{ inputs.force_x }}
           X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
           TWITTERAPI_IO_KEY: ${{ secrets.TWITTERAPI_IO_KEY }}
           X_REACH_CMD: ${{ vars.X_REACH_CMD }}

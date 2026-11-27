@@ -33,7 +33,8 @@ test("dry-run : spam et doublon écartés, catalyseur → ε, thread ML → ∞,
   const exec = fakeExec(), seen = [];
   const extract = async (post) => { seen.push(post.id); return { blueprint: validateBlueprint(BLUEPRINT).value, model: "openai/gpt-oss-120b" }; };
   const { alpha, cache } = await runXAlpha({ env: {}, exec, extract, now: NOW });
-  assert.equal(exec.calls[0][0], "agent-reach"); assert.equal(exec.calls[0][1], "search-twitter"); assert.equal(exec.calls.length, buildQueries().length);
+  assert.deepEqual(exec.calls[0].slice(0, 3), ["agent-reach", "twitter", "search"]); assert.deepEqual(exec.calls[0].slice(-2), ["--limit", "40"]);
+  assert.equal(exec.calls.length, buildQueries().length);
   assert.equal(alpha.status, "actif (agent-reach)");
   assert.deepEqual({ spam: alpha.stats.spam, dup: alpha.stats.dup, epsilon: alpha.stats.epsilon, infinity: alpha.stats.infinity }, { spam: 1, dup: 1, epsilon: 5, infinity: 1 });
   assert.equal(cache.posts["1"], undefined); assert.equal(cache.posts["8"], undefined);    // spam et bruit hors cache
@@ -51,9 +52,45 @@ test("dry-run : spam et doublon écartés, catalyseur → ε, thread ML → ∞,
   const bp = alpha.infinity.blueprints[0];
   assert.equal(bp.status, "En attente D1"); assert.equal(bp.source.author, "macrocephalopod"); assert.equal(bp.source.url, "https://x.com/macrocephalopod/status/7");
   assert.equal(validateBlueprint(bp.blueprint).ok, true);
-  // cycle suivant : le thread n'est pas retraduit, les posts déjà vus ne sont pas recomptés
-  const again = await runXAlpha({ prev: alpha, cache, env: {}, exec: fakeExec(), extract, now: NOW + 60e3 });
+  // 10 min plus tard : collecte réutilisée (anti-ban), aucune requête X, signaux et bibliothèque conservés
+  const idle = fakeExec(), reused = await runXAlpha({ prev: alpha, cache, env: {}, exec: idle, extract, now: NOW + 10 * 60e3 });
+  assert.equal(idle.calls.length, 0); assert.match(reused.alpha.status, /^réutilisé : collecte agent-reach de 23:00 UTC/);
+  assert.equal(reused.alpha.collectedAt, alpha.collectedAt); assert.equal(reused.alpha.epsilon.tickers.HYPE.squeezeWarning, true);
+  // collecte forcée (lancement manuel) : le thread n'est pas retraduit, les posts déjà vus ne sont pas recomptés
+  const again = await runXAlpha({ prev: alpha, cache, env: {}, exec: fakeExec(), extract, now: NOW + 60e3, force: true });
   assert.deepEqual(seen, ["7"]); assert.equal(again.alpha.infinity.blueprints.length, 1); assert.equal(again.alpha.stats.known, 6);   // les 6 posts gardés ; spam, doublon et bruit sont refiltrés
+  // après 45 min : nouvelle collecte
+  const later = fakeExec();
+  await runXAlpha({ prev: alpha, cache, env: {}, exec: later, extract, now: NOW + 46 * 60e3 });
+  assert.equal(later.calls.length, buildQueries().length);
+});
+
+test("twitter-cli en priorité avec les cookies ; cookies expirés → repli explicite, sans planter", async () => {
+  const env = { TWITTER_AUTH_TOKEN: "a", TWITTER_CT0: "c" };
+  const envelope = { ok: true, schema_version: "1", data: [{ id: "77", text: "BREAKING: $SOL ETF approved, solana rallies, bullish breakout", author: { id: "1", name: "W", screenName: "WatcherGuru" },
+    metrics: { likes: 1200, retweets: 300, replies: 40, quotes: 5, views: 90000, bookmarks: 2 }, createdAt: "Fri Nov 27 22:50:00 +0000 2026", createdAtISO: "2026-11-27T22:50:00+00:00", isRetweet: false, lang: "en" }] };
+  const calls = [];
+  const ok = await collect(buildQueries(["SOL"]), { env, now: NOW, exec: async (cmd, args) => { calls.push([cmd, ...args]); return { stdout: JSON.stringify(envelope) }; } });
+  assert.deepEqual(calls[0], ["twitter", "search", calls[0][2], "-t", "Latest", "--max", "40", "--json"]);
+  assert.equal(ok.source, "twitter-cli"); assert.equal(ok.status, "actif (twitter-cli)");
+  const p = normalizePost(ok.posts[0].raw);
+  assert.deepEqual([p.id, p.author, p.likes, p.reposts, p.views, p.url, p.t], ["77", "WatcherGuru", 1200, 300, 90000, "https://x.com/WatcherGuru/status/77", Date.parse("2026-11-27T22:50:00Z")]);
+  // cookies expirés : twitter-cli répond { ok:false, error:{ code:"not_authenticated" } } et sort en code 1
+  const expired = { ok: false, schema_version: "1", error: { code: "not_authenticated", message: "Cookie expired or invalid (HTTP 401). Please re-login to x.com in your browser." } };
+  const tried = [];
+  const exec = async (cmd) => { tried.push(cmd); if (cmd === "twitter") throw Object.assign(new Error("exit 1"), { code: 1, stdout: JSON.stringify(expired) }); throw Object.assign(new Error("spawn agent-reach ENOENT"), { code: "ENOENT" }); };
+  const warn = console.warn; let logged = ""; console.warn = (m) => { logged += m; };
+  const ko = await collect(buildQueries(), { env, now: NOW, exec }).finally(() => { console.warn = warn; });
+  assert.deepEqual(tried, ["twitter", "agent-reach"]);                   // une seule tentative par CLI et par cycle
+  assert.equal(ko.posts.length, 0); assert.equal(ko.authFail, "twitter-cli");
+  assert.equal(ko.status, "neutre : cookies X expirés ou invalides, renouveler les secrets X_AUTH_TOKEN et X_CT0");
+  assert.match(logged, /\[X\] neutre : cookies X expirés .*twitter-cli : cookies X expirés ou invalides \(Cookie expired or invalid \(HTTP 401\)/);
+  // une collecte en échec n'est jamais « réutilisée » : le cycle suivant réessaie
+  const { alpha } = await runXAlpha({ env, exec, now: NOW, extract: null });
+  assert.equal(alpha.collectedAt, null); assert.equal(alpha.source, null);
+  // limite de débit signalée par twitter-cli : pause d'une heure
+  const rl = await collect(buildQueries(), { env, now: NOW, exec: async () => { throw Object.assign(new Error("exit 1"), { stdout: JSON.stringify({ ok: false, error: { code: "rate_limited", message: "Rate limited after 3 retries" } }) }); } });
+  assert.ok(rl.paused); assert.match(rl.status, /limite de débit/);
 });
 
 test("validateBlueprint : déclaratif strict (pas de code, champs et bornes vérifiés)", () => {
