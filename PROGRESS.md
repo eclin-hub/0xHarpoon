@@ -133,6 +133,11 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 8. ✅ Métriques : `lib/paper/metrics.mjs` (Sharpe, Sortino, Calmar, drawdown max, rendement annualisé, PSR, espérance, profit factor, Brier agent contre marché, références BTC et 50/50 BTC-or) et `lib/paper/shadow.mjs` (positions fantômes par modèle, mesurées en R). La conviction est conservée sur les positions et les trades. Écrit chaque cycle dans `metrics.json` et `shadow_book.json`. 80 tests.
 9. ✅ Intégration : `.github/workflows/trading_loop.yml` (horaire, groupe de concurrence `boussole`, garde-fou sur `state`, `models: read`, tests avant le cycle), même garde-fou ajouté à `update.yml`, copie de `data/paper` dans `site/paper/` (liste fermée), route locale `/api/paper/…`, page « Paper trading » (`public/views5.js`), propositions border (`lib/paper/border.mjs`, branche `border`, instructions `scripts/border_prompt.md`). 84 tests ; page vérifiée dans le navigateur en local et en mode GitHub Pages sur un jeu de démonstration.
 
+### Assainissement après 3,2 jours (27/11/2026)
+- `gemini-3.6-flash` et `gemini-3.5-flash-lite` passent en ombre (poids nul, suivis dans le PnL contrefactuel) ; votants gpt-oss-120b, qwen3.8, gemini-3.8-flash (ernie en remplaçant), arbitre gemma-4-26b.
+- Garde-fous : pas de sortie par vote avant 8 h, pas de ré-entrée avant 4 h, 3 positions au plus par sens dans le panier crypto/semi corrélé, barrières Polymarket à plus de 8 % du prix écartées (SPEC §4.3).
+- Page : lieu d'exécution (Hyperliquid ou Polymarket) sur chaque position et trade ; cote du signal Polymarket (entrée → maintenant) sur les positions lead-lag.
+
 ### Mise en service (à faire)
 
 1. Ajouter `GROQ_API_KEY` dans les secrets du dépôt.

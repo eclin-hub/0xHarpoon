@@ -77,7 +77,9 @@ Un candidat est **rejeté automatiquement par le code** s'il échoue à l'un de 
 - **Relative Value (Long/Short) :** si les baleines sont fortement Long sur un actif $A$ et neutres/Short sur un actif corrélé $B$ ($\rho > 0.6$), générer un candidat *paire neutre* (`Long A / Short B` de même valeur notionnelle).
 - **Lead-Lag (Polymarket $\leftrightarrow$ Hyperliquid) :** si une probabilité Polymarket liée à un catalyseur macro/géopolitique varie de $\ge 10\%$ en moins de 2 heures sans réaction proportionnelle de l'actif Hyperliquid associé (pétrole, or, BTC), générer un candidat prioritaire.
 - **Implémentation (`lib/paper/cross.mjs`) :**
-  - Paires : sentiment d'un actif $= (L - S)/(L + S)$ sur les notionnels pondérés des baleines qualifiées ; actif A $ge 0.6$ dans le sens du candidat, partenaire B du même facteur $le 0.2$ dans ce sens, $ho$ sur 30 rendements quotidiens. Score de la paire = score de A $	imes ho$.
+  - Paires : sentiment d'un actif $= (L - S)/(L + S)$ sur les notionnels pondérés des baleines qualifiées ; actif A $ge 0.6$ dans le sens du candidat, partenaire B du même facteur $le 0.2$ dans ce sens, $
+ho$ sur 30 rendements quotidiens. Score de la paire = score de A $	imes 
+ho$.
   - Décalage : historique de 48 h (`paper/market_history.json`) des cotes Polymarket liées à un actif et des prix mark. « Réaction proportionnelle » = mouvement de même sens d'au moins 0,25 ATR quotidien. Score fixe 3 (prioritaire). Le cycle étant horaire, la fenêtre de 2 h ne contient que 2 ou 3 relevés.
 
 ---
@@ -89,10 +91,10 @@ Remplace le débat séquentiel par une architecture parallèle pour éliminer la
 Implémenter une classe `LLMRouter` (`lib/paper/router.mjs`) avec fallback automatique et validation stricte du JSON renvoyé (schéma maison dans `lib/paper/schema.mjs`, sans dépendance, pour garder le projet installable sans `npm install` ; Zod reste possible si on accepte un `npm ci` dans les workflows). Une réponse invalide compte comme une absence de réponse. Les 3 votants doivent être **3 modèles distincts** ; le routeur les prend dans l'ordre des fournisseurs ci-dessous et passe au suivant en cas d'erreur, de limite ou de JSON invalide :
 1. ~~**GitHub Models**~~ : service retiré le 30 juillet 2026, plus utilisé
 2. **Groq** (`openai/gpt-oss-120b`, `qwen/qwen3.8-27b` : 2 votants)
-3. **Gemini**, API directe Google AI Studio (`gemini-3.8-flash`, secours `gemini-3.6-flash`, `gemini-3.5-flash-lite` : 3e votant)
-4. **Gemma 4** sur l'API Gemini, même clé, API native `generateContent` (`gemma-4-31b-it`, secours `gemma-4-26b-a4b-it` : arbitre)
+3. **Gemini**, API directe Google AI Studio (`gemini-3.8-flash` : 3e votant ; `gemini-3.6-flash` et `gemini-3.5-flash-lite` : modèles « ombre », voir §4.3)
+4. **Gemma 4** sur l'API Gemini, même clé, API native `generateContent` (`gemma-4-26b-a4b-it`, secours `gemma-4-31b-it` : arbitre)
 5. **Cerebras / SambaNova** (offres gratuites rapides, si leurs clés existent ; identifiants non vérifiés)
-6. **OpenRouter** (modèles `:free` seulement, dernier recours pour l'arbitre)
+6. **OpenRouter** (modèles `:free` seulement : `ernie-5.5-flash-preview` remplace un votant absent, `gemma-4-31b-it` un arbitre absent)
 
 ### 4.2 Processus de Décision
 1. **Vote Parallèle Indépendant (3 modèles distincts) :**
@@ -121,12 +123,18 @@ Implémenter une classe `LLMRouter` (`lib/paper/router.mjs`) avec fallback autom
 ### 4.3 Implémentation (`lib/paper/schema.mjs`, `router.mjs`, `decision.mjs`, `execute.mjs`)
 - **Un appel par modèle et par cycle :** chaque votant reçoit tous les candidats et toutes les positions ouvertes, et renvoie `{"votes":[…]}` (un vote au schéma du §4.2 par identifiant). Tout champ inconnu, manquant ou hors bornes invalide le vote ; un bulletin sans vote valide compte comme une absence de réponse.
 - **Familles :** chaque modèle a une famille (`gpt-oss`, `qwen3.8`, `gemini`, `gemma`, `ernie`…). Les 3 votants sont de familles distinctes ; l'arbitre est d'une 4ᵉ famille. Groq fournit 2 familles (`openai/gpt-oss-120b` et `gpt-oss-20b` → `gpt-oss`, `qwen/qwen3.8-27b` → `qwen3.8`) et Gemini la 3ᵉ (`gemini-3.8-flash`, `gemini-3.6-flash`, `gemini-3.5-flash-lite` → `gemini` ; `gemini-2.5-flash` et `gemini-2.5-pro` sont dépréciés et redirigés à partir du 01/12/2026). L'arbitre est Gemma 4 servi par Google avec la même clé (`gemma-4-31b-it`, puis `gemma-4-26b-a4b-it` → `gemma`), appelé par l'API native `generateContent` (clé dans l'en-tête `x-goog-api-key`, partie « thought » ignorée), car l'endpoint compatible OpenAI n'est pas documenté pour Gemma ; OpenRouter (`gemma-4-31b-it:free`, `ernie-5.5-flash-preview:free`) n'est plus qu'un dernier recours. Cycle du 24/11/2026 : `nemotron-3-ultra` (60 s) et `nemotron-3.5-lightning` (réponse vide) retirés. GitHub Models, retiré le 30 juillet 2026, n'est plus utilisé.
+- **Rôles et modèles « ombre » (27/11/2026, audit des 3,2 premiers jours) :** chaque modèle a un rôle, votant (`role: "voter"`) ou arbitre (`role: "arbiter"`). Votants : `openai/gpt-oss-120b`, `qwen/qwen3.8-27b`, `gemini-3.8-flash`, avec `ernie-5.5-flash-preview` en remplaçant ; arbitre : `gemma-4-26b-a4b-it`. `gemini-3.6-flash` (−0,51 R, 0 % de réussite) et `gemini-3.5-flash-lite` (−1,00 R) sont `shadowOnly` : interrogés en parallèle des votants, leurs votes ont un poids nul (`weight: 0`) dans le dépouillement et l'exécution, mais restent journalisés et suivis dans le PnL contrefactuel. Le quorum (3 votants, 2 votes valides) est inchangé.
 - **Erreurs :** en cas de HTTP ≥ 400 ou de réponse non JSON, le message du routeur reprend les 200 premiers caractères du corps (modèle retiré ou renommé, quota, clé…).
 - **Clés (secrets du dépôt) :** `GROQ_API_KEY` (2 votants à lui seul : aucune ouverture sans un second fournisseur), et en option `CEREBRAS_API_KEY`, `SAMBANOVA_API_KEY`, `OPENROUTER_API_KEY`, `GEMINI_API_KEY`. La liste des modèles se remplace par la variable `PAPER_LLM_PROVIDERS` (JSON) sans toucher au code.
 - **Citation :** `cited_risk_metric` est vérifiée par le code : nom d'une métrique du bloc `metrics` du candidat **et** sa valeur (tolérance 2 %, ou exprimée en pourcentage). Seuls les `REJECT` sont écartés si la citation échoue ; `HOLD` sur un candidat vaut « ne pas ouvrir ».
 - **Positions ouvertes :** fermeture à la majorité stricte des votes valides `CLOSE` (un seul vote suffit si un seul modèle a répondu).
 - **Secours (aucun vote valide, ou aucune clé) :** ni ouverture ni fermeture discrétionnaire ; stops, échéances et freins de drawdown restent appliqués à chaque cycle.
 - **Exécution :** fermetures d'abord, puis ouvertures une par une (chaque ouverture modifie les plafonds de la suivante). La conviction retenue (moyenne en cas d'unanimité, celle de l'arbitre sinon) est passée au moteur de risque. Une paire dont la seconde jambe échoue est refermée aussitôt.
+- **Garde-fous d'exécution (`config.guards`, `risk.mjs`, appliqués par `execute.mjs`) :**
+  1. *Sortie par vote :* aucune fermeture par vote avant **8 h** de détention, sauf invalidation majeure (≥ 85 % des votes valides disent `CLOSE`, conviction moyenne ≥ 85). Stops, échéances et freins de drawdown (10 / 20 / 25 %) passent par le simulateur et ne sont jamais bloqués.
+  2. *Ré-entrée :* pas de réouverture d'un actif Hyperliquid (quel que soit le sens) ou d'un marché Polymarket fermé il y a moins de **4 h**, y compris dans le même cycle.
+  3. *Panier corrélé :* au plus **3** positions ouvertes dans le même sens parmi `BTC`, `ETH`, `SOL`, `HYPE`, `ZEC`, `NVDA`, `SOXL`. Les positions existantes au-delà ne sont pas fermées, seules les nouvelles sont refusées.
+  4. *Barrière Polymarket :* un signal lead-lag dont l'intitulé est une barrière (`hit`, `touch`, `reach`, `above`, `below`) est écarté si le seuil est à plus de **8 %** du prix actuel (dès la détection, puis à nouveau à l'exécution).
 - **Réveil :** candidat au-dessus du seuil, position à moins de 25 % de la distance entrée – stop, ou revue quotidienne (première exécution après 14 h UTC).
 
 ---

@@ -20,7 +20,8 @@ import { executeDecisions } from "../lib/paper/execute.mjs";
 import { markToMarket } from "../lib/paper/simulator.mjs";
 import { fetchL2Book } from "../lib/hl.mjs";
 import { fetchBook, fetchGammaMarket } from "../lib/pm.mjs";
-import { pmInfoFromSnapshot, resolvePmInfo, annotatePm } from "../lib/paper/pminfo.mjs";
+import { pmInfoFromSnapshot, resolvePmInfo, annotatePm, withSignalOdds } from "../lib/paper/pminfo.mjs";
+import { exitKey } from "../lib/paper/risk.mjs";
 import { emptyShadow, addShadows, updateShadows, modelStats } from "../lib/paper/shadow.mjs";
 import { summarize } from "../lib/paper/metrics.mjs";
 import { borderCandidates, borderNeeds, markSeen } from "../lib/paper/border.mjs";
@@ -107,7 +108,9 @@ if (!ai.mode) {
   if (!router.available().length) { ai.mode = "secours"; problems.push("aucune clé LLM (GROQ_API_KEY, CEREBRAS_API_KEY…) : agent de secours, aucune ouverture"); }
   else {
     const d = await decide({ router, dossier, portfolio: p, markets: extra.markets, now });
-    const ex = await executeDecisions(p, d.decisions, dossier, { markets: extra.markets, deps: { fetchL2Book, fetchBook }, now });
+    const exits = {};   // dernière fermeture complète par actif ou marché (délai de ré-entrée)
+    for (const x of [...pastTrades, ...t.trades]) if (x.type === "close" || x.type === "settle") exits[exitKey(x)] = x.at;
+    const ex = await executeDecisions(p, d.decisions, dossier, { markets: extra.markets, deps: { fetchL2Book, fetchBook }, now, exits });
     p = ex.portfolio; trades.push(...ex.trades); votesLog.push(...d.votes, ...d.records);
     shadow = addShadows(shadow, d.votes, dossier, now).book;
     if (d.mode !== "fallback") p = { ...p, borderSeen: markSeen(borderSeen, border.candidates.map((c) => c.proposalId)) };   // une proposition n'est votée qu'une fois
@@ -117,8 +120,11 @@ if (!ai.mode) {
     if (ex.trades.length) { const m = markToMarket(p, { markets: extra.markets, pmBooks: extra.pmBooks }, now); p = m.portfolio; point = { ...m.point, mode: p.mode }; }
   }
 }
-p = { ...p, positions: p.positions.map((q) => annotatePm(q, pmi.cache)) };   // y compris les positions ouvertes avant cette mise à jour
-trades.splice(0, trades.length, ...trades.map((x) => annotatePm(x, pmi.cache)));
+// y compris les positions ouvertes avant cette mise à jour ; cote du signal à l'entrée (candidat du cycle, sinon historique) et maintenant
+const entryOdds = (x) => dossier.candidates.find((c) => c.id === x.candidateId)?.metrics?.pm_price ?? null;
+const odds = (x) => withSignalOdds(annotatePm(x, pmi.cache), { history, pmPrices, entry: x.openedAt === new Date(now).toISOString() || x.at === new Date(now).toISOString() ? entryOdds(x) : null });
+p = { ...p, positions: p.positions.map(odds) };
+trades.splice(0, trades.length, ...trades.map(odds));
 votesLog.splice(0, votesLog.length, ...votesLog.map((x) => annotatePm(x, pmi.cache)));
 const next = { ...p, lastTick: utcNow(), ticks: (portfolio.ticks || 0) + 1 };
 point = { ...point, bench: { BTC: extra.markets.BTC?.mark ?? null, GOLD: extra.markets["xyz:GOLD"]?.mark ?? null } };   // références passives (SPEC §7)

@@ -20,14 +20,22 @@ App.views.paper = (() => {
     const cid = cidOf(x); if (!cid) return null;
     const own = x.venue === "pm" ? x : x.pm || {}, c = D.pm?.[cid] || {}, id = String(x.candidateId || x.candidate_id || x.id || "");
     return { cid, outcome: own.outcome ?? x.outcome ?? x.metrics?.pm_outcome ?? (id.split("|")[2] || null), title: own.title || x.metrics?.pm_title || c.title || null,
-      endDate: own.endDate || own.end || c.endDate || null, url: own.url || c.url || null };
+      endDate: own.endDate || own.end || c.endDate || null, url: own.url || c.url || null,
+      entryOdds: x.pm?.entryOdds ?? x.metrics?.pm_price ?? null, odds: x.pm?.odds ?? null };
   }
   function pmLabel(i, { lead = null } = {}) {
     const t = i.title || shortCid(i.cid), name = i.url ? h("a", { href: i.url, target: "_blank", rel: "noopener noreferrer", title: i.cid, style: "color:inherit" }, t) : h("span", { title: i.cid }, t);
     return h("span", { style: "display:inline-block;min-width:240px;max-width:360px;white-space:normal" }, lead, lead ? h("span", { class: "muted" }, " · signal ") : null, i.title ? name : h("span", { class: "mono" }, name),
       i.outcome ? h("span", { class: "chip neutral", style: "margin-left:6px" }, i.outcome) : null,
+      lead && (i.entryOdds != null || i.odds != null) ? h("div", { style: "font-size:.75rem;font-weight:400", title: "Cote du pari Polymarket (probabilité implicite) : simple signal, aucune part Polymarket n'est achetée" },
+        h("span", { class: "muted" }, "cote du signal "), h("span", { class: "mono" }, odd(i.entryOdds)), i.odds != null && i.entryOdds != null ? [h("span", { class: "muted" }, " → "), h("span", { class: "mono " + cls(i.odds - i.entryOdds) }, odd(i.odds))] : null,
+        h("span", { class: "muted" }, i.entryOdds != null && i.odds != null ? " (entrée → maintenant)" : i.entryOdds != null ? " à l'entrée" : " maintenant")) : null,
       h("div", { class: "muted", style: "font-size:.72rem;font-weight:400" }, i.endDate ? `échéance ${day(i.endDate)} · ` : "", h("span", { class: "mono", title: i.cid }, shortCid(i.cid))));
   }
+  const odd = (x) => (x == null ? "—" : x.toFixed(2).replace(".", ",") + " $");
+  // lieu d'exécution : où l'ordre est réellement passé (un signal lead-lag s'exécute sur Hyperliquid)
+  const venueChip = (x) => (x.venue === "pm" ? h("span", { class: "chip neutral", title: "Parts Polymarket achetées entre 0 et 1 $ : la colonne Entrée est le prix payé par part" }, "Polymarket")
+    : x.venue === "hl" || x.coin ? h("span", { class: "chip cyan", title: "Contrat perpétuel Hyperliquid : prix de l'actif réel" }, "Hyperliquid") : null);
   // cellule « Marché » : actif Hyperliquid (et le pari Polymarket qui l'a déclenché, s'il y en a un) ou marché Polymarket
   function market(x) {
     const i = pmOf(x);
@@ -91,9 +99,9 @@ App.views.paper = (() => {
   function positions() {
     const ps = D.pf.positions;
     if (!ps.length) return panel("Positions ouvertes", {}, empty("Aucune position ouverte."));
-    return panel("Positions ouvertes", { sub: "valorisées au dernier cycle" }, table(["Marché", "Poche", "Sens", "Entrée", "Prix", "PnL latent", "Stop", "Échéance", "Invalidation"], ps.map((q) => {
+    return panel("Positions ouvertes", { sub: "valorisées au dernier cycle" }, table(["Marché", "Lieu", "Poche", "Sens", "Entrée", "Prix", "PnL latent", "Stop", "Échéance", "Invalidation"], ps.map((q) => {
       const pnl = q.venue === "hl" ? q.upnl : q.value - q.cost;
-      return h("tr", {}, h("td", {}, market(q)), h("td", {}, POCKET[q.pocket] || q.pocket), h("td", {}, sideChip(q.side)),
+      return h("tr", {}, h("td", {}, market(q)), h("td", {}, venueChip(q)), h("td", {}, POCKET[q.pocket] || q.pocket), h("td", {}, sideChip(q.side)),
         h("td", { class: "mono" }, px(q.entryPx)), h("td", { class: "mono" }, px(q.mark)), h("td", { class: "mono " + cls(pnl) }, signed(pnl)),
         h("td", { class: "mono" }, q.stopPx ? px(q.stopPx) : "—"), h("td", {}, q.expiresAt ? when(q.expiresAt) : pmOf(q)?.endDate && q.venue === "pm" ? day(pmOf(q).endDate) : "—"), h("td", { class: "muted", style: "max-width:280px" }, q.invalidation || "—"));
     })));
@@ -118,7 +126,8 @@ App.views.paper = (() => {
     return panel("Votes du dernier réveil", { sub: when(last) }, ...dec.map((d) => h("div", { style: "margin-bottom:14px" },
       h("div", {}, idLabel(d), " → ", h("span", { class: "chip " + (d.decision === "OPEN" ? "up" : d.decision === "CLOSE" ? "down" : "neutral") }, d.decision), " ", h("span", { class: "muted" }, d.via || ""), d.arbiter ? h("span", { class: "muted" }, ` · arbitre ${d.arbiter.model} : ${d.arbiter.reason}`) : null),
       table(["Modèle", "Vote", "Conviction", "Métrique citée", "Invalidation"], vs.filter((v) => v.candidate_id === d.candidate_id).map((v) => h("tr", {},
-        h("td", { class: "mono" }, v.model), h("td", {}, h("span", { class: "chip " + (v.action === "OPEN" ? "up" : v.action === "HOLD" ? "neutral" : "down") }, v.action), v.valid ? null : h("span", { class: "muted", title: v.invalid_reason }, " écarté")),
+        h("td", { class: "mono" }, v.model, v.weight === 0 ? h("span", { class: "muted", title: "Modèle « ombre » : poids nul dans la décision, suivi seulement dans le PnL contrefactuel" }, " · ombre") : null),
+        h("td", {}, h("span", { class: "chip " + (v.action === "OPEN" ? "up" : v.action === "HOLD" ? "neutral" : "down") }, v.action), v.valid ? null : h("span", { class: "muted", title: v.invalid_reason }, " écarté")),
         h("td", { class: "mono" }, v.conviction), h("td", {}, v.citation_ok ? "✓ " : "✗ ", h("span", { class: "muted" }, v.cited_risk_metric)), h("td", { class: "muted", style: "max-width:300px" }, v.invalidation_condition)))))));
   }
 
@@ -136,8 +145,8 @@ App.views.paper = (() => {
     const ts = (D.tr || []).filter((t) => t.type !== "mode").slice(-50).reverse(), modes = (D.tr || []).filter((t) => t.type === "mode").slice(-5).reverse();
     return panel("Historique", { sub: "50 derniers mouvements" },
       modes.length ? h("div", { class: "chips", style: "margin-bottom:10px" }, modes.map((m) => h("span", { class: "chip " + (m.to === "normal" ? "up" : "down") }, `${when(m.at)} : ${MODE[m.from]?.[0] || m.from} → ${MODE[m.to]?.[0] || m.to}`))) : null,
-      ts.length ? table(["Date", "Type", "Marché", "Sens", "Prix", "Montant", "Résultat", "Raison"], ts.map((t) => h("tr", {}, h("td", {}, when(t.at)), h("td", {}, t.type),
-        h("td", {}, market(t)), h("td", {}, sideChip(t.side)), h("td", { class: "mono" }, t.px != null ? px(t.px) : "—"), h("td", { class: "mono" }, t.usd != null ? usd(t.usd, 1) : "—"),
+      ts.length ? table(["Date", "Type", "Marché", "Lieu", "Sens", "Prix", "Montant", "Résultat", "Raison"], ts.map((t) => h("tr", {}, h("td", {}, when(t.at)), h("td", {}, t.type),
+        h("td", {}, market(t)), h("td", {}, venueChip(t)), h("td", {}, sideChip(t.side)), h("td", { class: "mono" }, t.px != null ? px(t.px) : "—"), h("td", { class: "mono" }, t.usd != null ? usd(t.usd, 1) : "—"),
         h("td", { class: "mono " + cls(t.net ?? t.pnl ?? 0) }, t.net != null ? signed(t.net) : t.pnl != null ? signed(t.pnl) : "—"), h("td", { class: "muted" }, t.reason || t.decision || ""))))
         : empty("Aucun mouvement pour l'instant."));
   }
