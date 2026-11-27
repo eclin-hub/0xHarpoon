@@ -32,7 +32,7 @@ const fakeExec = () => { let n = 0; const calls = []; const f = async (cmd, args
 test("dry-run : spam et doublon écartés, catalyseur → ε, thread ML → ∞, Blueprint valide", async () => {
   const exec = fakeExec(), seen = [];
   const extract = async (post) => { seen.push(post.id); return { blueprint: validateBlueprint(BLUEPRINT).value, model: "openai/gpt-oss-120b" }; };
-  const { alpha, cache } = await runXAlpha({ env: {}, exec, extract, now: NOW });
+  const { alpha, cache } = await runXAlpha({ free: false, env: {}, exec, extract, now: NOW });
   assert.deepEqual(exec.calls[0].slice(0, 3), ["agent-reach", "twitter", "search"]); assert.deepEqual(exec.calls[0].slice(-2), ["--limit", "40"]);
   assert.equal(exec.calls.length, buildQueries().length);
   assert.equal(alpha.status, "actif (agent-reach)");
@@ -53,15 +53,15 @@ test("dry-run : spam et doublon écartés, catalyseur → ε, thread ML → ∞,
   assert.equal(bp.status, "En attente D1"); assert.equal(bp.source.author, "macrocephalopod"); assert.equal(bp.source.url, "https://x.com/macrocephalopod/status/7");
   assert.equal(validateBlueprint(bp.blueprint).ok, true);
   // 10 min plus tard : collecte réutilisée (anti-ban), aucune requête X, signaux et bibliothèque conservés
-  const idle = fakeExec(), reused = await runXAlpha({ prev: alpha, cache, env: {}, exec: idle, extract, now: NOW + 10 * 60e3 });
+  const idle = fakeExec(), reused = await runXAlpha({ free: false, prev: alpha, cache, env: {}, exec: idle, extract, now: NOW + 10 * 60e3 });
   assert.equal(idle.calls.length, 0); assert.match(reused.alpha.status, /^réutilisé : collecte agent-reach de 23:00 UTC/);
   assert.equal(reused.alpha.collectedAt, alpha.collectedAt); assert.equal(reused.alpha.epsilon.tickers.HYPE.squeezeWarning, true);
   // collecte forcée (lancement manuel) : le thread n'est pas retraduit, les posts déjà vus ne sont pas recomptés
-  const again = await runXAlpha({ prev: alpha, cache, env: {}, exec: fakeExec(), extract, now: NOW + 60e3, force: true });
+  const again = await runXAlpha({ free: false, prev: alpha, cache, env: {}, exec: fakeExec(), extract, now: NOW + 60e3, force: true });
   assert.deepEqual(seen, ["7"]); assert.equal(again.alpha.infinity.blueprints.length, 1); assert.equal(again.alpha.stats.known, 6);   // les 6 posts gardés ; spam, doublon et bruit sont refiltrés
   // après 45 min : nouvelle collecte
   const later = fakeExec();
-  await runXAlpha({ prev: alpha, cache, env: {}, exec: later, extract, now: NOW + 46 * 60e3 });
+  await runXAlpha({ free: false, prev: alpha, cache, env: {}, exec: later, extract, now: NOW + 46 * 60e3 });
   assert.equal(later.calls.length, buildQueries().length);
 });
 
@@ -86,7 +86,7 @@ test("twitter-cli en priorité avec les cookies ; cookies expirés → repli exp
   assert.equal(ko.status, "neutre : cookies X expirés ou invalides, renouveler les secrets X_AUTH_TOKEN et X_CT0");
   assert.match(logged, /\[X\] neutre : cookies X expirés .*twitter-cli : cookies X expirés ou invalides \(Cookie expired or invalid \(HTTP 401\)/);
   // une collecte en échec n'est jamais « réutilisée » : le cycle suivant réessaie
-  const { alpha } = await runXAlpha({ env, exec, now: NOW, extract: null });
+  const { alpha } = await runXAlpha({ free: false, env, exec, now: NOW, extract: null });
   assert.equal(alpha.collectedAt, null); assert.equal(alpha.source, null);
   // limite de débit signalée par twitter-cli : pause d'une heure
   const rl = await collect(buildQueries(), { env, now: NOW, exec: async () => { throw Object.assign(new Error("exit 1"), { stdout: JSON.stringify({ ok: false, error: { code: "rate_limited", message: "Rate limited after 3 retries" } }) }); } });
@@ -104,7 +104,7 @@ test("validateBlueprint : déclaratif strict (pas de code, champs et bornes vér
 });
 
 test("flux ε injecté dans le dossier des votants avec la consigne squeeze / délai de 8 h", async () => {
-  const { alpha } = await runXAlpha({ env: {}, exec: fakeExec(), extract: null, now: NOW });
+  const { alpha } = await runXAlpha({ free: false, env: {}, exec: fakeExec(), extract: null, now: NOW });
   const ctx = promptContext(alpha.epsilon.tickers, NOW);
   assert.equal(ctx.HYPE.squeezeWarning, true); assert.ok(ctx.HYPE.expires_in_min > 0 && ctx.HYPE.expires_in_min <= 240);
   const sent = [];
@@ -134,7 +134,7 @@ test("repli neutre et silencieux : CLI absente, limite de débit, clé API en se
     fetch: async (url, init) => { assert.equal(init.headers["X-API-Key"], "k"); return new Response(JSON.stringify({ tweets: [CATALYST] }), { status: 200 }); } });
   assert.equal(api.source, "twitterapi.io"); assert.equal(api.posts.length, 2);
   // cycle complet sans réseau : aucune erreur, flux vide
-  const off = await runXAlpha({ env: {}, net: false, now: NOW });
+  const off = await runXAlpha({ free: false, env: {}, net: false, now: NOW });
   assert.equal(off.alpha.status, "désactivé (--no-net)"); assert.deepEqual(off.alpha.epsilon.tickers, {});
 });
 
@@ -148,4 +148,47 @@ test("lecture des formats de sortie et filtres", () => {
   assert.ok(PUBLIC_PAPER_FILES.includes(FILES.xAlpha)); assert.ok(!PUBLIC_PAPER_FILES.includes(FILES.xCache));
   assert.equal(ingest([{ raw: NOISE }], {}, { now: NOW }).stats.ignored, 1);
   assert.deepEqual(epsilonSummary({ posts: {} }, NOW), {});
+});
+
+test("twitter-cli en HTTP 404 (queryId / en-tête de transaction) → secours RSS (ε) et arXiv (∞), cycle intact", async () => {
+  const env = { TWITTER_AUTH_TOKEN: "a", TWITTER_CT0: "c", X_REACH_DISABLE: "1" };
+  const err404 = { ok: false, schema_version: "1", error: { code: "api_error", message: "Twitter API error (HTTP 404): Twitter API error 404: " } };
+  const exec = async () => { throw Object.assign(new Error("exit 1"), { code: 1, stdout: JSON.stringify(err404) }); };
+  const d = (m) => new Date(NOW - m * 60e3).toUTCString();
+  const RSS = `<?xml version="1.0"?><rss><channel>
+    <item><title><![CDATA[Bitcoin ETF inflows surge as BTC breaks out]]></title><link>https://www.coindesk.com/a</link><pubDate>${d(20)}</pubDate><description>&lt;p&gt;Record inflows.&lt;/p&gt;</description></item>
+    <item><title>Bitcoin whales accumulate, rally continues</title><link>https://www.coindesk.com/b</link><pubDate>${d(30)}</pubDate></item>
+    <item><title>Bitcoin miners buy more rigs, bullish</title><link>https://www.coindesk.com/c</link><pubDate>${d(40)}</pubDate></item>
+    <item><title>Gaming studio raises seed round</title><link>https://www.coindesk.com/d</link><pubDate>${d(10)}</pubDate></item>
+  </channel></rss>`;
+  const ATOM = `<?xml version="1.0"?><feed xmlns="http://www.w3.org/2005/Atom">
+    <entry><id>http://arxiv.org/abs/2611.01234v1</id><published>${new Date(NOW - 5 * H).toISOString()}</published>
+      <title>Volatility Regime Switching and Momentum in Cryptocurrency Perpetual Futures</title>
+      <summary>We propose a GARCH-based volatility regime filter combined with a 20-day momentum signal and funding rates. A walk-forward backtest on bitcoin perpetuals gives an out-of-sample Sharpe of 1.4 with a 2 ATR stop.</summary>
+      <author><name>A. Martin</name></author><author><name>B. Chen</name></author></entry>
+    <entry><id>http://arxiv.org/abs/2611.09999v1</id><published>${new Date(NOW - 6 * H).toISOString()}</published>
+      <title>Optimal Annuitization under Longevity Risk</title><summary>Pension decumulation with stochastic mortality.</summary><author><name>C. D</name></author></entry>
+  </feed>`;
+  const urls = [];
+  const fetch = async (url) => { urls.push(url); return new Response(url.includes("arxiv.org") ? ATOM : url.includes("coindesk") ? RSS : "<rss><channel></channel></rss>", { status: 200 }); };
+  const bp = validateBlueprint({ ...BLUEPRINT, name: "Momentum filtré par régime de volatilité", universe: ["BTC"] }).value, seen = [];
+  const warn = console.warn; console.warn = () => {};
+  const { alpha, cache } = await runXAlpha({ env, exec, fetch, now: NOW, extract: async (p) => { seen.push(p.id); return { blueprint: bp, model: "openai/gpt-oss-120b" }; } }).finally(() => { console.warn = warn; });
+  assert.equal(alpha.source, null);
+  assert.match(alpha.status, /^secours : X indisponible \(échec de la recherche X \(twitter-cli : Twitter API error \(HTTP 404\)/);
+  assert.match(alpha.status, /RSS et arXiv seuls$/);
+  assert.ok(urls.some((u) => u.startsWith("https://export.arxiv.org/api/query?search_query=cat%3Aq-fin.TR%20OR%20cat%3Aq-fin.PM%20OR%20cat%3Aq-fin.ST")));
+  assert.deepEqual(alpha.free, { rss: 4, arxiv: 1 });                       // l'article sur les rentes viagères est écarté (hors sujet)
+  // ε : les articles bitcoin de CoinDesk, pas la levée de fonds
+  const btc = alpha.epsilon.tickers.BTC;
+  assert.equal(btc.mentions24h, 3); assert.equal(btc.catalysts[0].src, "rss"); assert.equal(btc.catalysts[0].author, "CoinDesk"); assert.ok(btc.netNarrativeBias > 0);
+  assert.match(btc.catalysts.find((c) => c.url === "https://www.coindesk.com/a").text, /^Bitcoin ETF inflows surge as BTC breaks out\. Record inflows\.$/);
+  // ∞ : l'abstract arXiv devient un Blueprint, source arXiv
+  assert.deepEqual(seen, ["arxiv:2611.01234v1"]);
+  assert.ok(cache.posts["arxiv:2611.01234v1"].interest >= 75);
+  const b = alpha.infinity.blueprints[0];
+  assert.equal(b.source.src, "arxiv"); assert.equal(b.source.author, "A. Martin et al."); assert.equal(b.source.url, "https://arxiv.org/abs/2611.01234v1");
+  assert.equal(b.status, "En attente D1"); assert.equal(validateBlueprint(b.blueprint).ok, true);
+  // contexte des votants alimenté par le secours
+  assert.ok(promptContext(alpha.epsilon.tickers, NOW).BTC);
 });

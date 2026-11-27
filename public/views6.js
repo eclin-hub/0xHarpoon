@@ -8,6 +8,9 @@ App.views.xalpha = (() => {
   const base = () => (App.PAGES ? "paper/" : App.SNAP ? null : "/api/paper/");
   const STATUS = { "En attente D1": "neutral", "En test": "cyan", "Promu": "up" };
   const when = (iso) => (iso ? new Date(iso).toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "—");
+  // source d'un post : X (@compte), presse (RSS) ou article arXiv
+  const SRC = { x: "X", rss: "RSS", arxiv: "arXiv" };
+  const who = (src, author) => (src && src !== "x" ? `${author} (${SRC[src] || src})` : "@" + (author || "?"));
   const f2 = (x) => (x == null || !Number.isFinite(x) ? "—" : x.toFixed(2));
   const ttl = (iso) => {
     const ms = Date.parse(iso) - Date.now();
@@ -35,7 +38,7 @@ App.views.xalpha = (() => {
   function head() {
     const x = D.x, s = x.stats || {}, active = Object.values(x.epsilon?.tickers || {}).filter((e) => e.active && Date.parse(e.expiresAt) > Date.now());
     return h("div", { class: "kpis" },
-      kpi("Source X", x.source || "neutre", x.status),
+      kpi("Source X", x.source || (x.free?.rss || x.free?.arxiv ? "secours" : "neutre"), `${x.status}${x.free ? ` · gratuit : ${x.free.rss} articles RSS, ${x.free.arxiv} arXiv` : ""}`),
       kpi("Dernière collecte", when(x.at), `${s.raw ?? 0} posts lus · ${s.spam ?? 0} spams · ${s.dup ?? 0} doublons`),
       kpi("Flux ε actif", String(active.length), `${active.filter((e) => e.squeezeWarning).length} alerte(s) de squeeze`, active.some((e) => e.squeezeWarning) ? "down" : ""),
       kpi("Bibliothèque ∞", String(x.infinity?.blueprints?.length ?? 0), `${x.infinity?.pending ?? 0} en file · traducteur ${x.infinity?.translator || "—"}`));
@@ -57,9 +60,9 @@ App.views.xalpha = (() => {
         h("div", { class: "muted", style: "font-size:.72rem;margin:6px 0" }, live ? (used(s.ticker) ? `injecté dans le dossier des votants (${when(r.at)})` : "prêt : injecté au prochain réveil des votants") : "non transmis aux votants (expiré)"),
         h("ol", { style: "margin:4px 0 0 16px;padding:0;font-size:.78rem;display:flex;flex-direction:column;gap:4px" }, (s.catalysts || []).map((c) => h("li", {},
           c.url ? h("a", { href: c.url, target: "_blank", rel: "noopener noreferrer", style: "color:inherit" }, c.text) : c.text,
-          h("span", { class: "muted" }, ` — @${c.author}${c.tier === 1 ? " ★" : ""} · ${when(c.t)}`)))));
+          h("span", { class: "muted" }, ` — ${who(c.src, c.author)}${c.tier === 1 && (c.src || "x") === "x" ? " ★" : ""} · ${when(c.t)}`)))));
     });
-    return panel("Flux ε : radar d'alpha direct", { sub: "signaux X sur nos tickers, demi-vie < 4 h", noteText: `Vélocité : mentions pondérées de la dernière heure contre la moyenne horaire des 23 h précédentes. ★ = compte de référence. Dernier réveil des votants avec ce contexte : ${r.at ? when(r.at) : "aucun"}.` },
+    return panel("Flux ε : radar d'alpha direct", { sub: "signaux X et presse crypto / macro (RSS) sur nos tickers, demi-vie < 4 h", noteText: `Vélocité : mentions pondérées de la dernière heure contre la moyenne horaire des 23 h précédentes. ★ = compte de référence. Dernier réveil des votants avec ce contexte : ${r.at ? when(r.at) : "aucun"}.` },
       cards.length ? h("div", { style: "display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px" }, cards) : empty(D.x.source ? "Aucun signal court terme sur nos tickers pour l'instant." : "Flux neutre : aucune source X disponible à la dernière collecte."));
   }
 
@@ -75,7 +78,7 @@ App.views.xalpha = (() => {
         h("div", { style: "display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap" },
           h("div", {}, h("b", {}, x.name), " ", h("span", { class: "chip " + (STATUS[x.status] || "neutral") }, x.status), " ",
             h("span", { class: "muted", style: "font-size:.75rem" }, `intérêt ${x.interest}/100 · ${bp.side} · ${bp.universe.join(", ")} · horizon ${bp.horizon_hours} h`)),
-          h("span", { class: "muted", style: "font-size:.75rem" }, "source ", x.source?.url ? h("a", { href: x.source.url, target: "_blank", rel: "noopener noreferrer", style: "color:inherit" }, "@" + x.source.author) : "@" + (x.source?.author || "?"), ` · ${when(x.source?.t)}`)),
+          h("span", { class: "muted", style: "font-size:.75rem" }, "source ", x.source?.url ? h("a", { href: x.source.url, target: "_blank", rel: "noopener noreferrer", style: "color:inherit" }, who(x.source.src, x.source.author)) : who(x.source?.src, x.source?.author), ` · ${when(x.source?.t)}`)),
         h("p", { style: "margin:6px 0", class: "muted" }, bp.thesis),
         h("div", { class: "mono", style: "font-size:.76rem" }, `entrée si score > ${bp.entry.score_above} · `, bp.blocks.map(blockText).join(" + "),
           ` · stop ${bp.exit.stop_atr} ATR${bp.exit.take_profit_atr ? ` · objectif ${bp.exit.take_profit_atr} ATR` : ""} · ${bp.exit.max_hold_hours} h max`),
@@ -83,7 +86,7 @@ App.views.xalpha = (() => {
           h("pre", { class: "mono", style: "font-size:.72rem;white-space:pre-wrap;margin:6px 0" }, JSON.stringify(bp, null, 2)),
           h("blockquote", { class: "muted", style: "font-size:.75rem;margin:0" }, x.source?.excerpt || "")));
     });
-    return panel("Flux ∞ : bibliothèque de modèles et stratégies X", { sub: `threads quant/ML d'intérêt ≥ ${inf.interestMin ?? 75}/100, traduits en Blueprints déclaratifs (aucun code exécuté)`,
+    return panel("Flux ∞ : bibliothèque de modèles et stratégies X", { sub: `threads quant/ML X et articles arXiv (q-fin) d'intérêt ≥ ${inf.interestMin ?? 75}/100, traduits en Blueprints déclaratifs (aucun code exécuté)`,
       noteText: "Statuts : En attente D1 (pas encore testé), En test (suivi par les Ligues), Promu (utilisé par l'agent)." },
       rows.length ? h("div", {}, rows) : empty("Aucun Blueprint pour l'instant."),
       inf.errors?.length ? h("details", { style: "margin-top:8px" }, h("summary", { class: "muted" }, `${inf.errors.length} traduction(s) en échec au dernier cycle`), h("ul", { class: "muted", style: "font-size:.75rem" }, inf.errors.map((e) => h("li", {}, e)))) : null);

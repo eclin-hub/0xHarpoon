@@ -72,6 +72,17 @@ jobs:
         continue-on-error: true
         run: pip install --disable-pip-version-check --quiet -r .github/x-requirements.txt && twitter --help >/dev/null && echo "twitter-cli installé."
 
+      # x.com sert désormais un nouveau frontend aux visiteurs non connectés : twitter-cli 0.8.5 n'y trouve plus de quoi
+      # calculer l'en-tête x-client-transaction-id, et ses queryId GraphQL sont périmés (HTTP 404). scripts/x_twitter.py
+      # prépare l'en-tête depuis le frontend connecté (avec les cookies) et récupère des queryId à jour. Ce diagnostic
+      # n'affiche que l'état et les queryId, jamais les cookies ; un échec ne bloque pas le cycle (secours RSS / arXiv).
+      - name: Diagnostic de la collecte X
+        continue-on-error: true
+        run: python scripts/x_twitter.py --diagnose
+        env:
+          TWITTER_AUTH_TOKEN: ${{ secrets.X_AUTH_TOKEN }}
+          TWITTER_CT0: ${{ secrets.X_CT0 }}
+
       - name: Cycle horaire
         run: node scripts/paper.mjs
         env:
@@ -83,9 +94,11 @@ jobs:
           PAPER_LLM_PROVIDERS: ${{ vars.PAPER_LLM_PROVIDERS }}
           # Collecte X (page X Alpha). Cookies de session lus par twitter-cli ; GitHub masque les secrets dans les journaux
           # et aucune étape ne les affiche. Collecte réutilisée si la dernière réussie a moins de 45 min (anti-ban),
-          # sauf lancement manuel avec « force_x ». Cookies expirés : flux neutre, raison dans le journal, cycle poursuivi.
+          # sauf lancement manuel avec « force_x ». Cookies expirés ou X en échec : secours RSS (ε) et arXiv (∞), sans clé,
+          # raison dans le journal, cycle poursuivi.
           TWITTER_AUTH_TOKEN: ${{ secrets.X_AUTH_TOKEN }}
           TWITTER_CT0: ${{ secrets.X_CT0 }}
+          X_TWITTER_CMD: '["python","scripts/x_twitter.py","search","{q}","-t","Latest","--max","{n}","--json"]'
           X_FORCE: ${{ inputs.force_x }}
           X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
           TWITTERAPI_IO_KEY: ${{ secrets.TWITTERAPI_IO_KEY }}

@@ -141,6 +141,7 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 ### Collecte X et page X Alpha (27/11/2026)
 - `x_scraper.mjs` : agent-reach (ou API X / twitterapi.io), filtre anti-spam, déduplication, poids crédibilité × engagement ; flux ε par ticker injecté dans le dossier des votants ; flux ∞ traduit en Blueprints JSON déclaratifs (`blueprint.mjs`). Page « X Alpha (ε / ∞) » (`views6.js`), emplacement réservé aux 3 Ligues.
 - Flux réel en CI : twitter-cli (version figée) installé par le workflow, cookies X lus dans les secrets `X_AUTH_TOKEN` / `X_CT0`, collecte réutilisée pendant 45 min (anti-ban), option `force_x` au lancement manuel. agent-reach reste utilisable en local seulement (connexion manuelle dans son navigateur). Cookies à renouveler quand la page affiche « cookies X expirés ».
+- 28/11/2026 : premier cycle réel en échec (HTTP 404 puis 429). Cause : nouveau frontend x.com (en-tête de transaction impossible à calculer sans session) et queryId périmés. Correctif `scripts/x_twitter.py` (vérifié sur un faux twitter-cli ; l'appel réel se vérifie au prochain cycle, étape « Diagnostic de la collecte X »). Secours gratuit RSS (ε) et arXiv (∞) en place, vérifié en réel : 120 articles RSS, 15 abstracts arXiv.
 
 ### Mise en service (à faire)
 
