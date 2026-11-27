@@ -143,6 +143,11 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 - Flux réel en CI : twitter-cli (version figée) installé par le workflow, cookies X lus dans les secrets `X_AUTH_TOKEN` / `X_CT0`, collecte réutilisée pendant 45 min (anti-ban), option `force_x` au lancement manuel. agent-reach reste utilisable en local seulement (connexion manuelle dans son navigateur). Cookies à renouveler quand la page affiche « cookies X expirés ».
 - 28/11/2026 : premier cycle réel en échec (HTTP 404 puis 429). Cause : nouveau frontend x.com (en-tête de transaction impossible à calculer sans session) et queryId périmés. Correctif `scripts/x_twitter.py` (vérifié sur un faux twitter-cli ; l'appel réel se vérifie au prochain cycle, étape « Diagnostic de la collecte X »). Secours gratuit RSS (ε) et arXiv (∞) en place, vérifié en réel : 120 articles RSS, 15 abstracts arXiv.
 
+### Compétition à 3 divisions (28/11/2026)
+- Panel : votants gpt-oss-120b, qwen3.8, gemini-3.8-flash ; arbitre gemma-4-26b ; ombre gemini-3.5-flash-lite et ernie ; gemini-3.6-flash et gpt-oss-20b retirés.
+- Blueprints : qwen3.8 d'abord, normalisation avant validation, compilation à chaque cycle même avec une collecte réutilisée.
+- D1 labo synthétique (GJR-GARCH, sauts, régimes), D2 live sur les vrais prix horaires, D3 champions mêlés aux LLM (65 / 35). Rien n'est encore en D2 en production : il faut d'abord des Blueprints compilés (clé Groq) qui passent la D1, puis au moins 15 trades réels pour atteindre la D3.
+
 ### Mise en service (à faire)
 
 1. Ajouter `GROQ_API_KEY` dans les secrets du dépôt.

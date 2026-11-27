@@ -238,14 +238,14 @@ test("Groq + Gemini : votants gpt-oss, qwen3.8, gemini-3.8 ; arbitre Gemma 26b p
   assert.equal(g.body.generationConfig.responseMimeType, "application/json");
 });
 
-test("secours : Gemini 3.8 en échec → ernie (jamais les modèles ombre) ; Gemma 26b en 429 → Gemma 31b ; Google indisponible → OpenRouter", async () => {
+test("secours : Gemini 3.8 en échec → 2 votants (jamais les modèles ombre) ; Gemma 26b en 429 → Gemma 31b ; Google indisponible → OpenRouter", async () => {
   const f = async (url, init) => {
     if (/gemini-3\.8-flash/.test(init.body)) return new Response('{"error":{"code":503,"message":"The model is overloaded"}}', { status: 503 });
     if (url.includes("gemma-4-26b-a4b-it:generateContent")) return new Response('{"error":{"code":429,"message":"Resource exhausted"}}', { status: 429 });
     return okBallot(url); };
   const r = new LLMRouter({ env: { GROQ_API_KEY: "k", GEMINI_API_KEY: "g", OPENROUTER_API_KEY: "o" }, fetch: f });
   const v = await r.collect(3, [], pass, { role: "voter" });
-  assert.deepEqual(v.results.map((x) => x.model), ["openai/gpt-oss-120b", "qwen/qwen3.8-27b", "baidu/ernie-5.5-flash-preview:free"]);
+  assert.deepEqual(v.results.map((x) => x.model), ["openai/gpt-oss-120b", "qwen/qwen3.8-27b"]);   // ernie et 3.5-flash-lite sont en ombre
   assert.match(v.errors[0], /gemini\/gemini-3\.8-flash : HTTP 503 : .*overloaded/);
   const a = await r.collect(1, [], pass, { excludeFamilies: v.results.map((x) => x.family), role: "arbiter" });
   assert.equal(a.results[0].model, "gemma-4-31b-it"); assert.match(a.errors[0], /gemma\/gemma-4-26b-a4b-it : HTTP 429/);

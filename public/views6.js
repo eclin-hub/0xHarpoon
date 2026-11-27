@@ -29,8 +29,10 @@ App.views.xalpha = (() => {
   async function load() {
     const b = base(); if (!b) return;
     try {
-      const r = await fetch(b + "x_alpha.json" + (App.PAGES ? "?t=" + Date.now() : ""), { cache: "no-store" });
-      Object.assign(D, { x: r.ok ? await r.json() : null, err: r.ok ? null : "Aucune donnée X : l'agent n'a pas encore fait de collecte X.", at: Date.now() });
+      const get = (f) => fetch(b + f + (App.PAGES ? "?t=" + Date.now() : ""), { cache: "no-store" });
+      const [r, rl, re] = await Promise.all([get("x_alpha.json"), get("leagues.json"), get("equity_curve.jsonl")]);
+      const eq = re.ok ? (await re.text()).split(/\r?\n/).filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean) : [];
+      Object.assign(D, { x: r.ok ? await r.json() : null, lg: rl.ok ? await rl.json() : null, eq, err: r.ok ? null : "Aucune donnée X : l'agent n'a pas encore fait de collecte X.", at: Date.now() });
     } catch (e) { Object.assign(D, { err: "Lecture impossible : " + e.message, at: Date.now() }); }
     render();
   }
@@ -92,8 +94,71 @@ App.views.xalpha = (() => {
       inf.errors?.length ? h("details", { style: "margin-top:8px" }, h("summary", { class: "muted" }, `${inf.errors.length} traduction(s) en échec au dernier cycle`), h("ul", { class: "muted", style: "font-size:.75rem" }, inf.errors.map((e) => h("li", {}, e)))) : null);
   }
 
+  /* ---------- 3-League Strategy Arena (data/paper/leagues.json, league_engine.mjs) ---------- */
+  const DIV = { D1: "D1 · Labo synthétique", D2: "D2 · Ligue supérieure live", D3: "D3 · Ensemble actif" };
+  const pctv = (x, d = 1) => (x == null || !Number.isFinite(x) ? "—" : (x * 100).toFixed(d) + " %");
+  const srcOf = (e) => (e.src === "mutation" ? `mutation (${(e.parentSrc || []).map((s) => SRC[s] || s).join(" + ")})` : SRC[e.src] || e.src);
+  const gauge = (x, title) => h("div", { title, style: "width:90px;height:7px;border-radius:4px;background:var(--line,rgba(255,255,255,.08));overflow:hidden" },
+    h("div", { style: `width:${Math.round(Math.max(0, Math.min(1, x || 0)) * 100)}%;height:100%;background:${(x || 0) >= 1 ? "var(--up,#2bffb0)" : "var(--cyan,#22e6ff)"}` }));
+  const nameCell = (e) => h("td", {}, e.url ? h("a", { href: e.url, target: "_blank", rel: "noopener noreferrer", style: "color:inherit" }, e.name) : e.name,
+    h("div", { class: "muted", style: "font-size:.7rem" }, `${e.gen} · ${srcOf(e)}`));
+  const tbl = (heads, rows) => h("div", { class: "scroll" }, h("table", {}, h("thead", {}, h("tr", {}, heads.map((x) => h("th", { scope: "col" }, x)))), h("tbody", {}, rows)));
+
+  function pipeline(E) {
+    const count = (f) => E.filter(f).length, srcs = (f) => { const s = {}; for (const e of E.filter(f)) s[srcOf(e)] = (s[srcOf(e)] || 0) + 1; return Object.entries(s).map(([k, v]) => `${v} ${k}`).join(" · ") || "—"; };
+    const box = (title, big, sub, src, tone) => h("div", { style: `flex:1;min-width:190px;padding:14px;border-radius:12px;border:1px solid ${tone};background:rgba(255,255,255,.02)` },
+      h("div", { class: "muted", style: "font-size:.72rem;letter-spacing:.06em" }, title), h("div", { style: "font-size:1.6rem;font-weight:700;margin:4px 0" }, big),
+      h("div", { class: "muted", style: "font-size:.76rem" }, sub), h("div", { class: "muted", style: "font-size:.72rem;margin-top:4px" }, "source : ", src));
+    const arrow = () => h("div", { class: "muted", style: "align-self:center;font-size:1.4rem" }, "→");
+    return h("div", { style: "display:flex;gap:10px;flex-wrap:wrap;align-items:stretch" },
+      box(DIV.D1, String(count((e) => e.d1)), `${count((e) => e.division === "D1Q")} qualifié(s) en attente · ${count((e) => e.division === "OUT" && !e.d2)} éliminé(s)`, srcs((e) => e.d1), "var(--line,rgba(255,255,255,.1))"), arrow(),
+      box(DIV.D2, `${count((e) => e.division === "D2")} / 6`, `${count((e) => e.division === "OUT" && e.d2)} relégué(s) · paramètres gelés, 10 000 $ virtuels`, srcs((e) => e.division === "D2"), "var(--cyan,#22e6ff)"), arrow(),
+      box(DIV.D3, `${count((e) => e.division === "D3")} / 3`, `${pctv(D.lg.meta?.d3 ?? 0, 0)} du poids des décisions (LLM ${pctv(D.lg.meta?.llm ?? 1, 0)})`, srcs((e) => e.division === "D3"), "var(--up,#2bffb0)"));
+  }
+
+  function curves(E) {
+    const live = E.filter((e) => (e.division === "D2" || e.division === "D3") && e.d2?.book?.curve?.length > 1);
+    if (!live.length) return null;
+    const since = Math.min(...live.map((e) => e.d2.book.curve[0][0])), pal = [Ch.C.violet, Ch.C.amber, Ch.C.up, Ch.C.down, Ch.C.muted, "#ff9d5c", "#7cd4ff", "#c38bff", "#9be564"];
+    const main = (D.eq || []).filter((p) => Date.parse(p.at) >= since - 3600e3), m0 = main[0]?.equity;
+    const series = [];
+    if (m0) series.push({ name: "0xHarpoon Main", color: Ch.C.cyan, w: 2.6, pts: main.map((p) => [Date.parse(p.at), p.equity / m0 - 1]) });
+    live.forEach((e, k) => series.push({ name: `${e.name} (${e.division})`, color: pal[k % pal.length], w: e.division === "D3" ? 2 : 1.3, opacity: 0.9, pts: e.d2.book.curve.map(([t, v]) => [t, v / e.d2.book.capital - 1]) }));
+    const vs = series.flatMap((s) => s.pts.map((p) => p[1])), lo = Math.min(0, ...vs), hi = Math.max(0, ...vs), pad = Math.max(0.005, (hi - lo) * 0.15);
+    const host = h("div", {});
+    requestAnimationFrame(() => Ch.line(host, series, { height: 260, min: lo - pad, max: hi + pad, fmt: (v) => (v >= 0 ? "+" : "") + (v * 100).toFixed(1) + " %", timeFmt: (x) => new Date(x).toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", hour: "2-digit" }) }));
+    return h("div", {}, h("div", { class: "muted", style: "font-size:.78rem;margin:4px 0" }, "Équité comparée (rendement cumulé) : stratégies D2 / D3 face à 0xHarpoon Main"), host,
+      h("div", { class: "legend", style: "margin-top:8px" }, series.map((s) => h("span", {}, h("i", { style: `background:${s.color}` }), s.name))));
+  }
+
   function leagues() {
-    return panel("Les 3 Ligues", { sub: "emplacement réservé" }, h("div", { id: "x-leagues", class: "empty" }, "Le tableau de bord des 3 Ligues (tests des Blueprints) arrivera à l'étape suivante."));
+    const L = D.lg;
+    if (!L) return panel("3-League Strategy Arena", { sub: "D1 → D2 → D3" }, empty("La compétition démarre dès que la bibliothèque ∞ contient un Blueprint."));
+    const E = L.entries || [], W = Object.fromEntries((L.meta?.champions || []).map((c) => [c.id, c]));
+    const d1 = E.filter((e) => e.d1 && (e.division === "D1Q" || (e.division === "OUT" && !e.d2))).sort((a, b) => Date.parse(b.d1.at) - Date.parse(a.d1.at)).slice(0, 15);
+    const d2 = E.filter((e) => e.division === "D2"), d3 = E.filter((e) => e.division === "D3");
+    const m2 = (e) => e.d2?.metrics || {};
+    return panel("3-League Strategy Arena", { sub: "les Blueprints du Flux ∞ (X, arXiv) gravissent les divisions ; seuls les champions de D3 influencent l'agent",
+      noteText: "D1 → D2 : PF ≥ 1,25, DD ≤ 12 %, survie au stress ≥ 80 %, ≥ 25 trades simulés. D2 → D3 : ≥ 15 trades réels, PSR ≥ 0,75, PF ≥ 1,30, corrélation < 0,60 avec D3. Relégation D2 : après 20 trades, PSR < 0,35 ou DD > 15 %. D3 → D2 : DD > 8 % ou PSR glissant < 0,50." },
+      pipeline(E), curves(E),
+      h("h3", { style: "margin:18px 0 6px;font-size:.95rem" }, DIV.D3),
+      d3.length ? tbl(["Champion", "Trades", "Réussite", "PF", "PSR glissant", "DD depuis D3", "Poids dans router.mjs"], d3.map((e) => h("tr", {}, nameCell(e),
+        h("td", { class: "mono" }, m2(e).trades), h("td", { class: "mono" }, pctv(m2(e).winRate, 0)), h("td", { class: "mono" }, f2(m2(e).profitFactor)), h("td", { class: "mono" }, f2(e.d3?.rollingPsr)),
+        h("td", { class: "mono" }, pctv(e.d3?.drawdown)), h("td", { class: "mono", title: W[e.id] ? `PSR ${f2(W[e.id].psr)} × orthogonalité ${f2(W[e.id].orth)}` : "" }, pctv(W[e.id]?.weight, 1)))))
+        : empty("Aucun champion en D3 : le panel LLM garde 100 % du poids."),
+      h("h3", { style: "margin:18px 0 6px;font-size:.95rem" }, DIV.D2),
+      d2.length ? tbl(["Stratégie", "Depuis", "Trades", "Réussite", "PF", "PSR", "Max DD", "Rendement", "Vers D3"], d2.map((e) => h("tr", {}, nameCell(e), h("td", {}, when(e.d2.since)),
+        h("td", { class: "mono" }, m2(e).trades ?? 0), h("td", { class: "mono" }, pctv(m2(e).winRate, 0)), h("td", { class: "mono" }, f2(m2(e).profitFactor)), h("td", { class: "mono" }, f2(m2(e).psr)),
+        h("td", { class: "mono" }, pctv(m2(e).maxDrawdown)), h("td", { class: "mono " + cls(m2(e).totalReturn || 0) }, pctv(m2(e).totalReturn, 2)), h("td", {}, gauge(m2(e).progress, `progression ${pctv(m2(e).progress, 0)}`)))))
+        : empty("Aucune stratégie en D2."),
+      h("h3", { style: "margin:18px 0 6px;font-size:.95rem" }, DIV.D1),
+      d1.length ? tbl(["Blueprint", "Trades simulés", "Réussite", "PF", "PSR", "DD médian", "Survie au stress", "Vers D2", "Verdict"], d1.map((e) => h("tr", {}, nameCell(e),
+        h("td", { class: "mono" }, e.d1.trades), h("td", { class: "mono" }, pctv(e.d1.winRate, 0)), h("td", { class: "mono" }, f2(e.d1.profitFactor)), h("td", { class: "mono" }, f2(e.d1.psr)),
+        h("td", { class: "mono" }, pctv(e.d1.maxDrawdown)), h("td", { class: "mono" }, pctv(e.d1.stressSurvivalRate, 0)), h("td", {}, gauge(e.d1.progress, `progression ${pctv(e.d1.progress, 0)}`)),
+        h("td", {}, e.division === "D1Q" ? h("span", { class: "chip cyan" }, "qualifié") : h("span", { class: "chip down", title: e.outReason || "" }, "éliminé")))))
+        : empty("Aucun Blueprint évalué pour l'instant."),
+      (L.log || []).length ? h("details", { style: "margin-top:12px" }, h("summary", { class: "muted" }, "Journal de la compétition"),
+        h("ul", { class: "muted", style: "font-size:.76rem;margin:6px 0 0 18px" }, L.log.slice(0, 25).map((l) => h("li", {}, `${when(l.at)} — ${l.msg}`)))) : null);
   }
 
   function render() {

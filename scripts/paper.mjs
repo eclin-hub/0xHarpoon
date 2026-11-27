@@ -8,7 +8,8 @@
 //   --data=<dossier>                   -> autre dossier de données que ./data
 // Étapes branchées : socle, données, simulateur (funding, résolutions, stops, échéances, valorisation),
 // freins de drawdown, notes des baleines, candidats et signaux (data/paper/candidates.json), vote des LLM et exécution,
-// PnL contrefactuel par modèle (shadow_book.json) et métriques (metrics.json).
+// PnL contrefactuel par modèle (shadow_book.json) et métriques (metrics.json), collecte X (x_alpha.json) et compétition
+// à 3 divisions (leagues.json) dont les champions sont mêlés au vote des LLM (meta-ensemble, router.mjs).
 import { Store, DEFAULT_DATA_DIR, FILES, utcNow } from "../lib/paper/store.mjs";
 import { loadSnapshot, enrich, fetchPriorSources } from "../lib/paper/loader.mjs";
 import { tick } from "../lib/paper/simulator.mjs";
@@ -16,11 +17,12 @@ import { emptyScores, updateScores, setPriors, priorsFromHl, priorsFromPm, keyOf
 import { gatherHl, gatherPm, finalizeHl, finalizePm, selectCandidates } from "../lib/paper/candidates.mjs";
 import { coinSentiment, partnersOf, findPairs, updateHistory, movedMarkets, detectLeadLag } from "../lib/paper/cross.mjs";
 import { CONFIG } from "../lib/paper/config.mjs";
-import { LLMRouter } from "../lib/paper/router.mjs";
+import { LLMRouter, metaWeights, mixDecisions } from "../lib/paper/router.mjs";
+import { emptyLeagues, admitBlueprints, maybeMutate, defaultMutator, updateLiveMarket, stepLeagues, championSignals, libraryStatus, TICKER_OF } from "../lib/paper/league_engine.mjs";
 import { wakeReasons, decide } from "../lib/paper/decision.mjs";
 import { executeDecisions } from "../lib/paper/execute.mjs";
 import { markToMarket } from "../lib/paper/simulator.mjs";
-import { fetchL2Book } from "../lib/hl.mjs";
+import { fetchL2Book, fetchOhlc } from "../lib/hl.mjs";
 import { fetchBook, fetchGammaMarket } from "../lib/pm.mjs";
 import { pmInfoFromSnapshot, resolvePmInfo, annotatePm, withSignalOdds } from "../lib/paper/pminfo.mjs";
 import { exitKey } from "../lib/paper/risk.mjs";
@@ -108,6 +110,27 @@ const xr = noX ? { alpha: prevX, cache: null } : await runXAlpha({ prev: prevX, 
   extract: noNet || noLlm ? null : undefined }).catch((e) => { problems.push(`X : ${e.message || e}`); return { alpha: prevX, cache: null }; });
 const xContext = xr.alpha ? promptContext(xr.alpha.epsilon?.tickers, now) : null;
 
+// Compétition à 3 divisions : D1 (labo synthétique) pour les nouveaux Blueprints du Flux ∞, mutation Gen-2 périodique,
+// D2 et D3 sur les vrais prix horaires. Jamais bloquant : une erreur laisse les ligues en l'état.
+let leagues = (await store.readJson(FILES.leagues).catch(() => null)) ?? emptyLeagues();
+let live = (await store.readJson(FILES.leagueMarket).catch(() => null)) ?? { series: {} };
+try {
+  const candles = {};
+  if (!noNet) for (const [coin, T] of Object.entries(TICKER_OF)) if ((live.series[T]?.c.length ?? 0) < 200) {
+    try { candles[T] = await fetchOhlc(coin, "1h", 21); } catch (e) { problems.push(`ligues : bougies ${coin} : ${e.message || e}`); }
+  }
+  live = updateLiveMarket(live, { markets: extra.markets, xTickers: xr.alpha?.epsilon?.tickers, history, now, candles });
+  leagues = admitBlueprints(leagues, xr.alpha?.infinity?.blueprints, { now });
+  leagues = await maybeMutate(leagues, { now, mutator: noNet || noLlm ? null : defaultMutator() });
+  leagues = stepLeagues(leagues, live, { now });
+} catch (e) { problems.push(`ligues : ${e.message || e}`); }
+const champions = championSignals(leagues, live);
+leagues.meta = { at: new Date(now).toISOString(), ...metaWeights(champions, t.portfolio) };
+if (xr.alpha?.infinity?.blueprints) {   // statut des Blueprints dans la bibliothèque ∞
+  const status = libraryStatus(leagues);
+  xr.alpha.infinity.blueprints = xr.alpha.infinity.blueprints.map((b) => (status[b.id] ? { ...b, status: status[b.id] } : b));
+}
+
 // IA (SPEC §4) : réveillée seulement sur événement ; l'exécution passe par le moteur de risque puis le simulateur
 let p = t.portfolio, point = t.point;
 const trades = [...t.trades], votesLog = [];
@@ -121,7 +144,12 @@ if (!ai.mode) {
     if (xr.alpha && d.mode !== "fallback") xr.alpha.epsilon.router = { injected: d.xInjected.length > 0, at: new Date(now).toISOString(), tickers: d.xInjected };
     const exits = {};   // dernière fermeture complète par actif ou marché (délai de ré-entrée)
     for (const x of [...pastTrades, ...t.trades]) if (x.type === "close" || x.type === "settle") exits[exitKey(x)] = x.at;
-    const ex = await executeDecisions(p, d.decisions, dossier, { markets: extra.markets, deps: { fetchL2Book, fetchBook }, now, exits });
+    // meta-ensemble : les champions de D3 pèsent 35 % de la conviction des ouvertures sur les actifs qu'ils couvrent
+    const mix = mixDecisions(d.decisions, dossier, champions, metaWeights(champions, p), { tickerOf: (c) => TICKER_OF[c] });
+    leagues.meta = { ...leagues.meta, ...metaWeights(champions, p), mixed: mix.mixed, vetoed: mix.vetoed };
+    const ex = await executeDecisions(p, mix.decisions, dossier, { markets: extra.markets, deps: { fetchL2Book, fetchBook }, now, exits });
+    ex.refused.push(...mix.vetoed);
+    if (mix.mixed.length) votesLog.push(...mix.mixed.map((m) => ({ at: new Date(now).toISOString(), type: "meta", candidate_id: m.id, ...m })));
     p = ex.portfolio; trades.push(...ex.trades); votesLog.push(...d.votes, ...d.records);
     shadow = addShadows(shadow, d.votes, dossier, now).book;
     if (d.mode !== "fallback") p = { ...p, borderSeen: markSeen(borderSeen, border.candidates.map((c) => c.proposalId)) };   // une proposition n'est votée qu'une fois
@@ -153,6 +181,8 @@ const summary = {
   candidates: { kept: sel.candidates.map((c) => `${c.id} score=${c.score}`), wakeLLM: sel.wakeLLM, rejected: dossier.rejected.length },
   ai,
   metrics: { sharpe: metrics.performance.sharpe, maxDrawdown: metrics.performance.maxDrawdown, closedTrades: metrics.trades.closed, shadowOpen: shadow.open.length, shadowClosed: sh.closed.length },
+  leagues: { d1q: leagues.entries.filter((e) => e.division === "D1Q").length, d2: leagues.entries.filter((e) => e.division === "D2").length,
+    d3: leagues.entries.filter((e) => e.division === "D3").length, out: leagues.entries.filter((e) => e.division === "OUT").length, llmWeight: leagues.meta?.llm, log: leagues.log.slice(0, 5).map((l) => l.msg) },
   x: xr.alpha ? { status: xr.alpha.status, notes: xr.alpha.notes, collectedAt: xr.alpha.collectedAt, epsilon: Object.keys(xContext || {}), blueprints: xr.alpha.infinity?.blueprints?.length ?? 0, stats: xr.alpha.stats } : "désactivé",
   whales: { tracked: Object.keys(scores.whales).length, newOutcomes: sc.applied.length, skipped: sc.skipped.length, warmupEndsAt: scores.warmupEndsAt },
   enrich: noNet ? "désactivé" : { markets: Object.keys(extra.markets).length, hlBooks: Object.keys(extra.hlBooks).length, pmBooks: Object.keys(extra.pmBooks).length, resolutions: Object.keys(extra.resolutions).length, pmTitles: Object.keys(pmi.cache).length, gammaCalls: pmi.calls },
@@ -170,6 +200,8 @@ if (!dry) {
   await store.writeJson(FILES.shadow, shadow);
   await store.writeJson(FILES.metrics, metrics);
   await store.writeJson(FILES.pmMarkets, pmi.cache);
+  await store.writeJson(FILES.leagues, leagues);
+  await store.writeJson(FILES.leagueMarket, live);
   if (xr.alpha && !noX) {
     if (xr.alpha.epsilon && !xr.alpha.epsilon.router.at && prevX?.epsilon?.router?.at) xr.alpha.epsilon.router = prevX.epsilon.router;   // dernier réveil connu
     await store.writeJson(FILES.xAlpha, xr.alpha);
