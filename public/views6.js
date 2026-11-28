@@ -9,7 +9,7 @@ App.views.xalpha = (() => {
   const STATUS = { "En attente D1": "neutral", "En test": "cyan", "Promu": "up", "Éliminé D1": "down", "Éliminé D2": "down" };
   const when = (iso) => (iso ? new Date(iso).toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "—");
   // source d'un post : X (@compte), presse (RSS) ou article arXiv
-  const SRC = { x: "X", rss: "RSS", arxiv: "arXiv", reddit: "Reddit", github: "GitHub" };
+  const SRC = { x: "X", rss: "RSS", arxiv: "arXiv", reddit: "Reddit", github: "GitHub", substack: "Substack", hn: "HackerNews" };
   const who = (src, author) => (src === "github" ? `${author} (GitHub)` : src === "reddit" ? `u/${author} (Reddit)` : src && src !== "x" ? `${author} (${SRC[src] || src})` : "@" + (author || "?"));
   // badge d'origine : X · Builder, Reddit · Quant, GitHub, arXiv (texte complet en infobulle)
   const srcBadge = (src, badge) => tag(src || "x", SRC[src] || src || "X", badge || null);
@@ -52,7 +52,7 @@ App.views.xalpha = (() => {
       drawer("État de la collecte", h("p", { class: "muted", style: "margin:0 0 6px;font-size:.8rem" }, x.status),
         h("div", { class: "muted", style: "font-size:.78rem" }, `${s.raw ?? 0} éléments lus · ${s.spam ?? 0} spams · ${s.dup ?? 0} doublons · ${s.epsilon ?? 0} ε · ${s.infinity ?? 0} ∞`,
           x.free ? ` · sources gratuites : ${x.free.rss} articles RSS, ${x.free.arxiv} arXiv` : "", ` · traducteur ${x.infinity?.translator || "—"}`),
-        x.builders?.counts ? h("div", { class: "muted", style: "font-size:.78rem;margin-top:4px" }, `Alpha & Builders : ${x.builders.counts.x} posts X indexés, ${x.builders.counts.reddit} Reddit, ${x.builders.counts.github} GitHub`
+        x.builders?.counts ? h("div", { class: "muted", style: "font-size:.78rem;margin-top:4px" }, `Alpha & Builders (Google News, Hacker News, GitHub) : ${x.builders.counts.x ?? 0} X, ${x.builders.counts.substack ?? 0} Substack, ${x.builders.counts.reddit ?? 0} Reddit, ${x.builders.counts.hn ?? 0} HN, ${x.builders.counts.github ?? 0} GitHub`
           + ` → filtre : ${x.builders.filter?.promo ?? 0} promo, ${x.builders.filter?.short ?? 0} trop courts, ${x.builders.filter?.noMech ?? 0} sans règle mécanique, ${x.builders.filter?.dup ?? 0} doublons, ${x.builders.filter?.kept ?? 0} retenus`
           + (x.builders.compile ? ` · deepseek-flash : ${x.builders.compile.scored} notés, ${x.builders.compile.compiled} compilés (≥ 7/10)` : "") + ` · ${x.builders.queued ?? 0} en file`) : null,
         (x.notes || []).length ? h("ul", { class: "muted", style: "font-size:.76rem;margin:6px 0 0 18px" }, x.notes.map((n) => h("li", {}, n))) : null));

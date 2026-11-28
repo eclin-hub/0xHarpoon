@@ -41,7 +41,7 @@ const SORTS = [["date", "Date", (s) => Date.parse(s.dates?.createdAt || 0)], ["p
   ["live", "PnL / PSR Live", (s) => (s.d2Stats ? (s.d2Stats.totalReturn ?? 0) * 1000 + (s.d2Stats.psr ?? 0) : -Infinity)]];
 const PAGE = 25;
 // badge d'origine (X · Builder, Reddit · Quant, GitHub, arXiv, Mutation)
-const SRC_TONE = { x: "neutral", arxiv: "violet", reddit: "warn", github: "cyan", rss: "warn", mutation: "violet" };
+const SRC_TONE = { x: "neutral", arxiv: "violet", reddit: "warn", github: "cyan", substack: "warn", hn: "warn", rss: "warn", mutation: "violet" };
 const st = { filter: "all", sort: "date", q: "", shown: PAGE, open: new Set() }, D = { L: null };
 
 async function load() {
