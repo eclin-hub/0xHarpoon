@@ -85,3 +85,28 @@ test("(3) stat_arb_leadlag : pas de 3e jambe LONG crypto sans jambe SHORT ; une 
   stepBook(b3, BP(crypto, { family: "trend_breakout" }), up, i, NOW);
   assert.equal(Object.keys(b3.positions).length, 3);
 });
+
+test("mise aux plafonds d'un carnet déjà ouvert (une fois) : positions réduites à 15 %, excès fermés (les plus récents), journalisé", async () => {
+  const { enforceCaps } = await import("../../lib/paper/blueprint_eval.mjs");
+  const { stepLeagues, emptyLeagues } = await import("../../lib/paper/league_engine.mjs");
+  const keys = ["BTC", "ETH", "HYPE", "ZEC", "NEAR"], mk = market(keys, 0), i = 119, px = (K) => mk[K].c[i];
+  // carnet pris sous les anciennes règles : 5 LONG crypto de ~5 000 $
+  const old = () => { const b = newBook(10_000); keys.forEach((K, k) => { b.positions[K] = { dir: 1, qty: 5000 / px(K), entry: px(K), fee: 1.75, stop: px(K) * 0.9, tp: null, bars: 3, t0: NOW - (10 - k) * H, equity0: 10_000 }; b.cash -= 1.75; }); return b; };
+  const b = old(), n = enforceCaps(b, { family: "stat_arb_leadlag" }, mk, i, NOW);
+  assert.ok(n > 0);
+  assert.deepEqual(Object.keys(b.positions), ["BTC", "ETH"]);                              // les 2 plus anciennes gardées, sans jambe SHORT
+  for (const [K, q] of Object.entries(b.positions)) assert.ok(q.qty * px(K) <= 1500 + 1e-6);
+  assert.equal(b.trades.filter((t) => t.reason === "plafond de concentration").length, 3);
+  assert.equal(b.trades.filter((t) => t.partial).length, 5);
+  assert.equal(enforceCaps(b, { family: "stat_arb_leadlag" }, mk, i, NOW), 0);            // déjà conforme : rien
+  // autre famille : 3 LONG crypto au plus (la plus récente fermée)
+  const c = old(); enforceCaps(c, { family: "trend_breakout" }, mk, i, NOW);
+  assert.deepEqual(Object.keys(c.positions), ["BTC", "ETH", "HYPE"]);
+  // dans la ligue : appliqué une seule fois par stratégie (capsV), noté dans le journal
+  const live = { series: mk }, d2 = { id: "g", name: "GraphFactorStatArb", division: "D2", family: "stat_arb_leadlag", familyV: 2,
+    blueprint: { name: "GraphFactorStatArb", thesis: "arbitrage statistique", universe: keys, side: "both", horizon_hours: 24, blocks: [{ type: "momentum", weight: 1, params: {} }], entry: { score_above: 0.9 }, exit: { stop_atr: 2, max_hold_hours: 24 } },
+    d2: { since: new Date(NOW - 48 * H).toISOString(), book: old(), metrics: null } };
+  const st = stepLeagues({ ...emptyLeagues(), entries: [d2] }, live, { now: NOW });
+  assert.equal(Object.keys(st.entries[0].d2.book.positions).length, 2); assert.equal(st.entries[0].capsV, 2);
+  assert.match(st.log[0].msg, /mises aux plafonds.*5 → 2 position/);
+});
