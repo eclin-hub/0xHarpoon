@@ -47,7 +47,8 @@ test("Groq : réponse plafonnée à 1 400 tokens, gpt-oss en raisonnement court 
   assert.equal(out.results.length, 2);
   const g = sent.filter((b) => b.model === "openai/gpt-oss-120b");
   assert.equal(g.length, 2); assert.equal(g[0].reasoning_effort, "low"); assert.equal(g[1].reasoning_effort, undefined);
-  assert.deepEqual(g[1].response_format, { type: "json_object" });                                       // le mode JSON reste
+  assert.equal(g[0].response_format, undefined); assert.equal(g[1].response_format, undefined);        // gpt-oss : jamais de mode JSON (json_validate_failed)
+  assert.deepEqual(sent.find((b) => b.model === "qwen/qwen3.8-27b").response_format, { type: "json_object" });   // qwen3.8 le garde
   assert.ok(sent.every((b) => b.max_tokens === 1400));
   // budget par appel : 2 500 (dossier) + 1 400 (réponse) < 8 000 tokens/min
   assert.ok(PROMPT_BUDGET + DEFAULT_PROVIDERS.find((p) => p.name === "groq").maxTokens < 8000 / 2);

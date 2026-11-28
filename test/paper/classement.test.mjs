@@ -135,7 +135,7 @@ test("modèle actif sans réponse : 0 sur ce cycle, sa part redistribuée au pro
   assert.equal(errorCode("HTTP 404 : No endpoints found matching your data policy"), "404 policy");
   assert.equal(errorCode("HTTP 404 : model not found"), "404 modèle");
   assert.equal(errorCode("The operation was aborted due to timeout"), "délai");
-  assert.equal(errorCode("HTTP 503 : overloaded"), "5xx serveur");
+  assert.equal(errorCode("HTTP 503 : overloaded"), "503 serveur");
 });
 
 test("OpenRouter : 400 ms au moins entre deux requêtes vers openrouter.ai, même en parallèle ; les autres hôtes ne sont pas retardés", async () => {
