@@ -32,6 +32,7 @@ import { emptyShadow, addShadows, updateShadows, modelStats } from "../lib/paper
 import { summarize } from "../lib/paper/metrics.mjs";
 import { borderCandidates, borderNeeds, markSeen } from "../lib/paper/border.mjs";
 import { runXAlpha, promptContext, compileLibrary, blueprintExtractor } from "../lib/paper/x_scraper.mjs";
+import { withExplain } from "../lib/paper/explain.mjs";
 import { emptyRanking, rankModels, updateHealth, recordCycle } from "../lib/paper/llm_ranking.mjs";
 
 const args = process.argv.slice(2);
@@ -208,7 +209,7 @@ if (!noX && !noNet && !noLlm && xr.alpha && xr.cache) {
 const entryOdds = (x) => dossier.candidates.find((c) => c.id === x.candidateId)?.metrics?.pm_price ?? null;
 const odds = (x) => withSignalOdds(annotatePm(x, pmi.cache), { history, pmPrices, entry: x.openedAt === new Date(now).toISOString() || x.at === new Date(now).toISOString() ? entryOdds(x) : null });
 p = { ...p, positions: p.positions.map(odds) };
-trades.splice(0, trades.length, ...trades.map(odds));
+trades.splice(0, trades.length, ...trades.map(odds).map(withExplain));   // phrase « Avis / Raison » des sorties automatiques
 votesLog.splice(0, votesLog.length, ...votesLog.map((x) => annotatePm(x, pmi.cache)));
 const next = { ...p, lastTick: utcNow(), ticks: (portfolio.ticks || 0) + 1 };
 point = { ...point, bench: { BTC: extra.markets.BTC?.mark ?? null, GOLD: extra.markets["xyz:GOLD"]?.mark ?? null } };   // références passives (SPEC §7)

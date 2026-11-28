@@ -99,7 +99,7 @@ test("validateBlueprint : déclaratif strict (pas de code, champs et bornes vér
   assert.match(bad({ code: "return price > 1" }).errors.join(), /champ inconnu « code »/);
   assert.match(bad({ blocks: [{ type: "eval", weight: 1, params: {} }] }).errors.join(), /type/);
   assert.match(bad({ blocks: [{ type: "rsi", weight: 1, params: { period: "14; drop()" } }] }).errors.join(), /period/);
-  assert.match(bad({ universe: ["DOGE"] }).errors.join(), /universe/);
+  assert.match(bad({ universe: ["bad asset!"] }).errors.join(), /universe/); assert.ok(!(bad({ universe: ["DOGE", "PM:0x2745c38ff0|No", "ALL_PM"] }).errors || []).join().includes("universe"));
   assert.match(bad({ blocks: [{ type: "linear_ml_score", weight: 1, params: { features: ["rsi"], coefs: [1, 2] } }] }).errors.join(), /coefs/);
 });
 

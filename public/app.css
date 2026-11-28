@@ -419,3 +419,6 @@ td .chips { flex-wrap: nowrap; overflow: hidden; }
 .regime-band .sep { width: 1px; align-self: stretch; background: var(--line, rgba(255,255,255,.08)); }
 .regime-band .mono.down { color: var(--rose, #f87171); }
 .regime-band .chips { gap: 4px; }
+
+/* colonne « Avis / Raison » (Paper trading) : une seule ligne, jamais tronquée ; le tableau défile horizontalement (.scroll) */
+td.reason { white-space: nowrap; max-width: none; overflow: visible; text-overflow: clip; color: var(--muted); font-size: 0.8rem; }

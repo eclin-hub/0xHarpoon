@@ -24,11 +24,11 @@ test("compilation : JSON presque correct normalisé (alias, bornes, champs incon
     entry: 0.4, exit: { stop_atr: 0.1, max_hold_hours: 48 }, code: "rm -rf /" };
   const v = validateBlueprint(coerceBlueprint(raw));
   assert.equal(v.ok, true, v.errors?.join());
-  assert.deepEqual(v.value.universe, ["BTC", "NVDA"]); assert.equal(v.value.side, "long"); assert.equal(v.value.horizon_hours, 720);
+  assert.deepEqual(v.value.universe, ["BTC", "NVDA", "DOGE"]);   // univers élargi : DOGE (Hyperliquid) accepté assert.equal(v.value.side, "long"); assert.equal(v.value.horizon_hours, 720);
   assert.deepEqual(v.value.blocks.map((b) => [b.type, b.weight]), [["bollinger_zscore", 1], ["linear_ml_score", 0.5]]);
   assert.deepEqual(v.value.blocks[0].params, { period: 20, z: 4 }); assert.deepEqual(v.value.blocks[1].params, { features: ["funding"], coefs: [-2] });
   assert.equal(v.value.entry.score_above, 0.4); assert.equal(v.value.exit.stop_atr, 0.5); assert.equal(v.value.code, undefined);
-  assert.equal(validateBlueprint(coerceBlueprint({ name: "x", thesis: "y", universe: ["DOGE"], blocks: [{ type: "rsi", weight: 1 }] })).ok, false);   // aucun ticker suivi : refusé
+  assert.equal(validateBlueprint(coerceBlueprint({ name: "x", thesis: "y", universe: ["!!"], blocks: [{ type: "rsi", weight: 1 }] })).ok, false);   // aucun actif utilisable : refusé
   const order = [];
   const f = async (url, init) => { const m = JSON.parse(init.body).model; order.push(m); return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(m.startsWith("qwen") ? { nope: 1 } : raw) } }] }), { status: 200 }); };
   const ex = blueprintExtractor({ env: { GROQ_API_KEY: "k" }, fetch: f });

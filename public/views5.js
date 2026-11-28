@@ -100,17 +100,25 @@ App.views.paper = (() => {
           stat("Facteur de profit", f2(tr.profitFactor)), stat("BTC sur la période", bm ? spct(bm.btc.totalReturn, 2) : "—"), stat("50/50 BTC-or", bm ? spct(bm.btcGold.totalReturn, 2) : "—"))));
   }
 
-  // 6 colonnes : l'invalidation, la poche, l'échéance et le lieu sont dans le détail (clic sur la ligne)
+  // « Avis / Raison » : qui a voté et pourquoi (ouverture, fermeture par le panel) ou sortie automatique, en français simple.
+  // Une seule ligne : la colonne s'étend à droite et le tableau défile horizontalement, sans gagner de hauteur.
+  const EXIT = { stop: "Stop-Loss automatique touché", expiry: "Échéance atteinte", kill: "Arrêt d'urgence (drawdown)", vote: "Clôturé par vote du panel", tp: "Take-Profit atteint", trailing: "Trailing stop déclenché" };
+  const votesTitle = (v) => (v ? [...(v.yes || []), ...(v.no || [])].map((x) => `${x.model} ${Math.round((x.weight || 0) * 100)} % ${x.action} : ${x.reason || "—"}`).join("\n") : null);
+  const openFallback = (id) => { const r = (D.vt || []).filter((x) => x.type === "decision" && x.candidate_id === id && x.decision === "OPEN").at(-1); return r ? `Ouvert (${r.via || "vote"})` : null; };
+  const reasonOf = (t) => t.explain || (t.type === "open" ? (t.decision ? `Ouvert (${t.decision})` : openFallback(t.candidateId)) : t.type === "settle" ? `Marché Polymarket résolu${t.won === true ? " : pari gagné" : t.won === false ? " : pari perdu" : ""}` : EXIT[t.reason] || (t.reason ? `Fermé (${t.reason})` : null)) || "—";
+  const reasonCell = (text, votes) => h("td", { class: "reason", title: votesTitle(votes) || text }, text);
+
+  // 7 colonnes, la dernière (« Avis / Raison ») défile horizontalement ; poche, échéance et invalidation dans le détail (clic)
   function positions() {
     const ps = D.pf.positions;
     if (!ps.length) return panel("Positions ouvertes", {}, empty("Aucune position ouverte."));
-    return panel("Positions ouvertes", { sub: "valorisées au dernier cycle · clic sur une ligne pour le détail" }, table(["Marché", "Sens", "Entrée", "Prix", "PnL latent", "Stop"], ps.flatMap((q) => {
+    return panel("Positions ouvertes", { sub: "valorisées au dernier cycle · clic sur une ligne pour le détail" }, table(["Marché", "Sens", "Entrée", "Prix", "PnL latent", "Stop", "Avis / Raison"], ps.flatMap((q) => {
       const pnl = q.venue === "hl" ? q.upnl : q.value - q.cost;
       return expandable([h("td", {}, market(q)), h("td", {}, sideChip(q.side) || tag("pm", q.outcome || "parts")), h("td", { class: "num" }, px(q.entryPx)), h("td", { class: "num" }, px(q.mark)),
-        h("td", { class: "num " + cls(pnl) }, signed(pnl)), h("td", { class: "num" }, q.stopPx ? px(q.stopPx) : "—")],
+        h("td", { class: "num " + cls(pnl) }, signed(pnl)), h("td", { class: "num" }, q.stopPx ? px(q.stopPx) : "—"), reasonCell(q.openExplain || openFallback(q.candidateId) || "—", q.openVotes)],
         h("div", { style: "display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.8rem" }, h("span", {}, tag(q.venue === "pm" ? "pm" : "hl")), h("span", { class: "muted" }, `poche ${POCKET[q.pocket] || q.pocket}`),
           h("span", { class: "muted" }, `ouverte ${when(q.openedAt)}`), q.expiresAt || pmOf(q)?.endDate ? h("span", { class: "muted" }, `échéance ${q.expiresAt ? when(q.expiresAt) : day(pmOf(q).endDate)}`) : null,
-          q.conviction != null ? h("span", { class: "muted" }, `conviction ${q.conviction}`) : null, h("span", { style: "flex-basis:100%" }, h("span", { class: "muted" }, "Invalidation : "), q.invalidation || "—")), 6);
+          q.conviction != null ? h("span", { class: "muted" }, `conviction ${q.conviction}`) : null, h("span", { style: "flex-basis:100%" }, h("span", { class: "muted" }, "Invalidation : "), q.invalidation || "—")), 7);
     })));
   }
 
@@ -175,10 +183,10 @@ App.views.paper = (() => {
     const ts = (D.tr || []).filter((t) => t.type !== "mode").slice(-100).reverse(), modes = (D.tr || []).filter((t) => t.type === "mode").slice(-10).reverse();
     const TYPE = { open: "ouverture", close: "fermeture", reduce: "réduction", settle: "résolution" };
     return panel("Historique des trades", { sub: `${ts.length} derniers mouvements` },
-      ts.length ? table(["Date", "Marché", "Sens", "Prix", "Montant", "Résultat"], ts.map((t) => h("tr", { title: [TYPE[t.type] || t.type, t.reason || t.decision].filter(Boolean).join(" · ") },
+      ts.length ? table(["Date", "Marché", "Sens", "Prix", "Montant", "Résultat", "Avis / Raison"], ts.map((t) => h("tr", {},
         h("td", { class: "muted" }, when(t.at), h("span", { class: "sub2" }, TYPE[t.type] || t.type)), h("td", {}, market(t)), h("td", {}, sideChip(t.side)),
         h("td", { class: "num" }, t.px != null ? px(t.px) : "—"), h("td", { class: "num" }, t.usd != null ? usd(t.usd, 1) : "—"),
-        h("td", { class: "num " + cls(t.net ?? t.pnl ?? 0) }, t.net != null ? signed(t.net) : t.pnl != null ? signed(t.pnl) : "—")))) : empty("Aucun mouvement pour l'instant."),
+        h("td", { class: "num " + cls(t.net ?? t.pnl ?? 0) }, t.net != null ? signed(t.net) : t.pnl != null ? signed(t.pnl) : "—"), reasonCell(reasonOf(t), t.votes)))) : empty("Aucun mouvement pour l'instant."),
       modes.length ? h("div", { style: "margin-top:12px" }, drawer(`Changements de mode de risque (${modes.length})`, h("div", { class: "chips" }, modes.map((m) => h("span", { class: "chip " + (m.to === "normal" ? "up" : "down") }, `${when(m.at)} : ${MODE[m.from]?.[0] || m.from} → ${MODE[m.to]?.[0] || m.to}`))))) : null);
   }
 
