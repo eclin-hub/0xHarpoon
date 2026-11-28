@@ -214,7 +214,7 @@ test("DEFAULT_PROVIDERS : socle DeepSeek, Groq, OpenRouter ; fournisseurs morts 
   assert.deepEqual(by("deepseek").models.map((m) => m.id), ["deepseek-v4-pro", "deepseek-flash"]);
   assert.deepEqual(by("groq").models.map((m) => m.id), ["openai/gpt-oss-120b", "qwen/qwen3.8-27b"]);
   assert.deepEqual(by("openrouter").models.map((m) => m.id), ["openrouter/free"]);   // + 1 modèle découvert dans le catalogue
-  assert.equal(by("openrouter").timeoutMs, 60_000); assert.equal(by("deepseek").timeoutMs, 120_000); assert.equal(by("deepseek").maxTokens, 8000);
+  assert.equal(by("openrouter").timeoutMs, 60_000); assert.equal(by("deepseek").timeoutMs, 200_000); assert.equal(by("deepseek").maxTokens, 8000);
   const ids = DEFAULT_PROVIDERS.flatMap((p) => p.models.map((m) => m.id)), keys = DEFAULT_PROVIDERS.map((p) => p.keyEnv);
   for (const gone of ["mistral-small-latest", "gemini-3.5-flash-lite", "gemini-3.8-flash", "gemma-4-26b-a4b-it", "gemma-4-31b-it", "baidu/ernie-5.5-flash-preview:free",
     "llama-3.3-70b", "qwen-3-32b", "Meta-Llama-3.3-70B-Instruct", "meta-llama/llama-3.3-70b-instruct:free", "qwen/qwen3-235b-a22b:free"]) assert.ok(!ids.includes(gone), gone);
