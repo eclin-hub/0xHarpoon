@@ -139,7 +139,7 @@ test("runSyntheticBenchmark : 5 scénarios de 500 barres, métriques complètes 
 /* ---------- divisions ---------- */
 
 test("promotion D1 → D2 : seuils PF / DD / survie / 25 trades ; places limitées à 6, paramètres gelés", () => {
-  let st = admitBlueprints(emptyLeagues(), [lib("2611.1"), lib("2611.2", "x")], { now: NOW, bench: (bp) => (bp === BP ? PASS() : FAIL()) });
+  let st = admitBlueprints(emptyLeagues(), [lib("2611.1"), lib("2611.2", "x")], { now: NOW, bench: (bp) => (bp.name === BP.name ? PASS() : FAIL()) });   // le labo reçoit une copie (avec la famille)
   assert.deepEqual(st.entries.map((e) => e.division), ["D1Q", "D1Q"]);
   st = admitBlueprints(st, [lib("2611.3", "arxiv", { ...BP, name: "Faible" })], { now: NOW, bench: FAIL });
   const out = st.entries.find((e) => e.id === "2611.3");

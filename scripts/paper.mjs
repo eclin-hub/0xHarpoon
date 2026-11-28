@@ -196,7 +196,8 @@ if (!ai.mode) {
     ranking = recordCycle({ ...ranking, health: updateHealth(ranking.health, router.log, now) }, d.weights ?? {}, router.log);
     if (xr.alpha && d.mode !== "fallback") xr.alpha.epsilon.router = { injected: d.xInjected.length > 0, at: new Date(now).toISOString(), tickers: d.xInjected };
     const exits = {};   // dernière fermeture complète par actif ou marché (délai de ré-entrée)
-    for (const x of [...pastTrades, ...t.trades]) if (x.type === "close" || x.type === "settle") exits[exitKey(x)] = x.at;
+    // une clôture par signal opposé (mode One-Way) ne bloque pas l'ouverture dans le nouveau sens au cycle suivant
+    for (const x of [...pastTrades, ...t.trades]) if ((x.type === "close" || x.type === "settle") && x.reason !== "signal inverse") exits[exitKey(x)] = x.at;
     // meta-ensemble : les champions de D3 pèsent 35 % de la conviction des ouvertures sur les actifs qu'ils couvrent
     const mix = mixDecisions(d.decisions, dossier, champions, metaWeights(champions, p, metaCfg), { tickerOf: (c) => TICKER_OF[c] ?? c, cfg: metaCfg });
     leagues.meta = { ...leagues.meta, ...metaWeights(champions, p, metaCfg), mixed: mix.mixed, vetoed: mix.vetoed };
