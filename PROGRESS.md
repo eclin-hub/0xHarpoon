@@ -148,6 +148,11 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 - Blueprints : qwen3.8 d'abord, normalisation avant validation, compilation à chaque cycle même avec une collecte réutilisée.
 - D1 labo synthétique (GJR-GARCH, sauts, régimes), D2 live sur les vrais prix horaires, D3 champions mêlés aux LLM (65 / 35). Rien n'est encore en D2 en production : il faut d'abord des Blueprints compilés (clé Groq) qui passent la D1, puis au moins 15 trades réels pour atteindre la D3.
 
+### Univers élargi, positions D2 et votes expliqués (28/11/2026)
+- Votes tracés et colonne « Avis / Raison » : vérifié en réel, l'historique publié montre déjà des phrases générées en CI (« Ouvert par l'arbitre deepseek-v4-pro (votes partagés 2/3) : … »).
+- Univers : catalogue réel du jour 304 perps Hyperliquid (125 TradFi) et 82 marchés Polymarket actifs ; GraphFactorStatArb migré de BTC, ETH vers BTC, ETH, HL_CRYPTO (20 cryptos) et ouvre aussitôt HYPE et NEAR en plus de BTC et ETH. Exposition virtuelle bornée à 3 × l'équité (sinon 20 positions × 1 × le capital).
+- Arène X Alpha : tiroir des positions et trades D2 / D3 au clic (vérifié dans l'app avec les données réelles).
+
 ### Socle LLM nettoyé : DeepSeek, Groq, OpenRouter (28/11/2026)
 - Retirés du code et des workflows : Mistral (402), Gemini / Gemma via Google AI Studio (429, JSON incomplets), Ernie (réponses vides), Cerebras et SambaNova (sans clé). Ajouté : DeepSeek (`DEEPSEEK_API_KEY`), identifiants vérifiés dans sa documentation (`deepseek-v4-pro`, `deepseek-flash`).
 - Socle de 6 votants : deepseek-v4-pro, deepseek-flash, gpt-oss-120b, qwen3.8-27b, openrouter/free et 1 modèle OpenRouter ≥ 24 Md (catalogue réel : `google/gemma-4-31b-it:free`) ; 16,7 % chacun au score neutre, 30 % au plus.

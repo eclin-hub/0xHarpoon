@@ -116,6 +116,34 @@ App.views.xalpha = (() => {
   // withD1 : sous-ligne discrète rappelant le score de montée (tableaux D2 et D3)
   const nameCell = (e, withD1 = false) => h("td", { title: e.outReason || null }, e.url ? h("a", { href: e.url, target: "_blank", rel: "noopener noreferrer", style: "color:inherit;font-weight:600" }, e.name) : h("b", {}, e.name),
     h("span", { class: "sub2" }, `${e.gen} · ${srcOf(e)}`), withD1 && d1Line(e) ? h("span", { class: "sub2", title: "score obtenu au labo synthétique pour monter en D2" }, d1Line(e)) : null);
+  // Tiroir d'une stratégie D2 / D3 (x_alpha.json → leagues) : positions ouvertes et derniers trades clos
+  const spc = (x, d = 2) => (x == null || !Number.isFinite(x) ? "—" : (x > 0 ? "+" : "") + (x * 100).toFixed(d) + " %");
+  const pxv = (x) => (x == null ? "—" : x >= 1000 ? x.toLocaleString("fr-FR", { maximumFractionDigits: 0 }) : x >= 1 ? x.toFixed(2) : x.toFixed(4));
+  const sideTag = (sd) => h("span", { class: "chip " + (sd === "long" ? "up" : "down") }, sd === "long" ? "LONG" : "SHORT");
+  function bookDetail(e) {
+    const v = (D.x?.leagues?.strategies || []).find((x) => x.id === e.id);
+    if (!v) return h("p", { class: "muted", style: "margin:0;font-size:.8rem" }, "Détail des positions publié au prochain cycle de l'agent.");
+    const mini = (heads, rows) => h("div", { class: "scroll" }, h("table", {}, h("thead", {}, h("tr", {}, heads.map((x, i) => h("th", { scope: "col", class: i >= 2 ? "num" : null }, x)))), h("tbody", {}, rows)));
+    return h("div", { style: "display:flex;flex-direction:column;gap:10px;white-space:normal" },
+      h("div", { class: "muted", style: "font-size:.76rem" }, `Univers : ${(v.universe || []).join(", ")} → ${v.assets ?? "?"} actif(s) suivis · équité virtuelle ${v.equity?.toLocaleString("fr-FR")} $ sur ${v.capital?.toLocaleString("fr-FR")} $ · ${v.trades} trade(s) clos`),
+      v.open.length ? mini(["Actif", "Sens", "Entrée", "Dernier prix", "PnL latent", "Taille virtuelle"], v.open.map((o) => h("tr", { title: `depuis ${when(o.since)} · stop ${pxv(o.stop)}${o.tp ? ` · objectif ${pxv(o.tp)}` : ""}` },
+        h("td", { title: o.label }, o.label), h("td", {}, sideTag(o.side)), h("td", { class: "num" }, pxv(o.entry)), h("td", { class: "num" }, pxv(o.mark)),
+        h("td", { class: "num " + (o.pnlPct > 0 ? "up" : o.pnlPct < 0 ? "down" : "") }, spc(o.pnlPct)), h("td", { class: "num" }, `${Math.round(o.notional).toLocaleString("fr-FR")} $`))))
+        : h("p", { class: "muted", style: "margin:0;font-size:.8rem" }, "Aucune position ouverte."),
+      v.closed.length ? mini(["Actif", "Sens", "Entrée → sortie", "PnL réalisé", "Motif", "Clôture"], v.closed.map((c) => h("tr", {},
+        h("td", { title: c.label }, c.label), h("td", {}, sideTag(c.side)), h("td", { class: "num" }, `${pxv(c.entry)} → ${pxv(c.exit)}`),
+        h("td", { class: "num " + (c.pnlPct > 0 ? "up" : c.pnlPct < 0 ? "down" : "") }, `${spc(c.pnlPct)} · ${c.pnlUsd > 0 ? "+" : ""}${c.pnlUsd} $`), h("td", { class: "muted" }, c.reason), h("td", { class: "num muted" }, when(c.closed)))))
+        : h("p", { class: "muted", style: "margin:0;font-size:.8rem" }, "Aucun trade clos pour l'instant."));
+  }
+  // ligne cliquable + tiroir juste en dessous
+  const withBook = (tr, e, n = 6) => {
+    const d = h("tr", { class: "detail", hidden: "" }, h("td", { colspan: n, style: "white-space:normal;max-width:none" }, bookDetail(e)));
+    tr.classList.add("row"); tr.style.cursor = "pointer"; tr.setAttribute("tabindex", "0"); tr.setAttribute("aria-expanded", "false");
+    const toggle = () => { d.hidden = !d.hidden; tr.setAttribute("aria-expanded", String(!d.hidden)); };
+    tr.addEventListener("click", (ev) => { if (!ev.target.closest("a")) toggle(); });
+    tr.addEventListener("keydown", (ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); toggle(); } });
+    return [tr, d];
+  };
   const tbl = (heads, rows) => h("div", { class: "scroll" }, h("table", {}, h("thead", {}, h("tr", {}, heads.map((x) => h("th", { scope: "col" }, x)))), h("tbody", {}, rows)));
 
   function pipeline(E) {
@@ -165,14 +193,14 @@ App.views.xalpha = (() => {
         pipeline(E), curves(E),
         (L.log || []).length ? h("div", { style: "margin-top:12px" }, drawer(`Journal de la compétition (${L.log.length})`, h("ul", { class: "muted log", style: "font-size:.76rem;margin:0 0 0 18px" }, L.log.map((l) => h("li", {}, `${when(l.at)} — ${l.msg}`))))) : null),
       panel(["D3 · Ensemble actif"], { sub: "champions mêlés au vote des LLM" },
-        d3.length ? tbl(["Champion", "Trades", "PF", "PSR glissant", "DD depuis D3", "Poids"], d3.map((e) => h("tr", {}, nameCell(e, true),
+        d3.length ? tbl(["Champion", "Trades", "PF", "PSR glissant", "DD depuis D3", "Poids"], d3.flatMap((e) => withBook(h("tr", {}, nameCell(e, true),
           h("td", { class: "num" }, m2(e).trades), h("td", { class: "num" }, f2(m2(e).profitFactor)), h("td", { class: "num" }, f2(e.d3?.rollingPsr)),
-          h("td", { class: "num" }, pctv(e.d3?.drawdown)), h("td", { class: "num", title: W[e.id] ? `PSR ${f2(W[e.id].psr)} × orthogonalité ${f2(W[e.id].orth)}` : "" }, pctv(W[e.id]?.weight, 1)))))
+          h("td", { class: "num" }, pctv(e.d3?.drawdown)), h("td", { class: "num", title: W[e.id] ? `PSR ${f2(W[e.id].psr)} × orthogonalité ${f2(W[e.id].orth)}` : "" }, pctv(W[e.id]?.weight, 1))), e)))
           : empty("Aucun champion en D3 : le panel LLM garde 100 % du poids.")),
       panel("D2 · Ligue live", { sub: "paramètres gelés, 10 000 $ virtuels, vrais prix horaires" },
-        d2.length ? tbl(["Stratégie", "Trades", "PF", "PSR", "Max DD", "Vers D3"], d2.map((e) => h("tr", { title: `depuis ${when(e.d2.since)} · réussite ${pctv(m2(e).winRate, 0)} · rendement ${pctv(m2(e).totalReturn, 2)}` }, nameCell(e, true),
+        d2.length ? tbl(["Stratégie", "Trades", "PF", "PSR", "Max DD", "Vers D3"], d2.flatMap((e) => withBook(h("tr", { title: `depuis ${when(e.d2.since)} · réussite ${pctv(m2(e).winRate, 0)} · rendement ${pctv(m2(e).totalReturn, 2)} · clic : positions et trades` }, nameCell(e, true),
           h("td", { class: "num" }, m2(e).trades ?? 0), h("td", { class: "num" }, f2(m2(e).profitFactor)), h("td", { class: "num" }, f2(m2(e).psr)),
-          h("td", { class: "num" }, pctv(m2(e).maxDrawdown)), h("td", { class: "num" }, prog(m2(e).progress)))))
+          h("td", { class: "num" }, pctv(m2(e).maxDrawdown)), h("td", { class: "num" }, prog(m2(e).progress))), e)))
           : empty("Aucune stratégie en D2.")),
       panel("D1 · Labo synthétique", { sub: "5 scénarios de 500 h : GJR-GARCH, sauts, régimes, crise imposée" },
         d1.length ? tbl(["Blueprint", "Trades", "PF", "Max DD", "Survie stress", "Verdict"], d1.map((e) => { const x = d1s(e), ok = passed(e);

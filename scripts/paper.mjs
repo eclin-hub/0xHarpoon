@@ -20,7 +20,9 @@ import { CONFIG } from "../lib/paper/config.mjs";
 import { LLMRouter, metaWeights, mixDecisions, META, DEFAULT_PROVIDERS, discoverOpenRouter, withDiscovered } from "../lib/paper/router.mjs";
 import { evaluateMacroRegime, emptyRegimeCache, regimeContext, withRegime, STRESS, REGIME_CFG } from "../lib/paper/regime_agent.mjs";
 import { fetchCalendar } from "../lib/alt.mjs";
-import { emptyLeagues, admitBlueprints, maybeMutate, defaultMutator, updateLiveMarket, stepLeagues, championSignals, libraryStatus, TICKER_OF, updateLedger } from "../lib/paper/league_engine.mjs";
+import { emptyLeagues, admitBlueprints, maybeMutate, defaultMutator, updateLiveMarket, stepLeagues, championSignals, libraryStatus, TICKER_OF, updateLedger,
+  migrateUniverses, leagueAssets, leagueView } from "../lib/paper/league_engine.mjs";
+import { buildCatalog, isPmKey } from "../lib/paper/universe.mjs";
 import { wakeReasons, decide } from "../lib/paper/decision.mjs";
 import { executeDecisions } from "../lib/paper/execute.mjs";
 import { markToMarket } from "../lib/paper/simulator.mjs";
@@ -133,12 +135,22 @@ let ranking = rankModels({ models: llmRouter.rankable(), book: shadow, state: ra
 // D2 et D3 sur les vrais prix horaires. Jamais bloquant : une erreur laisse les ligues en l'état.
 let leagues = (await store.readJson(FILES.leagues).catch(() => null)) ?? emptyLeagues();
 let live = (await store.readJson(FILES.leagueMarket).catch(() => null)) ?? { series: {} };
+// univers élargi : catalogue du cycle (tous les perps Hyperliquid, cotes Polymarket suivies) ; stratégies d'avant
+// l'élargissement migrées une fois vers le groupe de leur classe ; actifs à suivre = univers résolus des stratégies actives
+const catalog = buildCatalog({ markets: extra.markets, history, now });
+leagues = migrateUniverses(leagues, now);
+const leagueExtra = leagueAssets(leagues, catalog);
 try {
   const candles = {};
   if (!noNet) for (const [coin, T] of Object.entries(TICKER_OF)) if ((live.series[T]?.c.length ?? 0) < 200) {
     try { candles[T] = await fetchOhlc(coin, "1h", 21); } catch (e) { problems.push(`ligues : bougies ${coin} : ${e.message || e}`); }
   }
-  live = updateLiveMarket(live, { markets: extra.markets, xTickers: xr.alpha?.epsilon?.tickers, history, now, candles });
+  // amorçage des perps hors des 8 tickers (bougies 1 h sur 21 jours), 25 au plus par cycle ; les cotes Polymarket viennent
+  // de market_history.json. Ensuite, un point par heure : league_market.json sert de cache.
+  if (!noNet) for (const k of leagueExtra.filter((x) => !isPmKey(x) && (live.series[x]?.c.length ?? 0) < 200).slice(0, 25)) {
+    try { candles[k] = await fetchOhlc(k, "1h", 21); } catch (e) { problems.push(`ligues : bougies ${k} : ${e.message || e}`); }
+  }
+  live = updateLiveMarket(live, { markets: extra.markets, xTickers: xr.alpha?.epsilon?.tickers, history, now, candles, assets: leagueExtra });
 } catch (e) { problems.push(`ligues : prix live : ${e.message || e}`); }
 
 // Méta-Agent de Régime Macro : calendrier économique, volatilité / funding / Flux ε, synthèse LLM (cache 2 h). Il décide
@@ -154,13 +166,15 @@ const stress = STRESS.includes(regime?.regime);
 
 try {
   leagues = admitBlueprints(leagues, xr.alpha?.infinity?.blueprints, { now });
-  leagues = await maybeMutate(leagues, { now, mutator: noNet || noLlm ? null : defaultMutator() });
-  leagues = stepLeagues(leagues, live, { now, regime });
+  leagues = await maybeMutate(leagues, { now, mutator: noNet || noLlm ? null : defaultMutator({ catalog }) });
+  leagues = stepLeagues(leagues, live, { now, regime, catalog });
 } catch (e) { problems.push(`ligues : ${e.message || e}`); }
 const champions = championSignals(leagues, live, regime);
 // en stress, le meta-ensemble relève aussi sa conviction minimale (60 → 70)
 const metaCfg = stress ? { ...META, minConviction: REGIME_CFG.stressRisk.minConviction } : META;
 leagues.meta = { at: new Date(now).toISOString(), regime: regime?.regime ?? null, ...metaWeights(champions, t.portfolio, metaCfg) };
+// positions ouvertes et derniers trades des stratégies D2 / D3, publiés dans x_alpha.json (tiroir de l'arène)
+if (xr.alpha) try { xr.alpha.leagues = leagueView(leagues, live, { catalog, history, now }); } catch (e) { problems.push(`ligues : vue D2/D3 : ${e.message || e}`); }
 // carnet permanent : relu, fusionné avec l'état des ligues de ce cycle (jamais de suppression), réécrit
 let ledger = null;
 try { ledger = updateLedger(await store.readJson(FILES.ledger).catch(() => null), leagues, now); } catch (e) { problems.push(`carnet des stratégies : ${e.message || e}`); }
@@ -184,7 +198,7 @@ if (!ai.mode) {
     const exits = {};   // dernière fermeture complète par actif ou marché (délai de ré-entrée)
     for (const x of [...pastTrades, ...t.trades]) if (x.type === "close" || x.type === "settle") exits[exitKey(x)] = x.at;
     // meta-ensemble : les champions de D3 pèsent 35 % de la conviction des ouvertures sur les actifs qu'ils couvrent
-    const mix = mixDecisions(d.decisions, dossier, champions, metaWeights(champions, p, metaCfg), { tickerOf: (c) => TICKER_OF[c], cfg: metaCfg });
+    const mix = mixDecisions(d.decisions, dossier, champions, metaWeights(champions, p, metaCfg), { tickerOf: (c) => TICKER_OF[c] ?? c, cfg: metaCfg });
     leagues.meta = { ...leagues.meta, ...metaWeights(champions, p, metaCfg), mixed: mix.mixed, vetoed: mix.vetoed };
     // régime de stress : taille × 0,5 et conviction minimale 70 pour toute nouvelle ouverture (risk.mjs)
     const ex = await executeDecisions(p, mix.decisions, dossier, { markets: extra.markets, deps: { fetchL2Book, fetchBook }, now, exits }, withRegime(CONFIG, regime));
@@ -202,7 +216,7 @@ if (!ai.mode) {
 // Flux ∞ : compilation des Blueprints en attente, après le vote (deepseek-flash d'abord, puis Groq, puis openrouter/free).
 // Les nouveaux Blueprints entrent en Division 1 au cycle suivant. Jamais bloquant.
 if (!noX && !noNet && !noLlm && xr.alpha && xr.cache) {
-  try { const cr = await compileLibrary(xr.alpha, xr.cache, blueprintExtractor(), { now }); xr.alpha = cr.alpha; xr.cache = cr.cache; }
+  try { const cr = await compileLibrary(xr.alpha, xr.cache, blueprintExtractor({ catalog }), { now }); xr.alpha = cr.alpha; xr.cache = cr.cache; }
   catch (e) { problems.push(`X : compilation des Blueprints : ${e.message || e}`); }
 }
 // y compris les positions ouvertes avant cette mise à jour ; cote du signal à l'entrée (candidat du cycle, sinon historique) et maintenant
