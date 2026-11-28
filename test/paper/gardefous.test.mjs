@@ -25,7 +25,7 @@ test("(a) modèles ombre (gemini-3.8-flash, gemini-3.5-flash-lite, ernie) : poid
   assert.deepEqual(all.filter((m) => m.shadowOnly).map((m) => m.id), ["gemini-3.8-flash", "gemini-3.5-flash-lite", "baidu/ernie-5.5-flash-preview:free"]);
   assert.ok(!all.some((m) => m.id === "gemini-3.6-flash"));
   assert.deepEqual(all.filter((m) => m.role === "voter" && !/llama|qwen-3-32b|Llama|DeepSeek/.test(m.id)).map((m) => m.id),
-    ["openai/gpt-oss-120b", "qwen/qwen3.8-27b", "mistral-small-latest", "qwen/qwen3-235b-a22b:free", "openrouter/free"]);
+    ["openai/gpt-oss-120b", "qwen/qwen3.8-27b", "mistral-small-latest", "openrouter/free"]);
   assert.equal(all.find((m) => m.role === "arbiter").id, "gemma-4-26b-a4b-it");
   // vrai routeur, faux serveur : les votants disent REJECT, les deux modèles ombre disent OPEN
   const f = async (url, init) => {

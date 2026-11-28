@@ -17,7 +17,7 @@ import { emptyScores, updateScores, setPriors, priorsFromHl, priorsFromPm, keyOf
 import { gatherHl, gatherPm, finalizeHl, finalizePm, selectCandidates } from "../lib/paper/candidates.mjs";
 import { coinSentiment, partnersOf, findPairs, updateHistory, movedMarkets, detectLeadLag } from "../lib/paper/cross.mjs";
 import { CONFIG } from "../lib/paper/config.mjs";
-import { LLMRouter, metaWeights, mixDecisions, META } from "../lib/paper/router.mjs";
+import { LLMRouter, metaWeights, mixDecisions, META, DEFAULT_PROVIDERS, discoverOpenRouter, withDiscovered } from "../lib/paper/router.mjs";
 import { evaluateMacroRegime, emptyRegimeCache, regimeContext, withRegime, STRESS, REGIME_CFG } from "../lib/paper/regime_agent.mjs";
 import { fetchCalendar } from "../lib/alt.mjs";
 import { emptyLeagues, admitBlueprints, maybeMutate, defaultMutator, updateLiveMarket, stepLeagues, championSignals, libraryStatus, TICKER_OF, updateLedger } from "../lib/paper/league_engine.mjs";
@@ -117,7 +117,14 @@ const xContext = xr.alpha ? promptContext(xr.alpha.epsilon?.tickers, now) : null
 // classement dynamique des modèles (shadow_book.json) : rang et poids cible (4 % à 30 %) de tous les modèles actifs,
 // recalculé à chaque cycle ; poids du cycle et causes d'échec après le vote (recordCycle). Le meilleur votant actif
 // sert aussi à la synthèse du régime macro.
-const llmRouter = new LLMRouter();
+// votants gratuits d'OpenRouter : découverts dans le catalogue public (gardé 6 h), les identifiants « :free » changeant souvent
+let orModels = [], orCache = (await store.readJson(FILES.openrouterModels).catch(() => null)) ?? null;
+if (process.env.OPENROUTER_API_KEY && !process.env.PAPER_LLM_PROVIDERS) {
+  const od = await discoverOpenRouter({ cache: orCache, now, net: !noNet && !noLlm });
+  orModels = od.models; orCache = od.cache;
+  if (od.error) problems.push(od.models.length ? `${od.error} (liste en cache gardée)` : od.error);
+}
+const llmRouter = new LLMRouter(process.env.PAPER_LLM_PROVIDERS ? {} : { providers: withDiscovered(DEFAULT_PROVIDERS, orModels) });
 const rankPrev = (await store.readJson(FILES.llmRanking).catch(() => null)) ?? emptyRanking();
 let ranking = rankModels({ models: llmRouter.rankable(), book: shadow, state: rankPrev, now });
 
@@ -224,6 +231,7 @@ const summary = {
   candidates: { kept: sel.candidates.map((c) => `${c.id} score=${c.score}`), wakeLLM: sel.wakeLLM, rejected: dossier.rejected.length },
   ai,
   regime: regime ? { regime: regime.regime, source: regime.source, reasons: regime.reasons, next: regime.calendar.next, cut: regime.policy.cut, risk: regime.risk } : null,
+  openrouter: orModels.map((m) => m.id),
   ranking: { active: ranking.active.length, target: ranking.target, cycle: ranking.applied ?? null, silent: ranking.models.filter((m) => m.cycleError).map((m) => `${m.model} : ${m.cycleError.code}`) },
   metrics: { sharpe: metrics.performance.sharpe, maxDrawdown: metrics.performance.maxDrawdown, closedTrades: metrics.trades.closed, shadowOpen: shadow.open.length, shadowClosed: sh.closed.length },
   leagues: { d1q: leagues.entries.filter((e) => e.division === "D1Q").length, d2: leagues.entries.filter((e) => e.division === "D2").length,
@@ -249,6 +257,7 @@ if (!dry) {
   await store.writeJson(FILES.leagueMarket, live);
   if (ledger) await store.writeJson(FILES.ledger, ledger);
   await store.writeJson(FILES.llmRanking, ranking);
+  if (orCache) await store.writeJson(FILES.openrouterModels, orCache);
   await store.writeJson(FILES.regimeCache, regimeCache);
   if (xr.alpha && !noX) {
     if (xr.alpha.epsilon && !xr.alpha.epsilon.router.at && prevX?.epsilon?.router?.at) xr.alpha.epsilon.router = prevX.epsilon.router;   // dernier réveil connu

@@ -148,6 +148,12 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 - Blueprints : qwen3.8 d'abord, normalisation avant validation, compilation à chaque cycle même avec une collecte réutilisée.
 - D1 labo synthétique (GJR-GARCH, sauts, régimes), D2 live sur les vrais prix horaires, D3 champions mêlés aux LLM (65 / 35). Rien n'est encore en D2 en production : il faut d'abord des Blueprints compilés (clé Groq) qui passent la D1, puis au moins 15 trades réels pour atteindre la D3.
 
+### Votants OpenRouter découverts dans le catalogue (28/11/2026)
+- Cycle réel : `meta-llama/llama-3.3-70b-instruct:free` (404 « payant seulement ») et `qwen/qwen3-235b-a22b:free` (404 « déprécié le 9 oct. 2026 ») retirés ; votants gratuits désormais découverts dans le catalogue public d'OpenRouter (6 h de cache). Catalogue réel du jour : 13 modèles gratuits → `particle-ai/particle-1:free`, `recursive/flint-v1.0:free`, `nvidia/nemotron-3.5-super-vl:free` (réponses réelles à vérifier au prochain cycle : clé OpenRouter absente en local).
+- `openrouter/free` en « délai » : il atteignait la limite de 60 s, déjà la valeur par défaut ; la limite est gardée à 60 s (35 s aurait multiplié les abandons), désormais réglable par fournisseur.
+- GitHub Models non ajouté : `models.inference.ai.azure.com` n'existe plus (DNS) et `models.github.ai` répond « OK » en texte brut à toute requête.
+- `mistral-small-latest` : HTTP 402 « You need a subscription » (`billing_no_api_budget_configured`) au cycle réel ; à régler dans la console Mistral (offre gratuite « Experiment » à activer). Code court ajouté : « 402 abonnement ».
+
 ### Tous les modèles actifs votent, poids continus 4 % à 30 % (28/11/2026)
 - Fin du Top 6 et du repêchage : tous les modèles non `shadowOnly` votent à chaque réveil (`LLMRouter.collectAll`), poids cible max(0,2 ; score)² borné entre 4 % et 30 % ; un modèle muet pèse 0 sur le cycle, sa part est redistribuée.
 - Moins d'échecs « sans réponse » : Blueprints compilés après le vote et par mistral-small en priorité (quota TPM de gpt-oss-120b réservé au vote) ; 400 ms entre deux requêtes OpenRouter ; extraction JSON plus tolérante (plusieurs blocs markdown, accolades dans la prose, `</think>` seul, virgules finales).
