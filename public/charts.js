@@ -12,7 +12,7 @@ const Ch = (() => {
     for (const k of kids.flat(Infinity)) if (k != null && k !== false) e.append(k.nodeType ? k : document.createTextNode(String(k)));
     return e;
   }
-  const C = { up: "#2bffb0", down: "#ff3d86", cyan: "#22e6ff", violet: "#9a6bff", amber: "#ffc247", dim: "#5a6490", muted: "#8b95c2" };
+  const C = { up: "#3ecf8e", down: "#f2616d", cyan: "#4cc9f0", violet: "#9d8cff", amber: "#f2b84b", dim: "#5f6879", muted: "#8f99ab" };
   // définitions partagées (halo, dégradé de jauge) : un seul bloc toujours rendu, pour que les vues masquées ne cassent pas les références
   const glowDefs = () => null;
   const blur = (id) => el("filter", { id, x: "-50%", y: "-50%", width: "200%", height: "200%" }, el("feGaussianBlur", { stdDeviation: "3", result: "b" }), el("feMerge", {}, el("feMergeNode", { in: "b" }), el("feMergeNode", { in: "SourceGraphic" })));
@@ -42,11 +42,11 @@ const Ch = (() => {
     const svg = el("svg", { class: "chart", viewBox: `0 0 ${w} ${h}`, role: "img", "aria-label": "Jauge de sentiment " + Math.round(value * 100) + " %" },
       glowDefs(),
       el("path", { d: arc(Math.PI, 0), fill: "none", stroke: "rgba(255,255,255,0.07)", "stroke-width": sw, "stroke-linecap": "round" }),
-      el("path", { d: arc(Math.PI, 0), fill: "none", stroke: "url(#gg)", "stroke-width": sw, "stroke-linecap": "round", opacity: 0.9, filter: "url(#glow)" }),
+      el("path", { d: arc(Math.PI, 0), fill: "none", stroke: "url(#gg)", "stroke-width": sw, "stroke-linecap": "round", opacity: 0.9 }),
       ticks,
       el("g", { class: "needle", style: "transition: transform .9s cubic-bezier(.2,.9,.2,1); transform-origin: " + cx + "px " + cy + "px" },
-        el("line", { x1: cx, y1: cy, x2: nx, y2: ny, stroke: col, "stroke-width": 3, "stroke-linecap": "round", filter: "url(#glow)" })),
-      el("circle", { cx, cy, r: sw * 0.55, fill: "#060814", stroke: col, "stroke-width": 3, filter: "url(#glow)" }));
+        el("line", { x1: cx, y1: cy, x2: nx, y2: ny, stroke: col, "stroke-width": 3, "stroke-linecap": "round" })),
+      el("circle", { cx, cy, r: sw * 0.55, fill: "#0a0d12", stroke: col, "stroke-width": 3 }));
     return svg;
   }
 
@@ -57,7 +57,7 @@ const Ch = (() => {
     const pts = values.map((v, i) => [(i / (values.length - 1)) * (w - 4) + 2, h - 3 - ((v - lo) / span) * (h - 6)]);
     const d = pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ");
     return el("svg", { class: "chart", viewBox: `0 0 ${w} ${h}`, width: w, height: h, role: "img" }, glowDefs(),
-      el("path", { d: d + ` L${w - 2},${h} L2,${h} Z`, fill: color, opacity: 0.12 }), el("path", { d, fill: "none", stroke: color, "stroke-width": 1.8, "stroke-linejoin": "round", filter: "url(#glow)" }),
+      el("path", { d: d + ` L${w - 2},${h} L2,${h} Z`, fill: color, opacity: 0.12 }), el("path", { d, fill: "none", stroke: color, "stroke-width": 1.8, "stroke-linejoin": "round" }),
       el("circle", { cx: pts.at(-1)[0], cy: pts.at(-1)[1], r: 2.8, fill: color }));
   }
 
@@ -79,7 +79,7 @@ const Ch = (() => {
       if (s.pts.length < 2) continue;
       const d = s.pts.map((p, i) => (i ? "L" : "M") + X(p[0]).toFixed(1) + "," + Y(p[1]).toFixed(1)).join(" ");
       if (s.fill) svg.append(el("path", { d: d + ` L${X(s.pts.at(-1)[0])},${Y(Math.max(min, 0))} L${X(s.pts[0][0])},${Y(Math.max(min, 0))} Z`, fill: s.color, opacity: 0.1 }));
-      svg.append(el("path", { d, fill: "none", stroke: s.color, "stroke-width": s.w || 2, "stroke-linejoin": "round", filter: "url(#glow)", opacity: s.opacity ?? 1 }));
+      svg.append(el("path", { d, fill: "none", stroke: s.color, "stroke-width": s.w || 2, "stroke-linejoin": "round", opacity: s.opacity ?? 1 }));
     }
     const cross = el("line", { y1: m.t, y2: H - m.b, stroke: C.cyan, "stroke-width": 1, opacity: 0 }), dots = series.map((s) => el("circle", { r: 4, fill: s.color, opacity: 0 }));
     svg.append(cross, ...dots);
@@ -102,7 +102,7 @@ const Ch = (() => {
     for (const p of parts) {
       const da = (p.v / tot) * Math.PI * 2; if (da <= 0) continue;
       const big = da > Math.PI ? 1 : 0, x0 = cx + r * Math.cos(a), y0 = cx + r * Math.sin(a), x1 = cx + r * Math.cos(a + da - 0.001), y1 = cx + r * Math.sin(a + da - 0.001);
-      const path = el("path", { d: `M${x0},${y0} A${r},${r} 0 ${big} 1 ${x1},${y1}`, fill: "none", stroke: p.color, "stroke-width": thick, filter: "url(#glow)", style: "transition: stroke-width .15s; cursor: default" });
+      const path = el("path", { d: `M${x0},${y0} A${r},${r} 0 ${big} 1 ${x1},${y1}`, fill: "none", stroke: p.color, "stroke-width": thick, style: "transition: stroke-width .15s; cursor: default" });
       path.addEventListener("pointerenter", () => path.setAttribute("stroke-width", thick + 4)); path.addEventListener("pointermove", (e) => showTip(e, [el("b", {}, p.label), p.fmt ? p.fmt(p.v) : String(p.v)]));
       path.addEventListener("pointerleave", () => { path.setAttribute("stroke-width", thick); hideTip(); }); svg.append(path); a += da;
     }
@@ -124,13 +124,13 @@ const Ch = (() => {
       for (const [arr, col, lbl] of [[L, C.down, "Longs liquidés"], [S, C.cyan, "Shorts liquidés"]]) {
         if (!arr[i]) continue;
         const r = el("rect", { x: x + 1, y: Y(arr[i]), width: Math.max(1, bw - 2), height: H - m.b - Y(arr[i]), fill: col, opacity: 0.85, rx: 2, style: "transition: opacity .15s, filter .15s" });
-        r.addEventListener("pointerenter", () => { r.setAttribute("opacity", 1); r.setAttribute("filter", "url(#glow)"); });
+        r.addEventListener("pointerenter", () => { r.setAttribute("opacity", 1); });
         r.addEventListener("pointermove", (e) => showTip(e, [el("b", {}, `${fmtPx(px0)} → ${fmtPx(px1)}`), `${lbl} : ${fmtN(arr[i])}`, el("div", { class: "muted" }, ((px0 + step / 2) / mark - 1 >= 0 ? "+" : "") + (((px0 + step / 2) / mark - 1) * 100).toFixed(1) + " % du prix")]));
         r.addEventListener("pointerleave", () => { r.setAttribute("opacity", 0.85); r.removeAttribute("filter"); hideTip(); }); svg.append(r);
       }
     }
     const mx = m.l + ((mark - lo) / (hi - lo)) * (W - m.l - m.r);
-    svg.append(el("line", { x1: mx, x2: mx, y1: m.t, y2: H - m.b, stroke: C.amber, "stroke-width": 1.5, "stroke-dasharray": "5 4", filter: "url(#glow)" }), el("text", { x: mx, y: H - 8, "text-anchor": "middle", style: "fill:#ffc247" }, "prix " + fmtPx(mark)));
+    svg.append(el("line", { x1: mx, x2: mx, y1: m.t, y2: H - m.b, stroke: C.amber, "stroke-width": 1.5, "stroke-dasharray": "5 4" }), el("text", { x: mx, y: H - 8, "text-anchor": "middle", style: "fill:#ffc247" }, "prix " + fmtPx(mark)));
     for (const f of [0, 0.25, 0.75, 1]) svg.append(el("text", { x: m.l + f * (W - m.l - m.r), y: H - 8, "text-anchor": f === 0 ? "start" : f === 1 ? "end" : "middle" }, fmtPx(lo + (hi - lo) * f)));
     host.append(svg);
   }
@@ -151,7 +151,7 @@ const Ch = (() => {
     for (const p of pts) {
       const cx = X(Math.max(-xm, Math.min(xm, p.x))), cy = Y(p.y), r = 5 + Math.sqrt(p.r / rmax) * 14, col = p.y >= 0.2 ? C.up : p.y <= -0.2 ? C.down : C.muted;
       const c = el("circle", { cx, cy, r, fill: col, opacity: 0.55, stroke: col, "stroke-width": 1.5, style: "cursor:pointer; transition: opacity .15s" });
-      c.addEventListener("pointerenter", () => { c.setAttribute("opacity", 0.95); c.setAttribute("filter", "url(#glow)"); }); c.addEventListener("pointermove", (e) => showTip(e, p.tip));
+      c.addEventListener("pointerenter", () => { c.setAttribute("opacity", 0.95); }); c.addEventListener("pointermove", (e) => showTip(e, p.tip));
       c.addEventListener("pointerleave", () => { c.setAttribute("opacity", 0.55); c.removeAttribute("filter"); hideTip(); }); if (onClick) c.addEventListener("click", () => onClick(p));
       svg.append(c, el("text", { x: cx, y: cy + 3, "text-anchor": "middle", style: "fill:#fff;font-size:9px;pointer-events:none" }, p.label));
     }

@@ -115,7 +115,8 @@ App.views.social = (() => {
     title: () => ["Réseaux en ", h("em", {}, "direct")],
     sub: "Les comptes qui font bouger les marchés avant les médias : canaux Telegram d'alertes, publications de Donald Trump sur Truth Social, et X une fois branché.",
     init(box) { z.status = h("div", { class: "chips" }); z.seg = h("div", { class: "seg" }); z.list = h("div", { class: "nlist" }); z.setup = h("div", {});
-      box.append(panel("Sources", {}, z.status), h("div", { class: "grid", style: "grid-template-columns:minmax(0,2fr) minmax(0,1fr)" }, panel("Publications", { tools: z.seg }, z.list), panel("Brancher X (Twitter)", {}, z.setup))); },
+      // publications en pleine largeur ; état des sources et aide au branchement de X dans un tiroir fermé
+      box.append(panel("Publications", { tools: z.seg }, z.list, h("div", { style: "margin-top:12px" }, drawer("Sources et branchement de X", z.status, h("div", { style: "margin-top:12px" }, z.setup))))); },
     update(S) {
       const so = X().social || { status: {}, items: [] };
       z.status.replaceChildren(...Object.entries(so.status).map(([k, v]) => h("span", { class: "chip " + (v === "ok" ? "up" : v === "à configurer" ? "warn" : "neutral") }, `${k} : ${v}`)));

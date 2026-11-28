@@ -148,6 +148,12 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 - Blueprints : qwen3.8 d'abord, normalisation avant validation, compilation à chaque cycle même avec une collecte réutilisée.
 - D1 labo synthétique (GJR-GARCH, sauts, régimes), D2 live sur les vrais prix horaires, D3 champions mêlés aux LLM (65 / 35). Rien n'est encore en D2 en production : il faut d'abord des Blueprints compilés (clé Groq) qui passent la D1, puis au moins 15 trades réels pour atteindre la D3.
 
+### Refonte de l'interface (28/11/2026)
+- Direction « terminal quantitatif épuré » : fonds pleins, bordures de 1 px, plus de halos ni de lueurs, palette et graphiques harmonisés (bloc final de `public/app.css`).
+- Doublons supprimés : la vue d'ensemble ne recopie plus Directions, Signaux d'edge, À la une ni le flux ; « comptes net short » et les notionnels n'apparaissent qu'à un endroit ; la fraîcheur des données n'est plus affichée qu'une fois dans le rail (détail par source dans un tiroir).
+- 4 indicateurs au plus en tête de chaque onglet ; 6 colonnes au plus par tableau ; Paper trading : une ligne par décision (votes dépliables) au lieu d'un tableau par candidat ; Macro : un tableau par famille au lieu de 27 tuiles.
+- `Tidy` (`public/core.js`) : sur toutes les pages, colonnes numériques alignées à droite en chiffres tabulaires, cellules longues coupées sur une ligne avec infobulle, « Voir plus » au-delà de 15 lignes ; notes de méthode et détails techniques dans des tiroirs fermés ; badges communs (`tag`).
+
 ### Mise en service (à faire)
 
 1. Ajouter `GROQ_API_KEY` dans les secrets du dépôt.

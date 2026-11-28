@@ -13,7 +13,7 @@
     for (let i = 0; i <= 4; i++) { const v = y0 + ((y1 - y0) * i) / 4; svg.append(el("g", { class: "grid" }, el("line", { x1: m.l, x2: W - m.r, y1: Y(v), y2: Y(v) }), el("text", { x: m.l - 6, y: Y(v) + 3, "text-anchor": "end" }, fmt(v)))); }
     cats.forEach((c, i) => svg.append(el("text", { x: X(i), y: H - 8, "text-anchor": "middle" }, c)));
     for (const s of series) {
-      svg.append(el("path", { d: s.vals.map((v, i) => (i ? "L" : "M") + X(i) + "," + Y(v)).join(" "), fill: "none", stroke: s.color, "stroke-width": s.w || 2, "stroke-dasharray": s.dash || null, filter: s.dash ? null : "url(#glow2)", opacity: s.dash ? 0.75 : 1 }));
+      svg.append(el("path", { d: s.vals.map((v, i) => (i ? "L" : "M") + X(i) + "," + Y(v)).join(" "), fill: "none", stroke: s.color, "stroke-width": s.w || 2, "stroke-dasharray": s.dash || null, opacity: s.dash ? 0.75 : 1 }));
       s.vals.forEach((v, i) => { const c = el("circle", { cx: X(i), cy: Y(v), r: s.dash ? 3 : 4.5, fill: s.color, style: "cursor:default" }); c.addEventListener("pointermove", (e) => Ch.showTip(e, [el("b", {}, `${s.name} · ${cats[i]}`), fmt(v)])); c.addEventListener("pointerleave", Ch.hideTip); svg.append(c); });
     }
     host.append(svg);
@@ -32,7 +32,7 @@
       if (i % every === 0) svg.append(el("text", { x: x + bw / 2, y: H - 10, "text-anchor": "middle" }, fmtK(r.k)));
     });
     const ks = rows.map((r) => r.k), xOf = (k) => { let i = ks.findIndex((s) => s >= k); if (i < 0) i = ks.length - 1; if (i === 0) return m.l + bw / 2; const f = (k - ks[i - 1]) / (ks[i] - ks[i - 1] || 1); return m.l + (i - 1 + f) * bw + bw / 2; };
-    for (const mk of marks) { const x = xOf(mk.k); svg.append(el("line", { x1: x, x2: x, y1: m.t, y2: H - m.b, stroke: mk.color, "stroke-width": 1.5, "stroke-dasharray": "5 4", filter: "url(#glow2)" }), el("text", { x, y: m.t - 8, "text-anchor": "middle", style: `fill:${mk.color}` }, mk.label)); }
+    for (const mk of marks) { const x = xOf(mk.k); svg.append(el("line", { x1: x, x2: x, y1: m.t, y2: H - m.b, stroke: mk.color, "stroke-width": 1.5, "stroke-dasharray": "5 4" }), el("text", { x, y: m.t - 8, "text-anchor": "middle", style: `fill:${mk.color}` }, mk.label)); }
     host.append(svg);
   };
 })();

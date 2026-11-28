@@ -39,10 +39,18 @@ function dbar(name, sub, score, valueText, onclick, extra) {
     h("div", { class: "t" }, h("i", { style: `left:${score >= 0 ? 50 : 50 - w}%;width:${w}%;background:${c};box-shadow:0 0 14px ${c}` })),
     h("div", { class: "mono " + toneOf(score) }, valueText), extra);
 }
+// Panneau : titre, sous-titre sur une ligne (texte complet au survol), outils à droite ; la note de méthode est un tiroir fermé.
 function panel(title, { sub, tools, noteText } = {}, ...body) {
-  const head = h("div", { class: "head" }, h("h2", {}, title), sub ? h("span", { class: "muted", style: "font-size:.8rem" }, sub) : null, tools ? h("div", { class: "sp" }, tools) : null);
-  return h("section", { class: "panel" }, head, h("div", { class: "body" }, body), noteText ? h("div", { class: "note" }, noteText) : null);
+  const head = h("div", { class: "head" }, h("h2", {}, title), sub ? h("span", { class: "muted", title: typeof sub === "string" ? sub : null }, sub) : null, tools ? h("div", { class: "sp" }, tools) : null);
+  return h("section", { class: "panel" }, head, h("div", { class: "body" }, body),
+    noteText ? h("details", { class: "note" }, h("summary", {}, "Méthode et précisions"), h("div", {}, noteText)) : null);
 }
+// Badges communs à toutes les pages : sens, division, flux, source, statut
+const TAG = { long: ["LONG", "up"], short: ["SHORT", "down"], D1: ["D1", "neutral"], D2: ["D2", "cyan"], D3: ["D3", "up"], eps: ["ε", "cyan"], inf: ["∞", "violet"],
+  x: ["X", "neutral"], arxiv: ["arXiv", "violet"], rss: ["RSS", "warn"], mutation: ["Gen-2", "violet"], hl: ["Hyperliquid", "cyan"], pm: ["Polymarket", "violet"] };
+const tag = (k, text, title) => { const [t, c] = TAG[k] || [k, "neutral"]; return h("span", { class: "chip " + c, title: title || null }, text || t); };
+// Tiroir fermé par défaut (détails techniques, JSON, journaux)
+const drawer = (summary, ...body) => h("details", { class: "fold" }, h("summary", {}, summary), h("div", { class: "in" }, ...body));
 function kpi(l, v, s, tone) { const e = h("div", { class: "v " + (tone || "") }, v); return h("div", { class: "kpi" }, h("div", { class: "l" }, l), e, s ? h("div", { class: "s" }, s) : null); }
 function empty(msg) { return h("div", { class: "empty" }, msg); }
 
@@ -145,7 +153,7 @@ function fold(parent, child, title, sub) {
 function buildChrome() {
   const rail = $("rail"); document.body.prepend(h("a", { class: "skip", href: "#stage" }, "Aller au contenu"));
   const logo = h("div", { class: "logo" }, h("svg", { width: 30, height: 30, viewBox: "0 0 32 32", "aria-hidden": "true" },
-    h("circle", { cx: 16, cy: 16, r: 13, fill: "none", stroke: "#22e6ff", "stroke-width": 1.6 }), h("path", { d: "M16 5l3.2 9.2L16 16l-3.2-1.8z", fill: "#ff3d86" }), h("path", { d: "M16 27l-3.2-9.2L16 16l3.2 1.8z", fill: "#2bffb0" }), h("circle", { cx: 16, cy: 16, r: 1.8, fill: "#060814" })),
+    h("circle", { cx: 16, cy: 16, r: 13, fill: "none", stroke: "#4cc9f0", "stroke-width": 1.6 }), h("path", { d: "M16 5l3.2 9.2L16 16l-3.2-1.8z", fill: "#f2616d" }), h("path", { d: "M16 27l-3.2-9.2L16 16l3.2 1.8z", fill: "#3ecf8e" }), h("circle", { cx: 16, cy: 16, r: 1.8, fill: "#0a0d12" })),
     h("div", {}, h("b", {}, "Boussole"), h("small", {}, "des baleines")));
   const spin = h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true", class: "spin" }, h("path", { d: "M20 12a8 8 0 11-2.6-5.9M20 4v5h-5" }));
   rail.append(logo, h("div", { class: "refresh-box" }, h("button", { class: "refresh", id: "refreshBtn", type: "button", onclick: () => App.requestRefresh && App.requestRefresh() }, spin, h("span", { id: "refreshLbl" }, "Actualiser")), h("div", { class: "refresh-age", id: "refreshAge" })));
@@ -156,7 +164,9 @@ function buildChrome() {
       h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true" }, h("path", { d: ICONS[r.id] })), r.t, r.id === "flux" ? h("span", { class: "badge", id: "fluxBadge", hidden: "" }) : null));
     rail.append(grp);
   }
-  rail.append(h("div", { class: "foot" }, h("div", { class: "live" }, h("span", { class: "dot", id: "dot" }), h("span", { id: "liveTxt" }, "connexion…")), h("div", { id: "ages", style: "margin-top:6px;line-height:1.6" })));
+  // pied du rail : état de la connexion ; l'âge de chaque source est dans un tiroir (l'âge global est sous « Actualiser »)
+  rail.append(h("div", { class: "foot" }, h("div", { class: "live" }, h("span", { class: "dot", id: "dot" }), h("span", { id: "liveTxt" }, "connexion…")),
+    h("details", {}, h("summary", {}, "Fraîcheur des sources"), h("div", { id: "ages", style: "margin-top:6px;line-height:1.6" }))));
   const stage = $("stage");
   for (const r of ROUTES) stage.append(h("section", { class: "view", id: "v-" + r.id, hidden: "", "aria-labelledby": "h-" + r.id }));
 }
@@ -177,5 +187,47 @@ function route() {
 }
 function badge(n) { const b = $("fluxBadge"); if (!b) return; b.hidden = !n; b.textContent = n > 99 ? "99+" : n; }
 
-/* ---------- halo qui suit la souris ---------- */
-document.addEventListener("pointermove", (e) => { const p = e.target.closest?.(".panel"); if (!p) return; const r = p.getBoundingClientRect(); p.style.setProperty("--mx", e.clientX - r.left + "px"); p.style.setProperty("--my", e.clientY - r.top + "px"); }, { passive: true });
+/* ---------- mise en ordre automatique de la vue affichée (toutes les pages) ----------
+   Après chaque rendu : colonnes numériques alignées à droite (chiffres tabulaires), cellules longues coupées sur une ligne
+   avec le texte complet en infobulle, tableaux et listes au-delà de 15 entrées repliés derrière « Voir plus », sous-titre de
+   page sur une ligne (clic pour le déplier). L'état « Voir plus » survit aux rafraîchissements en direct. */
+const Tidy = (() => {
+  const NUM = /^[−+\-]?\s?[$€]?\s?[−+\-]?\d[\d\s\u202f\u00a0.,]*\s?(%|×|x|k|M|Md|\$|R|¢|pts?|h|j|min|s|bp|pb)?(\s?·.*)?$|^—$|^–$/;
+  const LIMIT = 15, expanded = new Set();
+  const isNum = (td) => { const t = td.textContent.trim(); return t !== "" && NUM.test(t) && !td.querySelector("button, a[href^='http']"); };
+  function table(t, key) {
+    if (t.dataset.tidy) return;
+    t.dataset.tidy = "1";
+    const head = [...(t.tHead?.rows[0]?.cells || [])], rows = [...(t.tBodies[0]?.rows || [])].filter((r) => !r.classList.contains("detail"));
+    const ncol = Math.max(head.length, ...rows.slice(0, 30).map((r) => r.cells.length));
+    for (let c = 0; c < ncol; c++) {
+      const cells = rows.map((r) => r.cells[c]).filter((x) => x && x.colSpan === 1 && x.textContent.trim() !== "" && x.textContent.trim() !== "—");
+      if (cells.length && cells.filter(isNum).length / cells.length >= 0.7) { head[c]?.classList.add("num"); rows.forEach((r) => r.cells[c]?.colSpan === 1 && r.cells[c].classList.add("num")); }
+    }
+    for (const r of rows) for (const td of r.cells) { const s = td.textContent.trim(); if (s.length > 34 && !td.title) td.title = s; }
+    if (rows.length > LIMIT + 5 && !expanded.has(key)) {
+      rows.slice(LIMIT).forEach((r) => { r.classList.add("tidy-hidden"); const n = r.nextElementSibling; if (n?.classList.contains("detail")) n.classList.add("tidy-hidden"); });
+      const host = t.closest(".scroll") || t;
+      host.after(h("button", { type: "button", class: "more-btn", onclick: (e) => { expanded.add(key); t.querySelectorAll(".tidy-hidden").forEach((x) => x.classList.remove("tidy-hidden")); e.currentTarget.remove(); } }, `Voir plus (${rows.length - LIMIT})`));
+    }
+  }
+  function list(box, key) {
+    if (box.dataset.tidy) return;
+    box.dataset.tidy = "1";
+    const items = [...box.children].filter((x) => x.matches(".ev, .nrow, .orow, .card, li"));
+    if (items.length <= LIMIT + 5 || expanded.has(key)) return;
+    items.slice(LIMIT).forEach((x) => x.classList.add("tidy-hidden"));
+    box.after(h("button", { type: "button", class: "more-btn", onclick: (e) => { expanded.add(key); items.forEach((x) => x.classList.remove("tidy-hidden")); e.currentTarget.remove(); } }, `Voir plus (${items.length - LIMIT})`));
+  }
+  function run(view) {
+    if (!view || view.hidden) return;
+    const id = view.id;
+    view.querySelectorAll("table").forEach((t, i) => table(t, `${id}:t${i}:${t.tHead?.textContent.slice(0, 40) || ""}`));
+    view.querySelectorAll(".feed, .nlist, .evlist, ul.log").forEach((b, i) => list(b, `${id}:l${i}`));
+    const p = view.querySelector(".pagehead p");
+    if (p && !p.dataset.tidy) { p.dataset.tidy = "1"; p.title = "Cliquer pour lire la présentation complète"; p.onclick = () => p.classList.toggle("open"); }
+  }
+  let pending = false;
+  const schedule = () => { if (pending) return; pending = true; requestAnimationFrame(() => { pending = false; run(document.querySelector(".view:not([hidden])")); }); };
+  return { run, start() { new MutationObserver(schedule).observe($("stage"), { childList: true, subtree: true }); schedule(); } };
+})();

@@ -1,4 +1,4 @@
-/* Cockpit néon : rail de navigation à gauche, panneaux « verre » avec halo qui suit la souris, vert menthe = long, rose = short, cyan = accent. */
+/* Interface « terminal quantitatif épuré » : rail de navigation à gauche, panneaux pleins à bordure fine, vert = long, rouge = short, cyan = accent. Les règles de la refonte (fin de fichier) priment. */
 :root {
   --bg: #060814; --bg-2: #0a0e20; --panel: rgba(16, 22, 48, 0.72); --panel-solid: #0f1530; --line: rgba(140, 170, 255, 0.13); --line-hi: rgba(34, 230, 255, 0.45);
   --fg: #e8ecff; --muted: #a3acd6; --dim: #7c87b8;
@@ -297,3 +297,118 @@ html.vault-open { overflow: hidden; } html.vault-open .skip { display: none; }
   .dbar { grid-template-columns: 90px minmax(0, 1fr) 74px; } .pos { grid-template-columns: minmax(0, 1fr) 1fr 1fr; } .pos .hide-s { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } html { scroll-behavior: auto; } }
+
+/* ======================================================================================================
+   Refonte « terminal quantitatif épuré » (28/11/2026). Ce bloc a le dernier mot sur les règles ci-dessus :
+   fonds sombres pleins, bordures fines de 1 px, aucun halo ni lueur, hiérarchie typographique stricte
+   (titre de page > titre de panneau > étiquette), chiffres alignés à droite en chiffres tabulaires,
+   textes longs sur une ligne (infobulle au survol), détails techniques dans des tiroirs fermés.
+   ====================================================================================================== */
+:root {
+  --bg: #0a0d12; --bg-2: #0e1218; --panel: #10141b; --panel-solid: #10141b; --panel-2: #141922;
+  --line: #1d232d; --line-hi: #2c3543; --fg: #e6e9ef; --muted: #8f99ab; --dim: #5f6879;
+  --cyan: #4cc9f0; --violet: #9d8cff; --mint: #3ecf8e; --rose: #f2616d; --amber: #f2b84b;
+  --up: var(--mint); --down: var(--rose); --accent: var(--cyan);
+  --r: 10px; --gap: 24px;
+}
+body { background: var(--bg); background-image: none; font-size: 14px; }
+a:hover, th.sortable:hover, .pagehead h1 em, .glow-up, .glow-down { text-shadow: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; }
+h1, h2, h3, h4 { text-wrap: pretty; }
+
+/* coque et navigation */
+.rail { background: var(--bg-2); gap: 20px; }
+.logo svg { filter: none; }
+.nav { font-weight: 500; border-radius: 8px; padding: 7px 10px; transition: color .15s, background .15s; }
+.nav:hover { background: var(--panel-2); border-color: transparent; box-shadow: none; transform: none; }
+.nav[aria-current="page"] { color: var(--fg); background: var(--panel-2); border-color: var(--line-hi); box-shadow: inset 2px 0 0 var(--accent); }
+.nav .badge { box-shadow: none; }
+.refresh { background: transparent; color: var(--fg); border-color: var(--line-hi); box-shadow: none; border-radius: 8px; font-weight: 600; }
+.refresh:hover:not(:disabled) { background: var(--panel-2); color: var(--fg); box-shadow: none; transform: none; }
+.dot.on { box-shadow: none; }
+.rail .foot details { margin-top: 6px; }
+.rail .foot details > summary { color: var(--dim); font: 400 0.68rem var(--font-mono); }
+
+/* page */
+.stage-in { gap: var(--gap); max-width: 1280px; }
+.pagehead { gap: 6px 20px; padding-bottom: 4px; }
+.pagehead h1 { font-size: clamp(1.25rem, 2.4vw, 1.6rem); font-weight: 600; letter-spacing: -0.015em; }
+.pagehead h1 em { color: var(--fg); }
+.pagehead p { font-size: 0.86rem; color: var(--muted); max-width: 90ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: help; }
+.pagehead p.open { white-space: normal; cursor: default; }
+
+/* panneaux */
+.panel { background: var(--panel); border-radius: var(--r); backdrop-filter: none; transition: none; }
+.panel::before { display: none; }
+.panel:hover { border-color: var(--line); box-shadow: none; }
+.panel > .head { padding: 12px 18px; gap: 6px 12px; min-height: 46px; flex-wrap: nowrap; }
+.panel > .head h2 { font: 600 0.9rem/1.3 var(--font-body); letter-spacing: 0; flex: none; }
+.panel > .head > .muted { font-size: 0.78rem !important; color: var(--dim); min-width: 0; flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.panel > .head .sp { flex: none; }
+.panel > .body { padding: 16px 18px; }
+.grid { gap: var(--gap); }
+/* note de bas de panneau : tiroir fermé */
+details.note { position: relative; padding: 0 18px; border-top: 1px solid var(--line); font-size: 0.78rem; color: var(--muted); }
+details.note > summary { padding: 9px 0; color: var(--dim); }
+details.note > div { padding-bottom: 10px; line-height: 1.5; }
+
+/* tiroirs (progressive disclosure) */
+details > summary { cursor: pointer; user-select: none; font-size: 0.8rem; color: var(--muted); }
+details > summary:hover { color: var(--fg); }
+details.fold { border: 1px solid var(--line); border-radius: 8px; background: var(--bg-2); }
+details.fold > summary { padding: 9px 14px; }
+details.fold > .in { padding: 4px 14px 14px; }
+pre.json { margin: 0; padding: 12px; border-radius: 6px; background: var(--bg); border: 1px solid var(--line); font: 0.72rem/1.5 var(--font-mono); white-space: pre-wrap; max-height: 320px; overflow: auto; }
+
+/* KPI : 4 au plus en tête de page, valeurs en chiffres tabulaires */
+.kpis { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.kpi { background: var(--panel); border-radius: var(--r); padding: 14px 16px; transition: none; }
+.kpi:hover { transform: none; border-color: var(--line); box-shadow: none; }
+.kpi .l { font: 500 0.7rem var(--font-body); letter-spacing: 0.02em; text-transform: none; color: var(--muted); }
+.kpi .v { font: 600 1.45rem/1.25 var(--font-body); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; margin-top: 6px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kpi .s { font-size: 0.74rem; color: var(--dim); margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* statistiques à l'intérieur d'un panneau : niveau secondaire, plus compact */
+.panel .kpis { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+.panel .kpi { background: var(--bg-2); padding: 10px 12px; }
+.panel .kpi .v { font-size: 1.05rem; }
+
+/* tableaux : compacts, chiffres alignés à droite, une ligne par entrée */
+.scroll { overflow-x: auto; }
+table { font-size: 0.84rem; font-variant-numeric: tabular-nums; }
+th { font: 500 0.7rem var(--font-body); letter-spacing: 0.02em; text-transform: none; color: var(--dim); background: var(--panel); padding: 8px 12px; }
+td { padding: 8px 12px; border-bottom: 1px solid var(--line); white-space: nowrap; max-width: 340px; overflow: hidden; text-overflow: ellipsis; }
+td.wrap { white-space: normal; }
+tbody tr:hover > td { background: rgba(255, 255, 255, 0.02); }
+th.num, td.num { text-align: right; }
+td.num { font-family: var(--font-mono); font-size: 0.8rem; }
+td .sub2 { display: block; font-size: 0.72rem; color: var(--dim); overflow: hidden; text-overflow: ellipsis; }
+tr.detail > td { white-space: normal; max-width: none; background: var(--bg-2); }
+.more-btn { display: block; margin: 10px auto 0; padding: 6px 14px; font-size: 0.78rem; color: var(--muted); background: transparent; border: 1px solid var(--line-hi); border-radius: 6px; }
+.more-btn:hover { color: var(--fg); background: var(--panel-2); }
+.clamp2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.tidy-hidden { display: none !important; }
+
+/* badges unifiés : sens, division, flux, source, statut */
+.chip { border-radius: 4px; padding: 1px 7px; font: 600 0.66rem/1.6 var(--font-mono); letter-spacing: 0.03em; }
+.chip.up { background: rgba(62, 207, 142, 0.1); border-color: rgba(62, 207, 142, 0.28); }
+.chip.down { background: rgba(242, 97, 109, 0.1); border-color: rgba(242, 97, 109, 0.28); }
+.chip.warn { background: rgba(242, 184, 75, 0.1); border-color: rgba(242, 184, 75, 0.28); }
+.chip.cyan { background: rgba(76, 201, 240, 0.1); border-color: rgba(76, 201, 240, 0.28); }
+.chip.violet { color: var(--violet); background: rgba(157, 140, 255, 0.1); border-color: rgba(157, 140, 255, 0.28); }
+.chip.neutral { background: transparent; border-color: var(--line-hi); }
+
+/* divers */
+.btn, .seg button { border-radius: 6px; box-shadow: none !important; }
+.empty { padding: 24px 16px; color: var(--dim); font-size: 0.84rem; }
+.disclaimer { color: var(--dim); font-size: 0.74rem; }
+.toast, .modal-in { box-shadow: none; }
+.logo svg, .gauge-box svg { filter: none !important; }
+tr.grouprow > td { font: 600 0.68rem var(--font-body); color: var(--muted); background: var(--bg-2); text-transform: uppercase; letter-spacing: 0.06em; padding: 6px 12px; }
+.rail { overflow-x: hidden; }
+.rail .vault-box, .rail .vlock { max-width: 100%; }
+.rail .vlock { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* cellules à pastilles : une seule ligne */
+td .chips { flex-wrap: nowrap; overflow: hidden; }
+/* bandeaux du flux : grille sur deux rangées au plus, sans défilement horizontal */
+.astrip { grid-auto-flow: row; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); grid-auto-columns: auto; grid-template-rows: auto auto; grid-auto-rows: 0; row-gap: 0; overflow: hidden; scroll-snap-type: none; padding-bottom: 0; }
+.astrip > * { min-width: 0; margin-bottom: 10px; }

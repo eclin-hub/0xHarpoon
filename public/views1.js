@@ -3,65 +3,37 @@
 
 /* ---------- TABLEAU DE BORD ---------- */
 App.views.dash = (() => {
+  // Vue d'ensemble : la lecture synthétique du marché, sans recopier les autres pages (directions, signaux d'edge, fil
+  // d'info et flux ont chacun leur onglet). Les montants long / short sont sur la page Hyperliquid.
   const z = {};
   return {
     title: () => ["Vue ", h("em", {}, "d'ensemble")],
-    sub: "L'état du marché en un coup d'œil : où sont positionnées les baleines, ce qui bouge maintenant et ce qui mérite d'être surveillé.",
+    sub: "Où sont positionnées les baleines en ce moment, en une lecture.",
     init(box) {
-      z.gauge = h("div", { class: "gauge-box" }); z.read = h("div", { class: "read" }); z.kpis = h("div", { class: "kpis", style: "margin-top:16px" });
-      const hero = h("section", { class: "panel" }, h("div", { class: "body" }, h("div", { class: "hero" }, z.gauge, z.read), z.kpis));
-      z.conv = h("div", {}); z.line = h("div", {}); z.setups = h("div", { class: "setups" }); z.feed = h("div", { class: "feed" });
-      z.expo = h("div", {}); z.donut = h("div", { style: "display:flex;gap:22px;align-items:center;flex-wrap:wrap" }); z.crowd = h("div", {});
-      z.eliteHost = h("div", {});
-      z.dirs = h("div", { style: "display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px" }); z.edge = h("div", { class: "setups" }); z.top = h("div", { class: "nlist" });
-      box.append(hero, panel("Directions de marché", { sub: "tous signaux confondus", tools: h("a", { href: "#dirs" }, "le détail →") }, z.dirs),
-        h("div", { class: "grid g2" }, panel("Signaux d'edge", { sub: "anomalies à creuser", tools: h("a", { href: "#edge" }, "tous →") }, z.edge), panel("À la une", { tools: h("a", { href: "#news" }, "le fil →") }, z.top)),
-        h("div", { class: "grid g2" }, panel("Indice boussole dans le temps", { sub: "−100 % baissier · +100 % haussier" }, z.line), panel("Dernières actions des baleines", { tools: h("a", { href: "#flux" }, "tout le flux →") }, z.feed)));
+      z.gauge = h("div", { class: "gauge-box" }); z.read = h("div", { class: "read" }); z.kpis = h("div", { class: "kpis" });
+      z.line = h("div", {});
+      box.append(z.kpis, h("section", { class: "panel" }, h("div", { class: "body" }, h("div", { class: "hero" }, z.gauge, z.read))),
+        panel("Indice boussole sur 24 h", { sub: "−100 % baissier · +100 % haussier, comparé au score BTC" }, z.line));
     },
     update(S) {
       const g = S.gIndex, accts = S.hl.accounts.filter((a) => !a.error), nShort = accts.filter((a) => a.shortN > a.longN).length;
       const L = accts.reduce((s, a) => s + a.longN, 0), Sh = accts.reduce((s, a) => s + a.shortN, 0), prev = historyAt(3600e3);
       const reg = X().macro?.regime, nextEv = (X().calendar?.events || []).find((e) => e.t > Date.now() && e.impact === "High");
-      z.gauge.replaceChildren(Ch.gauge(g, { w: 320 }), h("div", { class: "val " + toneOf(g) + (g > 0.25 ? " glow-up" : g < -0.25 ? " glow-down" : "") }, spct(g)));
+      z.gauge.replaceChildren(Ch.gauge(g, { w: 300 }), h("div", { class: "val " + toneOf(g) }, spct(g)));
       const strongest = S.sentiment[0], aligned = S.sentiment.filter((s) => s.agree === "aligned" && Math.abs(s.score) >= 0.4);
       z.read.replaceChildren(
-        h("div", { class: "muted", style: "font:500 .64rem var(--font-mono);letter-spacing:.12em;text-transform:uppercase" }, "Lecture du moment"),
+        h("div", { class: "muted", style: "font-size:.72rem" }, "Lecture du moment"),
         h("h2", {}, "Les baleines sont " + ({ "Très haussier": "très haussières", Haussier: "haussières", Neutre: "partagées", Baissier: "baissières", "Très baissier": "très baissières" })[label(g)]),
-        h("p", {}, strongest ? `Conviction maximale sur ${strongest.name} : ${label(strongest.score).toLowerCase()} (${spct(strongest.score)}). ` : "", aligned.length ? `${aligned.length} actif${aligned.length > 1 ? "s" : ""} ${aligned.length > 1 ? "sont" : "est"} confirmé${aligned.length > 1 ? "s" : ""} par les deux plateformes.` : "Aucun actif n'est confirmé par les deux plateformes en ce moment."),
-        h("div", { class: "chips" }, prev ? h("span", { class: "chip " + (g - prev.g > 0.03 ? "up" : g - prev.g < -0.03 ? "down" : "neutral") }, "1 h : " + (g - prev.g > 0 ? "+" : "") + ((g - prev.g) * 100).toFixed(0) + " pts") : h("span", { class: "chip neutral" }, "variation 1 h : en cours de collecte"),
-          reg ? h("a", { class: "chip " + (reg.score >= 0.25 ? "up" : reg.score <= -0.25 ? "down" : "neutral"), href: "#macro" }, "Macro : " + reg.label.toLowerCase()) : null, nextEv ? h("a", { class: "chip warn", href: "#cal" }, "À venir : " + nextEv.cur + " " + nextEv.title) : null,
-          h("span", { class: "chip cyan" }, accts.length + " comptes HL"), h("span", { class: "chip cyan" }, S.pm.whales.length + " baleines PM")));
-      z.dirs.replaceChildren(...(S.dirs?.length ? S.dirs.filter((d) => d.n >= 3).map((d) => dirCard(d, true)) : [empty("Calcul en cours…")]));
-      z.edge.replaceChildren(...((S.edge || []).length ? S.edge.slice(0, 4).map(edgeCard) : [empty("Aucune anomalie détectée.")]));
-      const wire = X().wire || [], hot = [...wire.filter((n) => n.hot), ...wire.filter((n) => !n.hot && n.assets.length)].slice(0, 6);
-      z.top.replaceChildren(...(hot.length ? hot.map((n) => newsRow(n)) : [empty("Chargement du fil…")]));
+        h("p", {}, strongest ? `Conviction maximale sur ${strongest.name} : ${label(strongest.score).toLowerCase()} (${spct(strongest.score)}). ` : "", aligned.length ? `${aligned.length} actif${aligned.length > 1 ? "s" : ""} confirmé${aligned.length > 1 ? "s" : ""} par Hyperliquid et Polymarket.` : "Aucun actif confirmé par les deux plateformes."),
+        h("div", { class: "chips" }, prev ? h("span", { class: "chip " + (g - prev.g > 0.03 ? "up" : g - prev.g < -0.03 ? "down" : "neutral") }, "1 h : " + (g - prev.g > 0 ? "+" : "") + ((g - prev.g) * 100).toFixed(0) + " pts") : null, reg ? h("a", { class: "chip " + (reg.score >= 0.25 ? "up" : reg.score <= -0.25 ? "down" : "neutral"), href: "#macro" }, "Macro : " + reg.label.toLowerCase()) : null,
+          nextEv ? h("a", { class: "chip warn", href: "#cal" }, "À venir : " + nextEv.cur + " " + nextEv.title) : null));
       const ev1h = S.events.filter((e) => Date.now() - e.t < 3600e3).length;
-      z.kpis.replaceChildren(kpi("Comptes net short", pct(nShort / Math.max(1, accts.length)), `${nShort} sur ${accts.length}`, nShort / accts.length > 0.6 ? "down" : ""), kpi("Notionnel long", usd(L), "Hyperliquid", "up"), kpi("Notionnel short", usd(Sh), "Hyperliquid", "down"),
-        kpi("Ratio short / long", (Sh / Math.max(1, L)).toFixed(1) + "×", "exposition cumulée"), kpi("Actions sur 1 h", String(ev1h), "ouvertures, ajouts, fermetures"));
-      // convictions
-      const top = S.sentiment.slice(0, 8);
-      z.conv.replaceChildren(...(top.length ? top.map((s) => dbar(s.name, s.agree === "aligned" ? "confirmé HL + PM" : s.agree === "diverge" ? "HL et PM divergent" : "une seule source", s.score, spct(s.score), () => { ui.open.add("s:" + s.topic); location.hash = "sent"; })) : [empty("Pas encore de données croisées.")]));
-      // courbe de l'indice
+      z.kpis.replaceChildren(
+        kpi("Comptes net short", pct(nShort / Math.max(1, accts.length)), `${nShort} sur ${accts.length} comptes Hyperliquid`, nShort / accts.length > 0.6 ? "down" : ""),
+        kpi("Ratio short / long", (Sh / Math.max(1, L)).toFixed(1) + "×", "notionnel cumulé"),
+        kpi("Actions sur 1 h", String(ev1h), "ouvertures, ajouts, fermetures"));
       const hs = S.history.filter((p) => Date.now() - p.t < 24 * 3600e3);
-      Ch.line(z.line, [{ name: "Indice boussole", color: Ch.C.cyan, pts: hs.map((p) => [p.t, p.g]), fill: true, w: 2.4 }, { name: "BTC", color: Ch.C.violet, pts: hs.filter((p) => p.s.BTC != null).map((p) => [p.t, p.s.BTC]), w: 1.5, opacity: 0.85 }], { height: 330, auto: true });
-      // setups
-      const sets = buildSetups(S);
-      z.setups.replaceChildren(...(sets.length ? sets.map(({ s, dir, pips, facts, flags, m }) => {
-        const c = dir > 0 ? "var(--mint)" : "var(--rose)";
-        return h("button", { class: "setup", type: "button", style: `--c:${c}`, onclick: () => { ui.open.add("s:" + s.topic); location.hash = "sent"; } },
-          h("div", { class: "top" }, h("b", {}, s.name), h("span", { class: "chip " + (dir > 0 ? "up" : "down") }, dir > 0 ? "biais haussier" : "biais baissier"), m ? h("span", { class: "mono muted" }, px(m.mark)) : null, h("span", { class: "pips", title: pips + " signaux sur 4" }, [1, 2, 3, 4].map((i) => h("i", { class: i <= pips ? "on" : "" })))),
-          h("ul", {}, facts.map((f) => h("li", {}, f)), flags.map((f) => h("li", { class: "warn" }, f))));
-      }) : [empty("Aucun actif ne réunit assez de conviction pour l'instant.")]));
-      // flux
-      z.feed.replaceChildren(...(S.events.length ? S.events.slice(0, 7).map((e) => evRow(e, false)) : [empty("Aucun mouvement notable depuis le démarrage. Le flux se remplit en direct.")]));
-      // exposition
-      const maxG = Math.max(1, ...S.hl.coins.slice(0, 8).map((c) => c.gross));
-      z.expo.replaceChildren(...S.hl.coins.slice(0, 8).map((c) => h("div", { class: "coinrow", title: `${c.nLong} comptes long · ${c.nShort} short` }, h("div", { class: "mono" }, coinName(c.coin)), h("div", { style: `width:${Math.max(10, (c.gross / maxG) * 100)}%` }, bias(c.longN, c.shortN)), h("div", { class: "mono " + cls(c.net), style: "text-align:right" }, signed(c.net)))));
-      z.donut.replaceChildren(Ch.donut([{ v: L, color: Ch.C.up, label: "Long", fmt: usd }, { v: Sh, color: Ch.C.down, label: "Short", fmt: usd }], { size: 150, center: pct(Sh / (L + Sh || 1)) + " short" }),
-        h("div", { class: "legend", style: "flex-direction:column" }, h("span", {}, h("i", { style: "background:var(--mint)" }), "Long ", h("b", { class: "mono" }, usd(L))), h("span", {}, h("i", { style: "background:var(--rose)" }), "Short ", h("b", { class: "mono" }, usd(Sh))), h("span", { class: "muted" }, "Capital cumulé ", usd(accts.reduce((s, a) => s + a.equity, 0)))));
-      z.crowd.replaceChildren(...(S.pm.crowded.length ? S.pm.crowded.slice(0, 5).map((m) => h("a", { href: "https://polymarket.com/event/" + m.slug, target: "_blank", rel: "noopener noreferrer", style: "display:block;color:inherit;margin-bottom:10px", title: m.title },
-        h("div", { style: "font-size:.82rem;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden" }, m.title),
-        h("div", { style: "display:flex;gap:8px;align-items:center;margin-top:4px" }, h("span", { class: "chip " + (/^(yes|up|over)/i.test(m.top) ? "up" : /^(no|down|under)/i.test(m.top) ? "down" : "neutral"), title: m.top }, (m.top.length > 22 ? m.top.slice(0, 21) + "…" : m.top) + " " + pct(m.topShare)), h("span", { class: "mono muted" }, m.whales + " baleines · " + usd(m.total))))) : [empty("Pas de consensus assez large.")]));
+      Ch.line(z.line, [{ name: "Indice boussole", color: Ch.C.cyan, pts: hs.map((p) => [p.t, p.g]), fill: true, w: 2 }, { name: "BTC", color: Ch.C.violet, pts: hs.filter((p) => p.s.BTC != null).map((p) => [p.t, p.s.BTC]), w: 1.4, opacity: 0.85 }], { height: 300, auto: true });
     },
   };
 })();
@@ -96,7 +68,8 @@ App.views.hl = (() => {
     },
     update(S) {
       const accts = S.hl.accounts.filter((a) => !a.error), L = accts.reduce((s, a) => s + a.longN, 0), Sh = accts.reduce((s, a) => s + a.shortN, 0);
-      z.kpis.replaceChildren(kpi("Comptes suivis", accts.length, `sur ${S.hl.eligible} éligibles · ${S.hl.total.toLocaleString("fr-FR")} comptes au total`), kpi("Capital cumulé", usd(accts.reduce((s, a) => s + a.equity, 0))), kpi("Notionnel long", usd(L), "", "up"), kpi("Notionnel short", usd(Sh), "", "down"), kpi("Comptes net short", pct(accts.filter((a) => a.shortN > a.longN).length / Math.max(1, accts.length))));
+      // « comptes net short » est sur la vue d'ensemble : 4 indicateurs propres à Hyperliquid ici
+      z.kpis.replaceChildren(kpi("Comptes suivis", accts.length, `sur ${S.hl.eligible} éligibles · ${S.hl.total.toLocaleString("fr-FR")} au total`), kpi("Capital cumulé", usd(accts.reduce((s, a) => s + a.equity, 0))), kpi("Notionnel long", usd(L), "", "up"), kpi("Notionnel short", usd(Sh), "", "down"));
       const maxG = Math.max(1, ...S.hl.coins.slice(0, 14).map((c) => c.gross));
       z.expo.replaceChildren(...S.hl.coins.slice(0, 14).map((c) => h("div", { class: "coinrow", title: `${c.nLong} comptes long · ${c.nShort} short` }, h("div", { class: "mono" }, coinName(c.coin)), h("div", { style: `width:${Math.max(8, (c.gross / maxG) * 100)}%` }, bias(c.longN, c.shortN)), h("div", { class: "mono " + cls(c.net), style: "text-align:right" }, signed(c.net)))));
       seg(z.winSeg, [["day", "Jour"], ["week", "Semaine"], ["month", "Mois"], ["allTime", "Tout"]], ui.hlWin, (k) => (ui.hlWin = k));
@@ -113,13 +86,13 @@ App.views.hl = (() => {
       const rows = S.hl.accounts.map((a, i) => ({ ...a, idx: i })).filter((a) => !q || (a.name || "").toLowerCase().includes(q) || a.addr.toLowerCase().includes(q));
       z.note.textContent = `${rows.length} comptes · positions actualisées toutes les 45 s`;
       z.cohort.replaceChildren(sortableTable("hlco", [
-        { t: "#", cls: "rank", cell: (r) => r.idx + 1 }, { t: "Compte", cell: (r) => who(r, hlLink) },
+        { t: "Compte", cell: (r) => who(r, hlLink) },
         { t: "Capital", cls: "r", sort: (r) => r.equity, cell: (r) => h("span", { class: "mono" }, usd(r.equity)) },
         { t: "PnL mois", cls: "r", sort: (r) => r.month?.pnl ?? 0, cell: (r) => h("span", { class: "mono " + cls(r.month?.pnl) }, r.month ? signed(r.month.pnl) : "–") },
         { t: "ROI mois", cls: "r", sort: (r) => r.month?.roi ?? 0, cell: (r) => h("span", { class: "mono " + cls(r.month?.roi) }, r.month ? spct(r.month.roi) : "–") },
         { t: "Biais", sort: (r) => (r.longN - r.shortN) / (r.longN + r.shortN || 1), cell: (r) => bias(r.longN, r.shortN) },
         { t: "Plus grosses positions", cell: (r) => h("div", { class: "chips" }, r.positions.slice(0, 3).map((p) => h("span", { class: "chip " + (p.side === "long" ? "up" : "down") }, `${coinName(p.coin)} ${p.side === "long" ? "L" : "S"} ${usd(p.notional)}`))) }],
-        rows, { rowKey: (r) => "hlc:" + r.addr, defaultSort: { k: "#", dir: "asc" }, detail: (r) => [hlPositions(r.positions), r.nPositions > r.positions.length ? h("div", { class: "muted" }, `+ ${r.nPositions - r.positions.length} autres positions`) : null] }));
+        rows, { rowKey: (r) => "hlc:" + r.addr, defaultSort: { k: "Capital", dir: "desc" }, detail: (r) => [hlPositions(r.positions), r.nPositions > r.positions.length ? h("div", { class: "muted" }, `+ ${r.nPositions - r.positions.length} autres positions`) : null] }));
     },
   };
 })();

@@ -23,37 +23,40 @@ App.views.paper = (() => {
       endDate: own.endDate || own.end || c.endDate || null, url: own.url || c.url || null,
       entryOdds: x.pm?.entryOdds ?? x.metrics?.pm_price ?? null, odds: x.pm?.odds ?? null };
   }
-  function pmLabel(i, { lead = null } = {}) {
-    const t = i.title || shortCid(i.cid), name = i.url ? h("a", { href: i.url, target: "_blank", rel: "noopener noreferrer", title: i.cid, style: "color:inherit" }, t) : h("span", { title: i.cid }, t);
-    return h("span", { style: "display:inline-block;min-width:240px;max-width:360px;white-space:normal" }, lead, lead ? h("span", { class: "muted" }, " · signal ") : null, i.title ? name : h("span", { class: "mono" }, name),
-      i.outcome ? h("span", { class: "chip neutral", style: "margin-left:6px" }, i.outcome) : null,
-      lead && (i.entryOdds != null || i.odds != null) ? h("div", { style: "font-size:.75rem;font-weight:400", title: "Cote du pari Polymarket (probabilité implicite) : simple signal, aucune part Polymarket n'est achetée" },
-        h("span", { class: "muted" }, "cote du signal "), h("span", { class: "mono" }, odd(i.entryOdds)), i.odds != null && i.entryOdds != null ? [h("span", { class: "muted" }, " → "), h("span", { class: "mono " + cls(i.odds - i.entryOdds) }, odd(i.odds))] : null,
-        h("span", { class: "muted" }, i.entryOdds != null && i.odds != null ? " (entrée → maintenant)" : i.entryOdds != null ? " à l'entrée" : " maintenant")) : null,
-      h("div", { class: "muted", style: "font-size:.72rem;font-weight:400" }, i.endDate ? `échéance ${day(i.endDate)} · ` : "", h("span", { class: "mono", title: i.cid }, shortCid(i.cid))));
-  }
   const odd = (x) => (x == null ? "—" : x.toFixed(2).replace(".", ",") + " $");
-  // lieu d'exécution : où l'ordre est réellement passé (un signal lead-lag s'exécute sur Hyperliquid)
-  const venueChip = (x) => (x.venue === "pm" ? h("span", { class: "chip neutral", title: "Parts Polymarket achetées entre 0 et 1 $ : la colonne Entrée est le prix payé par part" }, "Polymarket")
-    : x.venue === "hl" || x.coin ? h("span", { class: "chip cyan", title: "Contrat perpétuel Hyperliquid : prix de l'actif réel" }, "Hyperliquid") : null);
-  // cellule « Marché » : actif Hyperliquid (et le pari Polymarket qui l'a déclenché, s'il y en a un) ou marché Polymarket
+  const sideChip = (s) => (s === "long" || s === "short" ? tag(s) : null);
+  // cellule « Marché » sur deux lignes au plus : nom, puis une ligne secondaire coupée (texte complet au survol)
   function market(x) {
     const i = pmOf(x);
-    if (x.coin) return i ? pmLabel(i, { lead: h("b", {}, coinName(x.coin)) }) : h("b", {}, coinName(x.coin));
-    if (i) return h("b", {}, pmLabel(i));
+    if (x.coin) {
+      const sig = i ? `signal Polymarket : ${i.title || shortCid(i.cid)}${i.outcome ? ` (${i.outcome})` : ""}` : null;
+      const oddsTxt = i && (i.entryOdds != null || i.odds != null) ? ` · cote ${odd(i.entryOdds)}${i.odds != null && i.entryOdds != null ? " → " + odd(i.odds) : ""}` : "";
+      return h("div", { title: sig ? `${sig}${oddsTxt}\n${i.cid}` : null }, h("b", {}, coinName(x.coin)), sig ? h("span", { class: "sub2" }, sig + oddsTxt) : null);
+    }
+    if (i) {
+      const name = i.title || shortCid(i.cid);
+      return h("div", { title: `${name}\n${i.cid}` }, i.url ? h("a", { href: i.url, target: "_blank", rel: "noopener noreferrer", style: "color:inherit;font-weight:600" }, name) : h("b", {}, name),
+        h("span", { class: "sub2" }, [i.outcome, i.endDate ? `échéance ${day(i.endDate)}` : null].filter(Boolean).join(" · ")));
+    }
     return h("b", {}, x.title || x.token || x.id);
   }
   // identifiant de candidat (journal des votes) : retrouvé dans le dossier ou les positions, sinon lu dans l'identifiant
-  function idLabel(rec) {
-    const id = rec.candidate_id, c = D.cd?.candidates.find((x) => x.id === id) || D.pf?.positions.find((x) => x.id === id || x.candidateId === id);
+  function idLabel(id) {
+    const c = D.cd?.candidates.find((x) => x.id === id) || D.pf?.positions.find((x) => x.id === id || x.candidateId === id);
     if (c?.type === "pair") return h("b", { title: id }, `${coinName(c.long.coin)} / ${coinName(c.short.coin)}`);
     if (c) return market(c);
-    if (cidOf(id)) return market({ ...rec, coin: null });
+    if (cidOf(id)) return market({ id, coin: null });
     const [kind, coin, side] = String(id).split("|");
-    return kind === "hl" && coin ? h("span", { title: id }, h("b", {}, coinName(coin)), " ", sideChip(side)) : h("b", { class: "mono" }, id);
+    return kind === "hl" && coin ? h("div", { title: id }, h("b", {}, coinName(coin)), h("span", { class: "sub2" }, side === "long" ? "long" : "short")) : h("b", { class: "mono", title: id }, id);
   }
-  const sideChip = (s) => (s ? h("span", { class: "chip " + (s === "long" ? "up" : "down") }, s === "long" ? "LONG" : "SHORT") : null);
   const table = (heads, rows) => h("div", { class: "scroll" }, h("table", {}, h("thead", {}, h("tr", {}, heads.map((t) => h("th", { scope: "col" }, t)))), h("tbody", {}, rows)));
+  // ligne dépliable : un clic affiche le détail juste en dessous (fermé par défaut)
+  const expandable = (cells, detail, n) => {
+    const d = h("tr", { class: "detail", hidden: "" }, h("td", { colspan: n }, detail));
+    const r = h("tr", { class: "row", tabindex: "0", "aria-expanded": "false", style: "cursor:pointer", onclick: () => { d.hidden = !d.hidden; r.setAttribute("aria-expanded", String(!d.hidden)); },
+      onkeydown: (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); r.click(); } } }, cells);
+    return [r, d];
+  };
   const jsonl = (txt) => txt.split(/\r?\n/).filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
 
   async function load() {
@@ -66,89 +69,99 @@ App.views.paper = (() => {
     render();
   }
 
+  // 4 indicateurs ; le reste (Sharpe, Sortino, Calmar, PSR, facteur de profit) est dans le tiroir de la courbe
   function kpis() {
-    const p = D.pf, m = D.mt || {}, perf = m.performance || {}, t = m.trades || {}, [modeTxt, modeCls] = MODE[p.mode] || [p.mode, "neutral"];
+    const p = D.pf, m = D.mt || {}, t = m.trades || {}, [modeTxt] = MODE[p.mode] || [p.mode];
     return h("div", { class: "kpis" },
-      kpi("Capital", money(p.equity), `départ ${money(p.startCapital, 0)} · cash ${money(p.cash)}`),
-      kpi("Rendement", spct(p.equity / p.startCapital - 1, 2), m.days != null ? `sur ${f2(m.days, 1)} j` : null, cls(p.equity - p.startCapital)),
-      kpi("Drawdown", pct(p.drawdown || 0, 1), `max ${pctOr(perf.maxDrawdown)}`, (p.drawdown || 0) > 0.1 ? "down" : ""),
-      kpi("Mode", h("span", { class: "chip " + modeCls }, modeTxt), `${p.positions.length} position(s) ouverte(s)`),
-      kpi("Sharpe · Sortino", `${f2(perf.sharpe)} · ${f2(perf.sortino)}`, `Calmar ${f2(perf.calmar)} · PSR ${pctOr(perf.psr, 0)}`),
-      kpi("Trades terminés", String(t.closed ?? 0), t.closed ? `réussite ${pctOr(t.winRate, 0)} · PF ${f2(t.profitFactor)}` : "aucun pour l'instant", m.significant ? "up" : ""),
-    );
+      kpi("Équité", money(p.equity), `départ ${money(p.startCapital, 0)} · cash ${money(p.cash, 0)}`),
+      kpi("Rendement", spct(p.equity / p.startCapital - 1, 2), m.days != null ? `sur ${f2(m.days, 1)} jours` : null, cls(p.equity - p.startCapital)),
+      kpi("Drawdown", pct(p.drawdown || 0, 1), `max ${pctOr(m.performance?.maxDrawdown)}${p.mode !== "normal" ? ` · ${modeTxt}` : ""}`, (p.drawdown || 0) > 0.1 || p.mode !== "normal" ? "down" : ""),
+      kpi("Positions ouvertes", String(p.positions.length), t.closed ? `${t.closed} trades terminés · réussite ${pctOr(t.winRate, 0)}` : "aucun trade terminé"));
   }
 
   function curve() {
     const pts = (D.eq || []).filter((p) => p.at), cap = D.pf.startCapital, i0 = pts.findIndex((p) => p.bench?.BTC > 0 && p.bench?.GOLD > 0);
     const t = (p) => Date.parse(p.at), b0 = i0 >= 0 ? pts[i0].bench : null;
-    const series = [{ name: "Agent", color: Ch.C.cyan, pts: pts.map((p) => [t(p), p.equity / cap - 1]), w: 2.6, fill: true }];
+    const series = [{ name: "Agent", color: Ch.C.cyan, pts: pts.map((p) => [t(p), p.equity / cap - 1]), w: 2.2, fill: true }];
     if (b0) {
       const bp = pts.slice(i0).filter((p) => p.bench?.BTC > 0 && p.bench?.GOLD > 0);
-      series.push({ name: "BTC", color: Ch.C.violet, pts: bp.map((p) => [t(p), p.bench.BTC / b0.BTC - 1]), w: 1.5, opacity: 0.85 },
-        { name: "50/50 BTC-or", color: Ch.C.amber, pts: bp.map((p) => [t(p), 0.5 * p.bench.BTC / b0.BTC + 0.5 * p.bench.GOLD / b0.GOLD - 1]), w: 1.5, opacity: 0.85 });
+      series.push({ name: "BTC", color: Ch.C.violet, pts: bp.map((p) => [t(p), p.bench.BTC / b0.BTC - 1]), w: 1.3, opacity: 0.85 },
+        { name: "50/50 BTC-or", color: Ch.C.amber, pts: bp.map((p) => [t(p), 0.5 * p.bench.BTC / b0.BTC + 0.5 * p.bench.GOLD / b0.GOLD - 1]), w: 1.3, opacity: 0.85 });
     }
     const vs = series.flatMap((s) => s.pts.map((q) => q[1])), lo = Math.min(0, ...vs), hi = Math.max(0, ...vs), pad = Math.max(0.005, (hi - lo) * 0.15);
     const host = h("div", {});
-    requestAnimationFrame(() => Ch.line(host, series, { height: 300, min: lo - pad, max: hi + pad, fmt: (v) => spct(v, 1), timeFmt: (x) => new Date(x).toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", hour: "2-digit" }) }));
-    const bm = D.mt?.benchmarks;
-    return panel("Courbe de capital", { sub: "rendement cumulé, comparé à BTC acheté et conservé et à un panier 50/50 BTC-or",
-      noteText: bm ? `Depuis ${when(bm.since)} : BTC ${spct(bm.btc.totalReturn, 2)} · 50/50 ${spct(bm.btcGold.totalReturn, 2)}` : null }, host,
-      h("div", { class: "legend", style: "margin-top:8px" }, series.map((s) => h("span", {}, h("i", { style: `background:${s.color}` }), s.name))));
+    requestAnimationFrame(() => Ch.line(host, series, { height: 280, min: lo - pad, max: hi + pad, fmt: (v) => spct(v, 1), timeFmt: (x) => new Date(x).toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", hour: "2-digit" }) }));
+    const m = D.mt || {}, perf = m.performance || {}, tr = m.trades || {}, bm = m.benchmarks;
+    const stat = (l, v) => h("div", { class: "kpi" }, h("div", { class: "l" }, l), h("div", { class: "v" }, v));
+    return panel("Courbe de capital", { sub: "rendement cumulé face à BTC et à un panier 50/50 BTC-or" }, host,
+      h("div", { class: "legend", style: "margin:8px 0 14px" }, series.map((s) => h("span", {}, h("i", { style: `background:${s.color}` }), s.name))),
+      drawer("Statistiques de performance",
+        h("div", { class: "kpis" }, stat("Sharpe", f2(perf.sharpe)), stat("Sortino", f2(perf.sortino)), stat("Calmar", f2(perf.calmar)), stat("PSR", pctOr(perf.psr, 0)),
+          stat("Facteur de profit", f2(tr.profitFactor)), stat("BTC sur la période", bm ? spct(bm.btc.totalReturn, 2) : "—"), stat("50/50 BTC-or", bm ? spct(bm.btcGold.totalReturn, 2) : "—"))));
   }
 
+  // 6 colonnes : l'invalidation, la poche, l'échéance et le lieu sont dans le détail (clic sur la ligne)
   function positions() {
     const ps = D.pf.positions;
     if (!ps.length) return panel("Positions ouvertes", {}, empty("Aucune position ouverte."));
-    return panel("Positions ouvertes", { sub: "valorisées au dernier cycle" }, table(["Marché", "Lieu", "Poche", "Sens", "Entrée", "Prix", "PnL latent", "Stop", "Échéance", "Invalidation"], ps.map((q) => {
+    return panel("Positions ouvertes", { sub: "valorisées au dernier cycle · clic sur une ligne pour le détail" }, table(["Marché", "Sens", "Entrée", "Prix", "PnL latent", "Stop"], ps.flatMap((q) => {
       const pnl = q.venue === "hl" ? q.upnl : q.value - q.cost;
-      return h("tr", {}, h("td", {}, market(q)), h("td", {}, venueChip(q)), h("td", {}, POCKET[q.pocket] || q.pocket), h("td", {}, sideChip(q.side)),
-        h("td", { class: "mono" }, px(q.entryPx)), h("td", { class: "mono" }, px(q.mark)), h("td", { class: "mono " + cls(pnl) }, signed(pnl)),
-        h("td", { class: "mono" }, q.stopPx ? px(q.stopPx) : "—"), h("td", {}, q.expiresAt ? when(q.expiresAt) : pmOf(q)?.endDate && q.venue === "pm" ? day(pmOf(q).endDate) : "—"), h("td", { class: "muted", style: "max-width:280px" }, q.invalidation || "—"));
+      return expandable([h("td", {}, market(q)), h("td", {}, sideChip(q.side) || tag("pm", q.outcome || "parts")), h("td", { class: "num" }, px(q.entryPx)), h("td", { class: "num" }, px(q.mark)),
+        h("td", { class: "num " + cls(pnl) }, signed(pnl)), h("td", { class: "num" }, q.stopPx ? px(q.stopPx) : "—")],
+        h("div", { style: "display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.8rem" }, h("span", {}, tag(q.venue === "pm" ? "pm" : "hl")), h("span", { class: "muted" }, `poche ${POCKET[q.pocket] || q.pocket}`),
+          h("span", { class: "muted" }, `ouverte ${when(q.openedAt)}`), q.expiresAt || pmOf(q)?.endDate ? h("span", { class: "muted" }, `échéance ${q.expiresAt ? when(q.expiresAt) : day(pmOf(q).endDate)}`) : null,
+          q.conviction != null ? h("span", { class: "muted" }, `conviction ${q.conviction}`) : null, h("span", { style: "flex-basis:100%" }, h("span", { class: "muted" }, "Invalidation : "), q.invalidation || "—")), 6);
     })));
   }
 
   function candidates() {
     const c = D.cd;
-    if (!c) return panel("Candidats", {}, empty("Pas encore de dossier."));
-    const body = c.candidates.length ? table(["Candidat", "Type", "Poche", "Score", "Indicateurs"], c.candidates.map((x) => h("tr", {},
-      h("td", {}, x.type === "pair" ? h("b", {}, `${coinName(x.long.coin)} / ${coinName(x.short.coin)}`) : market(x), " ", sideChip(x.side)),
-      h("td", {}, x.type), h("td", {}, POCKET[x.pocket] || x.pocket), h("td", { class: "mono" }, f2(x.score)),
-      h("td", { class: "mono muted", style: "font-size:.75rem;max-width:420px" }, Object.entries(x.metrics || {}).filter(([, v]) => typeof v === "number").slice(0, 7).map(([k, v]) => `${k} ${+v.toFixed(4)}`).join(" · "))))) : empty("Aucun candidat retenu à ce cycle.");
-    const rej = c.rejected.slice(0, 15);
-    return panel("Candidats du dernier cycle", { sub: `${when(c.at)} · ${c.wakeLLM ? "LLM réveillés" : "LLM en veille"} (seuil de score ${c.minScore})` }, body,
-      rej.length ? h("details", { style: "margin-top:10px" }, h("summary", { class: "muted" }, `${c.rejected.length} rejet(s)`), h("ul", { class: "muted", style: "font-size:.8rem;margin:6px 0 0 18px" }, rej.map((r) => h("li", {}, cidOf(r.id) ? pmLabel(pmOf({ id: r.id })) : h("span", { class: "mono" }, r.id), " : ", r.reason)))) : null);
+    if (!c) return panel("Candidats du dernier cycle", {}, empty("Pas encore de dossier."));
+    const metricsTxt = (x) => Object.entries(x.metrics || {}).filter(([, v]) => typeof v === "number").map(([k, v]) => `${k} ${+v.toFixed(4)}`).join(" · ");
+    const body = c.candidates.length ? table(["Candidat", "Sens", "Type", "Score", "Indicateurs"], c.candidates.map((x) => h("tr", {},
+      h("td", {}, x.type === "pair" ? h("b", {}, `${coinName(x.long.coin)} / ${coinName(x.short.coin)}`) : market(x)), h("td", {}, sideChip(x.side)),
+      h("td", { class: "muted" }, x.type), h("td", { class: "num" }, f2(x.score)), h("td", { class: "muted mono", style: "font-size:.74rem", title: metricsTxt(x) }, metricsTxt(x))))) : empty("Aucun candidat au-dessus du seuil à ce cycle.");
+    return panel("Candidats du dernier cycle", { sub: `${when(c.at)} · ${c.wakeLLM ? "LLM réveillés" : "LLM en veille"} · seuil ${c.minScore}` }, body,
+      c.rejected.length ? h("div", { style: "margin-top:12px" }, drawer(`${c.rejected.length} candidat(s) écarté(s) par les filtres`,
+        table(["Candidat", "Raison"], c.rejected.slice(0, 40).map((r) => h("tr", {}, h("td", {}, idLabel(r.id)), h("td", { class: "muted", title: r.reason }, r.reason)))))) : null);
   }
 
+  // Une ligne par décision ; les votes de chaque modèle se déplient au clic (au lieu d'un tableau par candidat)
   function votes() {
-    const all = D.vt || [], last = all.filter((v) => v.at).at(-1)?.at;
-    if (!last) return panel("Votes des modèles", {}, empty("Aucun vote pour l'instant (les LLM ne sont réveillés que sur événement, ou faute de clé l'agent de secours décide seul)."));
-    const cycle = all.filter((v) => v.at === last), dec = cycle.filter((v) => v.type === "decision"), vs = cycle.filter((v) => v.type !== "decision");
-    return panel("Votes du dernier réveil", { sub: when(last) }, ...dec.map((d) => h("div", { style: "margin-bottom:14px" },
-      h("div", {}, idLabel(d), " → ", h("span", { class: "chip " + (d.decision === "OPEN" ? "up" : d.decision === "CLOSE" ? "down" : "neutral") }, d.decision), " ", h("span", { class: "muted" }, d.via || ""), d.arbiter ? h("span", { class: "muted" }, ` · arbitre ${d.arbiter.model} : ${d.arbiter.reason}`) : null),
-      table(["Modèle", "Vote", "Conviction", "Métrique citée", "Invalidation"], vs.filter((v) => v.candidate_id === d.candidate_id).map((v) => h("tr", {},
-        h("td", { class: "mono" }, v.model, v.weight === 0 ? h("span", { class: "muted", title: "Modèle « ombre » : poids nul dans la décision, suivi seulement dans le PnL contrefactuel" }, " · ombre") : null),
-        h("td", {}, h("span", { class: "chip " + (v.action === "OPEN" ? "up" : v.action === "HOLD" ? "neutral" : "down") }, v.action), v.valid ? null : h("span", { class: "muted", title: v.invalid_reason }, " écarté")),
-        h("td", { class: "mono" }, v.conviction), h("td", {}, v.citation_ok ? "✓ " : "✗ ", h("span", { class: "muted" }, v.cited_risk_metric)), h("td", { class: "muted", style: "max-width:300px" }, v.invalidation_condition)))))));
+    const all = D.vt || [], last = all.filter((v) => v.at && v.type !== "meta").at(-1)?.at;
+    if (!last) return panel("Décisions du dernier réveil", {}, empty("Aucun vote pour l'instant : les modèles ne sont réveillés que sur événement."));
+    const cycle = all.filter((v) => v.at === last), dec = cycle.filter((v) => v.type === "decision"), vs = cycle.filter((v) => v.type !== "decision" && v.type !== "meta");
+    const dchip = (x) => h("span", { class: "chip " + (x === "OPEN" ? "up" : x === "CLOSE" || x === "REJECT" ? "down" : "neutral") }, x);
+    const tally = (id) => { const v = vs.filter((x) => x.candidate_id === id && x.weight !== 0 && x.valid !== false), c = {}; for (const x of v) c[x.action] = (c[x.action] || 0) + 1; return Object.entries(c).map(([k, n]) => `${n} ${k}`).join(" · ") || "—"; };
+    return panel("Décisions du dernier réveil", { sub: `${when(last)} · clic sur une ligne pour les votes de chaque modèle` },
+      table(["Candidat ou position", "Décision", "Votes", "Conviction", "Voie"], dec.flatMap((d) => expandable([h("td", {}, idLabel(d.candidate_id)), h("td", {}, dchip(d.decision)),
+        h("td", { class: "muted" }, tally(d.candidate_id)), h("td", { class: "num" }, d.conviction ?? "—"), h("td", { class: "muted", title: d.arbiter ? `arbitre ${d.arbiter.model} : ${d.arbiter.reason}` : null }, d.via || "")],
+        h("div", {}, d.arbiter ? h("p", { class: "muted", style: "margin:0 0 8px;font-size:.8rem" }, `Arbitre ${d.arbiter.model} : ${d.arbiter.reason}`) : null,
+          table(["Modèle", "Vote", "Conviction", "Métrique citée", "Invalidation"], vs.filter((v) => v.candidate_id === d.candidate_id).map((v) => h("tr", {},
+            h("td", { class: "mono" }, v.model, v.weight === 0 ? h("span", { class: "sub2" }, "ombre : poids nul") : null), h("td", {}, dchip(v.action), v.valid ? null : h("span", { class: "muted", title: v.invalid_reason }, " écarté")),
+            h("td", { class: "num" }, v.conviction), h("td", { class: "muted", title: v.cited_risk_metric }, (v.citation_ok ? "✓ " : "✗ ") + (v.cited_risk_metric || "")), h("td", { class: "muted", title: v.invalidation_condition }, v.invalidation_condition))))), 5))));
   }
 
   function models() {
     const ms = D.mt?.models || [];
-    return panel("PnL contrefactuel par modèle", { sub: "chaque vote OPEN ouvre une position fantôme ; 1 R = 1 % du capital de départ",
-      noteText: "Mesure indépendante des plafonds : ce qu'aurait obtenu chaque modèle s'il avait décidé seul, en multiples du risque pris." },
-      ms.length ? table(["Modèle", "Famille", "Ouvertes", "Terminées", "Réussite", "R cumulé", "R moyen", "≈ $"], ms.map((m) => h("tr", {}, h("td", { class: "mono" }, m.model), h("td", {}, m.family),
-        h("td", { class: "mono" }, m.open), h("td", { class: "mono" }, m.closed), h("td", { class: "mono" }, pctOr(m.winRate, 0)), h("td", { class: "mono " + cls(m.sumR) }, f2(m.sumR)),
-        h("td", { class: "mono" }, f2(m.avgR)), h("td", { class: "mono " + cls(m.pnlUsd) }, signed(m.pnlUsd || 0)))))
+    return panel("PnL contrefactuel par modèle", { sub: "ce qu'aurait obtenu chaque modèle seul ; 1 R = 1 % du capital de départ",
+      noteText: "Chaque vote OPEN valide ouvre une position fantôme pour son modèle, que le comité l'ait suivie ou non. Mesure indépendante des plafonds de risque, en multiples du risque pris." },
+      ms.length ? table(["Modèle", "Ouvertes · terminées", "Réussite", "R cumulé", "R moyen", "≈ $"], ms.map((m) => h("tr", {}, h("td", { class: "mono", title: `famille ${m.family}` }, m.model),
+        h("td", { class: "num" }, `${m.open} · ${m.closed}`), h("td", { class: "num" }, pctOr(m.winRate, 0)), h("td", { class: "num " + cls(m.sumR) }, f2(m.sumR)),
+        h("td", { class: "num" }, f2(m.avgR)), h("td", { class: "num " + cls(m.pnlUsd) }, signed(m.pnlUsd || 0)))))
         : empty("Pas encore de vote."));
   }
 
+  // 6 colonnes ; type et raison en ligne secondaire ; changements de mode dans un tiroir
   function history() {
-    const ts = (D.tr || []).filter((t) => t.type !== "mode").slice(-50).reverse(), modes = (D.tr || []).filter((t) => t.type === "mode").slice(-5).reverse();
-    return panel("Historique", { sub: "50 derniers mouvements" },
-      modes.length ? h("div", { class: "chips", style: "margin-bottom:10px" }, modes.map((m) => h("span", { class: "chip " + (m.to === "normal" ? "up" : "down") }, `${when(m.at)} : ${MODE[m.from]?.[0] || m.from} → ${MODE[m.to]?.[0] || m.to}`))) : null,
-      ts.length ? table(["Date", "Type", "Marché", "Lieu", "Sens", "Prix", "Montant", "Résultat", "Raison"], ts.map((t) => h("tr", {}, h("td", {}, when(t.at)), h("td", {}, t.type),
-        h("td", {}, market(t)), h("td", {}, venueChip(t)), h("td", {}, sideChip(t.side)), h("td", { class: "mono" }, t.px != null ? px(t.px) : "—"), h("td", { class: "mono" }, t.usd != null ? usd(t.usd, 1) : "—"),
-        h("td", { class: "mono " + cls(t.net ?? t.pnl ?? 0) }, t.net != null ? signed(t.net) : t.pnl != null ? signed(t.pnl) : "—"), h("td", { class: "muted" }, t.reason || t.decision || ""))))
-        : empty("Aucun mouvement pour l'instant."));
+    const ts = (D.tr || []).filter((t) => t.type !== "mode").slice(-100).reverse(), modes = (D.tr || []).filter((t) => t.type === "mode").slice(-10).reverse();
+    const TYPE = { open: "ouverture", close: "fermeture", reduce: "réduction", settle: "résolution" };
+    return panel("Historique des trades", { sub: `${ts.length} derniers mouvements` },
+      ts.length ? table(["Date", "Marché", "Sens", "Prix", "Montant", "Résultat"], ts.map((t) => h("tr", { title: [TYPE[t.type] || t.type, t.reason || t.decision].filter(Boolean).join(" · ") },
+        h("td", { class: "muted" }, when(t.at), h("span", { class: "sub2" }, TYPE[t.type] || t.type)), h("td", {}, market(t)), h("td", {}, sideChip(t.side)),
+        h("td", { class: "num" }, t.px != null ? px(t.px) : "—"), h("td", { class: "num" }, t.usd != null ? usd(t.usd, 1) : "—"),
+        h("td", { class: "num " + cls(t.net ?? t.pnl ?? 0) }, t.net != null ? signed(t.net) : t.pnl != null ? signed(t.pnl) : "—")))) : empty("Aucun mouvement pour l'instant."),
+      modes.length ? h("div", { style: "margin-top:12px" }, drawer(`Changements de mode de risque (${modes.length})`, h("div", { class: "chips" }, modes.map((m) => h("span", { class: "chip " + (m.to === "normal" ? "up" : "down") }, `${when(m.at)} : ${MODE[m.from]?.[0] || m.from} → ${MODE[m.to]?.[0] || m.to}`))))) : null);
   }
 
   function render() {
@@ -156,14 +169,14 @@ App.views.paper = (() => {
     if (!base()) return z.box.replaceChildren(empty("Instantané : l'agent de paper trading n'est visible que sur le site en ligne ou dans la version locale (node server.mjs)."));
     if (D.err) return z.box.replaceChildren(empty(D.err));
     if (!D.pf) return z.box.replaceChildren(empty("Chargement…"));
-    z.box.replaceChildren(kpis(), curve(), h("div", { class: "grid g2" }, positions(), candidates()), votes(), models(), history(),
-      h("p", { class: "disclaimer" }, `Capital fictif de ${usd(D.pf.startCapital, 0)}, aucune somme réelle n'est engagée. Dernier cycle : ${when(D.pf.lastTick)}. Les ordres sont simulés sur les carnets réels d'Hyperliquid et de Polymarket ; tailles, stops et freins de drawdown sont fixés par le code, jamais par les modèles.`));
+    z.box.replaceChildren(kpis(), curve(), positions(), candidates(), votes(), models(), history(),
+      h("p", { class: "disclaimer" }, `Capital fictif, aucune somme réelle engagée · dernier cycle ${when(D.pf.lastTick)} · ordres simulés sur les carnets réels ; tailles, stops et freins de drawdown fixés par le code.`));
   }
 
   return {
     title: () => ["Agent de ", h("em", {}, "paper trading")],
-    sub: "10 000 $ fictifs gérés à partir des signaux du terminal : candidats filtrés par le code, vote de trois modèles indépendants, risque et exécution déterministes.",
-    init(box) { z.box = h("div", { style: "display:flex;flex-direction:column;gap:22px" }); box.append(z.box); render(); load(); },
+    sub: "10 000 $ fictifs : candidats filtrés par le code, vote de trois modèles, risque et exécution déterministes.",
+    init(box) { z.box = h("div", { style: "display:flex;flex-direction:column;gap:var(--gap)" }); box.append(z.box); render(); load(); },
     update() { if (Date.now() - D.at > 60_000) load(); },
   };
 })();

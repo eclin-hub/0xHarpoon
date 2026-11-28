@@ -30,7 +30,7 @@ App.views.flux = (() => {
       const recent = S.events.filter((e) => Date.now() - e.t < win * 3600e3), hl = recent.filter((e) => e.src === "hl"), h1 = S.events.filter((e) => Date.now() - e.t < 3600e3);
       const sumIn = (side) => h1.filter((e) => e.src === "hl" && e.side === side && (e.kind === "open" || e.kind === "add")).reduce((s, e) => s + Math.abs(e.delta), 0);
       const stat = (l, v, c) => h("div", { class: "fstat" }, h("span", { class: "l" }, l), h("b", { class: "mono " + (c || "") }, v));
-      z.stats.replaceChildren(stat("Mouvements (1 h)", String(h1.length)), stat("Longs ajoutés (1 h)", usd(sumIn("long")), "up"), stat("Shorts ajoutés (1 h)", usd(sumIn("short")), "down"), stat("Mouvements (" + win + " h)", String(recent.length)), stat("Au total", String(S.events.length)));
+      z.stats.replaceChildren(stat("Mouvements (1 h)", String(h1.length)), stat("Longs ajoutés (1 h)", usd(sumIn("long")), "up"), stat("Shorts ajoutés (1 h)", usd(sumIn("short")), "down"), stat("Mouvements (" + win + " h)", String(recent.length)));   // 4 indicateurs : le total depuis le démarrage n'aide pas la lecture
       // actifs
       const by = {}; for (const e of hl) { const x = (by[e.coin] ??= { coin: e.coin, net: 0, gross: 0, n: 0, l: 0, s: 0 }); const v = Math.abs(e.delta); x.net += sg(e) * v; x.gross += v; x.n++; sg(e) > 0 ? (x.l += v) : (x.s += v); }
       const top = Object.values(by).sort((a, b) => b.gross - a.gross).slice(0, 10), mk = marketMap();
@@ -83,16 +83,16 @@ App.views.funding = (() => {
   return {
     title: () => ["Funding & ", h("em", {}, "open interest")],
     sub: "Qui paie pour garder sa position, combien d'argent est engagé, et où les baleines sont du même côté que la foule. Un funding extrême avec des baleines du même côté signale un trade encombré.",
-    init(box) { z.sc = h("div", {}); z.tbl = h("div", { class: "scroll limited" }); box.append(panel("Funding contre biais des baleines", { sub: "taille de bulle = open interest · clic pour ouvrir le calculateur" }, z.sc, h("p", { class: "disclaimer", style: "margin:10px 0 0" }, "Horizontal : funding annualisé (positif = les longs paient les shorts). Vertical : biais net des comptes de l'échantillon sur l'actif (+100 % = tous long).")), panel("Marchés", { sub: "triés par open interest" }, z.tbl)); },
+    init(box) { z.sc = h("div", {}); z.tbl = h("div", { class: "scroll limited" }); box.append(panel("Funding contre biais des baleines", { sub: "taille de bulle = open interest · clic pour ouvrir le calculateur", noteText: "Horizontal : funding annualisé (positif = les longs paient les shorts). Vertical : biais net des comptes de l'échantillon sur l'actif (+100 % = tous long)." }, z.sc), panel("Marchés", { sub: "triés par open interest" }, z.tbl)); },
     update(S) {
       const cb = Object.fromEntries(S.hl.coins.map((c) => [c.coin, c])), mk = S.hl.markets.filter((m) => m.oi >= 5e6);
       const pts = S.hl.coins.filter((c) => S.hl.markets.find((m) => m.coin === c.coin) && c.gross >= 1e6).map((c) => { const m = S.hl.markets.find((x) => x.coin === c.coin), sk = (c.longN - c.shortN) / (c.gross || 1), f = fundingAnn(m);
         return { x: f, y: sk, r: m.oi, label: coinName(c.coin).slice(0, 4), coin: c.coin, tip: [h("b", {}, coinName(c.coin)), `Funding : ${spct(f, 1)}/an`, `Baleines : ${spct(sk)} (${c.nLong} L / ${c.nShort} S)`, `OI : ${usd(m.oi)}`] }; });
       Ch.scatter(z.sc, pts, { xLabel: "funding annualisé", yLabel: "biais des baleines", xFmt: (v) => spct(v), yFmt: (v) => spct(v), xMax: 0.4, onClick: (p) => { ui.calc.coin = p.coin; save(); location.hash = "calc"; } });
       const flag = (m, c) => { const f = fundingAnn(m), sk = c ? (c.longN - c.shortN) / (c.gross || 1) : 0; if (f > 0.25 && sk > 0.3) return ["warn", "longs encombrés"]; if (f < -0.25 && sk < -0.3) return ["warn", "shorts encombrés"]; if (f > 0.25) return ["neutral", "longs paient"]; if (f < -0.25) return ["neutral", "shorts paient"]; return null; };
-      z.tbl.replaceChildren(sortableTable("fund", [{ t: "Actif", cell: (m) => h("b", {}, coinName(m.coin)) }, { t: "Prix", cls: "r", cell: (m) => h("span", { class: "mono" }, px(m.mark)) }, { t: "24 h", cls: "r", sort: (m) => m.chg, cell: (m) => h("span", { class: "mono " + cls(m.chg) }, spct(m.chg, 1)) },
+      z.tbl.replaceChildren(sortableTable("fund", [{ t: "Actif", cell: (m) => h("span", {}, h("b", {}, coinName(m.coin)), h("span", { class: "sub2" }, px(m.mark))) }, { t: "24 h", cls: "r", sort: (m) => m.chg, cell: (m) => h("span", { class: "mono " + cls(m.chg) }, spct(m.chg, 1)) },
         { t: "Funding / an", cls: "r", sort: fundingAnn, cell: (m) => h("span", { class: "mono " + (Math.abs(fundingAnn(m)) > 0.25 ? "warn" : "") }, spct(fundingAnn(m), 1)) }, { t: "Open interest", cls: "r", sort: (m) => m.oi, cell: (m) => h("span", { class: "mono" }, usd(m.oi)) },
-        { t: "Volume 24 h", cls: "r", sort: (m) => m.vol, cell: (m) => h("span", { class: "mono muted" }, usd(m.vol)) }, { t: "Baleines", sort: (m) => (cb[m.coin] ? (cb[m.coin].longN - cb[m.coin].shortN) / (cb[m.coin].gross || 1) : -2), cell: (m) => cb[m.coin] ? bias(cb[m.coin].longN, cb[m.coin].shortN) : h("span", { class: "dim" }, "–") },
+        { t: "Baleines", sort: (m) => (cb[m.coin] ? (cb[m.coin].longN - cb[m.coin].shortN) / (cb[m.coin].gross || 1) : -2), cell: (m) => cb[m.coin] ? bias(cb[m.coin].longN, cb[m.coin].shortN) : h("span", { class: "dim" }, "–") },
         { t: "Lecture", cell: (m) => { const f = flag(m, cb[m.coin]); return f ? h("span", { class: "chip " + f[0] }, f[1]) : null; } }], mk, { defaultSort: { k: "Open interest", dir: "desc" } }));
     },
   };

@@ -25,8 +25,8 @@ function accept(S) {
 }
 function tick() {
   const S = App.S; if (!S) return;
-  if (App.PAGES && typeof Live !== "undefined" && Live.state.posAt) { $("liveTxt").textContent = (App.liveOk ? "direct · " : "direct interrompu · ") + "positions il y a " + ago(Live.state.posAt); $("dot").classList.toggle("on", !!App.liveOk); }
-  else $("liveTxt").textContent = App.SNAP ? (App.PAGES ? "en ligne · données de " : "instantané · ") + new Date(S.updatedAt).toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "en direct · " + ago(S.updatedAt);
+  if (App.PAGES && typeof Live !== "undefined" && Live.state.posAt) { $("liveTxt").textContent = App.liveOk ? "direct" : "direct interrompu"; $("dot").classList.toggle("on", !!App.liveOk); }
+  else $("liveTxt").textContent = App.SNAP ? (App.PAGES ? "en ligne" : "instantané") : "en direct";   // l'âge des données est affiché une seule fois, sous « Actualiser »
   const age = Math.round((Date.now() - S.updatedAt) / 1000), a = $("refreshAge");
   const last = Math.max(App.checkedAt || 0, typeof Live !== "undefined" ? Live.state.posAt || 0 : 0, typeof Live !== "undefined" ? Live.state.mkAt || 0 : 0);
   a.textContent = App.PAGES ? "actualisé il y a " + ago(last || S.updatedAt) : (App.SNAP ? "données d'il y a " : "mis à jour il y a ") + ago(S.updatedAt); a.classList.toggle("stale", App.PAGES ? Date.now() - (last || 0) > 180e3 : age > (App.SNAP ? 900 : 120));
@@ -95,6 +95,7 @@ fold("xasset", "funding", "Funding et open interest", "Qui paie pour garder sa p
 fold("sent", "histo", "Évolution et meilleurs comptes", "Le score dans le temps, et l'avis des 20 meilleurs comptes face aux autres.");
 fold("news", "social", "Réseaux en direct", "Canaux Telegram d'alertes, Truth Social, et X une fois branché.");
 buildChrome();
+Tidy.start();   // mise en ordre automatique des tableaux et listes de la vue affichée
 window.addEventListener("hashchange", route);
 if (App.SNAP) { App.S = App.SNAP; App.firstState = false; }
 route();
