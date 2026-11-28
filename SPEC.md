@@ -89,12 +89,12 @@ Remplace le débat séquentiel par une architecture parallèle pour éliminer la
 
 ### 4.1 Routeur LLM Multi-Providers (100 % Gratuit)
 Implémenter une classe `LLMRouter` (`lib/paper/router.mjs`) avec fallback automatique et validation stricte du JSON renvoyé (schéma maison dans `lib/paper/schema.mjs`, sans dépendance, pour garder le projet installable sans `npm install` ; Zod reste possible si on accepte un `npm ci` dans les workflows). Une réponse invalide compte comme une absence de réponse. Les 3 votants doivent être **3 modèles distincts** ; le routeur les prend dans l'ordre des fournisseurs ci-dessous et passe au suivant en cas d'erreur, de limite ou de JSON invalide :
-1. ~~**GitHub Models**~~ : service retiré le 30 juillet 2026, plus utilisé
-2. **Groq** (`openai/gpt-oss-120b`, `qwen/qwen3.8-27b` : 2 votants)
-3. **Gemini**, API directe Google AI Studio (`gemini-3.8-flash` et `gemini-3.5-flash-lite` : modèles « ombre » depuis le 28/11/2026, 3.8-flash en HTTP 429 en ~200 ms sur la clé AI Studio, voir §4.3 ; `gemini-3.6-flash` retiré le 28/11/2026, HTTP 429 faute de quota)
-4. **Gemma 4** sur l'API Gemini, même clé, API native `generateContent` (`gemma-4-26b-a4b-it`, secours `gemma-4-31b-it` : arbitre)
-5. **Cerebras / SambaNova** (offres gratuites rapides, si leurs clés existent ; identifiants non vérifiés)
-6. **OpenRouter** (modèles `:free` seulement : `ernie-5.5-flash-preview` en ombre, réponses vides ; `gemma-4-31b-it` remplace un arbitre absent)
+Socle depuis le 28/11/2026 (nettoyage des fournisseurs défaillants) :
+1. **DeepSeek** (`DEEPSEEK_API_KEY`, payant à l'usage, `https://api.deepseek.com/chat/completions`) : `deepseek-v4-pro` (DeepSeek-V4-Pro-0813) et `deepseek-flash` (DeepSeek-V4.1-Flash-1017), identifiants vérifiés dans la documentation ; délai 120 s, 8 000 tokens de sortie (raisonnement par défaut).
+2. **Groq** (`GROQ_API_KEY`, gratuit) : `openai/gpt-oss-120b`, `qwen/qwen3.8-27b` ; quota de 8 000 tokens/min par modèle réservé au vote.
+3. **OpenRouter** (`OPENROUTER_API_KEY`, modèles gratuits) : routeur `openrouter/free` + 1 modèle `:free` d'au moins 24 Md de paramètres (taille lue dans l'identifiant) découvert dans le catalogue (le 28/11/2026 : `google/gemma-4-31b-it:free`).
+- **Routage par tâche :** vote = tous les modèles du socle (poids 4 % à 30 %, une voix par modèle) ; arbitrage des votes serrés et synthèse du régime macro = `deepseek-v4-pro` d'abord, sinon le n° 1 du classement (l'arbitre peut avoir voté : il tranche sur les votes chiffrés qu'il reçoit) ; compilation des Blueprints et mutation Gen-2 = `deepseek-flash` d'abord, puis `deepseek-v4-pro`, Groq et `openrouter/free`.
+- **Retirés :** GitHub Models (service fermé le 30/07/2026), Mistral (HTTP 402, abonnement requis), Gemini et Gemma via Google AI Studio (HTTP 429, JSON incomplets), Ernie (réponses vides), Cerebras et SambaNova (jamais de clé). Les mentions de ces modèles plus bas décrivent l'historique.
 
 ### 4.2 Processus de Décision
 1. **Vote Parallèle Indépendant (3 modèles distincts) :**

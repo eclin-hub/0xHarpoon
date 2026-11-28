@@ -20,35 +20,25 @@ const deps = (books) => ({ fetchL2Book: async (c) => books[c], fetchBook: async 
 const hlPos = (id, coin, side, openedAt = NOW - 24 * H) => ({ id, venue: "hl", pocket: "core", coin, side, size: 1, entryPx: 100, entryUsd: 100, stopPx: side === "long" ? 90 : 110,
   entryFee: 0, fees: 0, funding: 0, realized: 0, mark: 100, upnl: 0, openedAt: new Date(openedAt).toISOString(), lastFundingAt: new Date(openedAt).toISOString() });
 
-test("(a) modèles ombre (gemini-3.8-flash, gemini-3.5-flash-lite, ernie) : poids nul dans le consensus, suivis dans le PnL contrefactuel ; gemini-3.6-flash retiré", async () => {
-  const all = DEFAULT_PROVIDERS.flatMap((p) => p.models);
-  assert.deepEqual(all.filter((m) => m.shadowOnly).map((m) => m.id), ["gemini-3.8-flash", "gemini-3.5-flash-lite", "baidu/ernie-5.5-flash-preview:free"]);
-  assert.ok(!all.some((m) => m.id === "gemini-3.6-flash"));
-  assert.deepEqual(all.filter((m) => m.role === "voter" && !/llama|qwen-3-32b|Llama|DeepSeek/.test(m.id)).map((m) => m.id),
-    ["openai/gpt-oss-120b", "qwen/qwen3.8-27b", "mistral-small-latest", "openrouter/free"]);
-  assert.equal(all.find((m) => m.role === "arbiter").id, "gemma-4-26b-a4b-it");
-  // vrai routeur, faux serveur : les votants disent REJECT, les deux modèles ombre disent OPEN
+test("(a) modèles ombre (shadowOnly) : poids nul dans le consensus, suivis dans le PnL contrefactuel ; aucun dans le socle actuel", async () => {
+  assert.deepEqual(DEFAULT_PROVIDERS.flatMap((p) => p.models).filter((m) => m.shadowOnly), []);
+  // mécanisme conservé : un modèle marqué shadowOnly vote à part, poids nul
+  const providers = [{ name: "p", url: "https://p.test/v1", keyEnv: "K", models: [{ id: "a", family: "a" }, { id: "b", family: "b" }, { id: "s", family: "s", shadowOnly: true }] }];
   const f = async (url, init) => {
-    const model = JSON.parse(init.body).model, shadow = /gemini-3\.[58]|ernie/.test(model);
+    const model = JSON.parse(init.body).model, shadow = model === "s";
     return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify({ votes: [vote(CAND.id, shadow ? "OPEN" : "REJECT", shadow ? 95 : 70)] }) } }] }), { status: 200 });
   };
-  // OpenRouter limité à ses modèles ombre et arbitre ici : les votants décisionnels sont ceux de Groq
-  const providers = DEFAULT_PROVIDERS.filter((p) => p.name !== "gemma").map((p) => (p.name === "openrouter" ? { ...p, models: p.models.filter((m) => m.role !== "voter") } : p));
-  const router = new LLMRouter({ env: { GROQ_API_KEY: "k", GEMINI_API_KEY: "g", OPENROUTER_API_KEY: "o" }, providers, fetch: f });
-  assert.ok(!router.available().some((m) => /gemini|ernie/.test(m.model)));
+  const router = new LLMRouter({ env: { K: "k" }, providers, fetch: f });
+  assert.deepEqual(router.available().map((m) => m.model), ["a", "b"]);
   const d = await decide({ router, dossier: dossier(), portfolio: initialPortfolio(), now: NOW });
   assert.equal(d.mode, "vote");
-  assert.deepEqual(d.votes.filter((v) => v.weight > 0).map((v) => [v.model, v.weight]), [["openai/gpt-oss-120b", 0.5], ["qwen/qwen3.8-27b", 0.5]]);   // poids égaux sans classement
+  assert.deepEqual(d.votes.filter((v) => v.weight > 0).map((v) => [v.model, v.weight]), [["a", 0.5], ["b", 0.5]]);   // poids égaux sans classement
   assert.deepEqual(d.errors, []); assert.deepEqual(d.shadowErrors, []);
   const sh = d.votes.filter((v) => v.weight === 0);
-  assert.deepEqual(sh.map((v) => v.model).sort(), ["baidu/ernie-5.5-flash-preview:free", "gemini-3.5-flash-lite", "gemini-3.8-flash"]);
-  assert.ok(sh.every((v) => v.action === "OPEN" && v.shadowOnly));
-  assert.equal(d.decisions.length, 0);                                     // 2 REJECT décisionnels : aucun poids pour les 3 OPEN
-  assert.equal(d.records[0].decision, "REJECT"); assert.equal(d.records[0].n, 2);
-  const book = addShadows(null, d.votes, dossier(), NOW).book;             // le suivi contrefactuel garde les deux modèles
-  assert.deepEqual(book.open.map((s) => s.model).sort(), ["baidu/ernie-5.5-flash-preview:free", "gemini-3.5-flash-lite", "gemini-3.8-flash"]);
+  assert.deepEqual(sh.map((v) => v.model), ["s"]); assert.ok(sh.every((v) => v.action === "OPEN" && v.shadowOnly));
+  assert.equal(d.decisions.length, 0); assert.equal(d.records[0].decision, "REJECT"); assert.equal(d.records[0].n, 2);
+  assert.deepEqual(addShadows(null, d.votes, dossier(), NOW).book.open.map((s) => s.model), ["s"]);
 });
-
 test("(b) sortie par vote refusée à t + 2 h ; acceptée après 8 h ou sur invalidation majeure (≥ 85 %)", async () => {
   const p = { ...initialPortfolio(), positions: [hlPos("hl-1", "BTC", "long", NOW - 2 * H)] };
   const close = { id: "hl-1", action: "CLOSE", via: "2/3 votes", closeShare: 2 / 3, conviction: 75 };

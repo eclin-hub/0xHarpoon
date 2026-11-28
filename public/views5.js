@@ -144,7 +144,8 @@ App.views.paper = (() => {
 
   // Classement dynamique des modèles (llm_ranking.json) : remplace l'ancien tableau du PnL contrefactuel par modèle
   function models() {
-    const rk = D.rk, ms = rk?.models || [], P = rk?.params || {}, voted = !!rk?.applied;
+    // seuls les modèles du routeur actif : un modèle retiré (Gemini, Ernie, Mistral…) n'apparaît plus, même avec d'anciens trades fantômes
+    const rk = D.rk, conf = rk?.configured ? new Set(rk.configured) : null, ms = (rk?.models || []).filter((m) => !conf || conf.has(m.model)), P = rk?.params || {}, voted = !!rk?.applied;
     // Statut : « Actif », « Actif · sans réponse · 429 TPM » (cause courte, message complet en infobulle), « Ombre (config) »
     const st = (m) => {
       const err = m.cycleError?.message || m.lastError?.message || rk.health?.[m.model]?.lastError || null;
@@ -160,7 +161,7 @@ App.views.paper = (() => {
       return h("td", { class: "num", title: "poids cible (pas de vote depuis ce classement)" }, pct(tgt, 1), h("span", { class: "sub2" }, "cible"));
     };
     return panel("Classement des modèles IA", { sub: `${rk ? when(rk.at) + " · " : ""}${P.active ?? ms.filter((m) => !m.shadowOnly).length} modèles actifs votent à chaque réveil · poids de ${pct(P.floor ?? P.minWeight ?? 0.04, 0)} à ${pct(P.cap ?? P.maxWeight ?? 0.3, 0)} · trades fantômes clos sur ${P.windowDays ?? 30} j (${P.maxTrades ?? 40} au plus)`,
-      noteText: "Score : PSR, facteur de profit et taux de réussite des trades fantômes (chaque vote OPEN valide ouvre une position fantôme pour son modèle), ramenés vers 1 (neutre) par un prior bayésien : score neutre sous 5 trades clos, légère pénalité en cas d'échecs répétés. Tous les modèles actifs votent à chaque réveil ; poids cible proportionnel à max(0,2 ; score)², borné entre 4 % (un modèle mal classé garde une voix) et 30 %. Un même modèle servi par plusieurs fournisseurs (ex. llama 3.3 70b sur Cerebras et OpenRouter) n'a qu'une voix, partagée entre ses copies. Un modèle actif qui ne répond pas pèse 0 sur ce cycle (« Cible · Cycle 0 % ») et sa part est redistribuée aux autres. Les modèles grisés (Ombre) ne pèsent jamais sur la décision, mais leurs votes restent suivis. 1 R = 1 % du capital de départ." },
+      noteText: "Score : PSR, facteur de profit et taux de réussite des trades fantômes (chaque vote OPEN valide ouvre une position fantôme pour son modèle), ramenés vers 1 (neutre) par un prior bayésien : score neutre sous 5 trades clos, légère pénalité en cas d'échecs répétés. Tous les modèles actifs votent à chaque réveil ; poids cible proportionnel à max(0,2 ; score)², borné entre 4 % (un modèle mal classé garde une voix) et 30 %. Un même modèle servi par plusieurs fournisseurs n'a qu'une voix, partagée entre ses copies. Arbitrage et régime macro : deepseek-v4-pro d'abord ; Blueprints et mutations : deepseek-flash d'abord. Un modèle actif qui ne répond pas pèse 0 sur ce cycle (« Cible · Cycle 0 % ») et sa part est redistribuée aux autres. Les modèles grisés (Ombre) ne pèsent jamais sur la décision, mais leurs votes restent suivis. 1 R = 1 % du capital de départ." },
       ms.length ? table(["Modèle", "Statut", "Trades shadow", "Réussite", "R cumulé · Sharpe", "Poids de vote"], ms.map((m) => h("tr", m.shadowOnly ? { style: "opacity:.6" } : {},
         h("td", { class: "mono", title: `rang ${m.rank} · famille ${m.family} · ${m.provider} · score ${f2(m.score, 2)}${m.sharedWith?.length ? ` · voix partagée avec ${m.sharedWith.join(", ")} (même modèle, autre fournisseur)` : ""}` }, m.model,
           h("span", { class: "sub2" }, `#${m.rank} · score ${f2(m.score, 2)}${m.sharedWith?.length ? ` · voix partagée ×${m.sharedWith.length + 1}` : ""}`)),

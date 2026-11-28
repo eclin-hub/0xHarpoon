@@ -44,6 +44,8 @@ jobs:
       - name: Collecter les données et construire le site
         run: node scripts/snapshot.mjs --site
         env:
+          # même clé que l'agent de paper trading (trading_loop.yml) ; la collecte du site n'appelle aucun LLM aujourd'hui
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
           X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
           TWITTERAPI_IO_KEY: ${{ secrets.TWITTERAPI_IO_KEY }}
 

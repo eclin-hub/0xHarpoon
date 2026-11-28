@@ -99,7 +99,7 @@ class FakeRouter {
   constructor(ballots, arbiter = null) { this.ballots = ballots; this.arbiter = arbiter; this.calls = []; }
   available() { return [{}]; }
   async collect(n, messages, validate, opts = {}) {
-    this.calls.push({ n, exclude: opts.excludeFamilies || [] });
+    this.calls.push({ n, exclude: opts.excludeFamilies || [], prefer: opts.prefer || null });
     const src = n === 1 && this.calls.length > 1 ? (this.arbiter ? [this.arbiter] : []) : this.ballots;
     const results = [];
     for (const b of src) { const v = validate(b.json); if (v.ok) results.push({ provider: "fake", model: b.family, family: b.family, value: v.value }); }
@@ -116,13 +116,16 @@ test("decide : unanimité OPEN → conviction moyenne, sans arbitre", async () =
   assert.equal(d.decisions[0].horizonH, 72);
 });
 
-test("decide : 2 contre 1 → arbitre d'une autre famille ; objection non chiffrée écartée", async () => {
+test("decide : 2 contre 1 → arbitre (deepseek-v4-pro d'abord, puis le n° 1 du classement) ; objection non chiffrée écartée", async () => {
   const cited = [ballot("a", [vote(CAND.id, "OPEN")]), ballot("b", [vote(CAND.id, "OPEN")]), ballot("c", [vote(CAND.id, "REJECT", 70, "dist_atr = 0.55 : trop tard")])];
   const arb = { family: "d", json: { candidate_id: CAND.id, action: "REJECT", conviction: 65, reason: "trop tard", cited_metric: "dist_atr 0.55" } };
   const r = new FakeRouter(cited, arb);
   const d = await decide({ router: r, dossier: dossier(), portfolio: initialPortfolio(), now: NOW });
   assert.equal(d.decisions.length, 0); assert.equal(d.records[0].via, "arbitre"); assert.equal(d.records[0].arbiter.family, "d");
-  assert.deepEqual(r.calls[1].exclude, ["a", "b", "c"]);
+  assert.deepEqual(r.calls[1].exclude, []); assert.equal(r.calls[1].prefer[0], "deepseek-v4-pro");   // il peut avoir voté : il tranche sur les votes chiffrés
+  const r2 = new FakeRouter(cited, arb);
+  await decide({ router: r2, dossier: dossier(), portfolio: initialPortfolio(), now: NOW, ranking: { order: ["qwen/qwen3.8-27b", "openai/gpt-oss-120b"], scores: {} } });
+  assert.deepEqual(r2.calls[1].prefer, ["deepseek-v4-pro", "qwen/qwen3.8-27b", "openai/gpt-oss-120b"]);   // repli : ordre du classement
   // même vote contre, mais sans métrique : écarté → unanimité des 2 votes valides
   const vague = [cited[0], cited[1], ballot("c", [vote(CAND.id, "REJECT", 70, "je n'aime pas")])];
   const d2 = await decide({ router: new FakeRouter(vague), dossier: dossier(), portfolio: initialPortfolio(), now: NOW });
@@ -203,68 +206,50 @@ test("LLMRouter : erreurs avec le début du corps (modèle retiré, réponse non
   assert.ok(out.errors[0].length <= "p3/D : HTTP 404 : ".length + 200);
 });
 
-test("DEFAULT_PROVIDERS : ordre Groq, Gemini, Cerebras, Mistral, OpenRouter ; modèles retirés absents", async () => {
-  const { DEFAULT_PROVIDERS } = await import("../../lib/paper/router.mjs");
-  assert.deepEqual(DEFAULT_PROVIDERS.map((p) => p.name), ["groq", "gemini", "gemma", "cerebras", "mistral", "sambanova", "openrouter"]);
+test("DEFAULT_PROVIDERS : socle DeepSeek, Groq, OpenRouter ; fournisseurs morts retirés ; préférences par tâche", async () => {
+  const { DEFAULT_PROVIDERS, ARBITER_PREFER, TASK_PREFER } = await import("../../lib/paper/router.mjs");
+  assert.deepEqual(DEFAULT_PROVIDERS.map((p) => p.name), ["deepseek", "groq", "openrouter"]);
   const by = (n) => DEFAULT_PROVIDERS.find((p) => p.name === n);
-  assert.deepEqual([by("cerebras").keyEnv, by("cerebras").url], ["CEREBRAS_API_KEY", "https://api.cerebras.ai/v1/chat/completions"]);
-  assert.deepEqual(by("cerebras").models.map((m) => m.id), ["llama-3.3-70b", "qwen-3-32b"]);
-  assert.deepEqual([by("mistral").keyEnv, by("mistral").url, by("mistral").models[0].id], ["MISTRAL_API_KEY", "https://api.mistral.ai/v1/chat/completions", "mistral-small-latest"]);
-  assert.ok(by("openrouter").models.some((m) => m.id === "openrouter/free" && m.role === "voter"));
-  // identifiants :free retirés par OpenRouter (404, 28/11/2026) : remplacés par la découverte du catalogue
-  for (const id of ["meta-llama/llama-3.3-70b-instruct:free", "qwen/qwen3-235b-a22b:free"]) assert.ok(!by("openrouter").models.some((m) => m.id === id), id);
-  assert.equal(by("openrouter").timeoutMs, 60_000);
-  assert.equal(DEFAULT_PROVIDERS.find((p) => p.name === "gemma").keyEnv, "GEMINI_API_KEY");
-  assert.ok(!DEFAULT_PROVIDERS.some((p) => p.name === "github" || /models\.github\.ai/.test(p.url)));
-  const ids = DEFAULT_PROVIDERS.flatMap((p) => p.models.map((m) => m.id));
-  for (const gone of ["llama-3.3-70b-versatile", "qwen/qwen3-32b", "llama-3.1-8b-instant", "gemini-2.0-flash", "gemini-2.5-flash", "gemini-2.5-pro",
-    "nvidia/nemotron-3-ultra-550b-a55b:free", "nvidia/nemotron-3.5-lightning:free", "deepseek/deepseek-chat-v3-0324:free"]) assert.ok(!ids.includes(gone), gone);
-  assert.ok(by("openrouter").models.every((m) => m.id.endsWith(":free") || m.id === "openrouter/free"));   // jamais de modèle payant
-  // familles distinctes des votants fixes : au moins 6 dès que toutes les clés sont là (+ jusqu'à 3 modèles OpenRouter découverts)
-  const fams = new Set(DEFAULT_PROVIDERS.flatMap((p) => p.models).filter((m) => m.role === "voter" && !m.shadowOnly).map((m) => m.family));
-  assert.ok(fams.size >= 6, [...fams].join());
+  assert.deepEqual([by("deepseek").keyEnv, by("deepseek").url], ["DEEPSEEK_API_KEY", "https://api.deepseek.com/chat/completions"]);
+  assert.deepEqual(by("deepseek").models.map((m) => m.id), ["deepseek-v4-pro", "deepseek-flash"]);
+  assert.deepEqual(by("groq").models.map((m) => m.id), ["openai/gpt-oss-120b", "qwen/qwen3.8-27b"]);
+  assert.deepEqual(by("openrouter").models.map((m) => m.id), ["openrouter/free"]);   // + 1 modèle découvert dans le catalogue
+  assert.equal(by("openrouter").timeoutMs, 60_000); assert.equal(by("deepseek").timeoutMs, 120_000); assert.equal(by("deepseek").maxTokens, 8000);
+  const ids = DEFAULT_PROVIDERS.flatMap((p) => p.models.map((m) => m.id)), keys = DEFAULT_PROVIDERS.map((p) => p.keyEnv);
+  for (const gone of ["mistral-small-latest", "gemini-3.5-flash-lite", "gemini-3.8-flash", "gemma-4-26b-a4b-it", "gemma-4-31b-it", "baidu/ernie-5.5-flash-preview:free",
+    "llama-3.3-70b", "qwen-3-32b", "Meta-Llama-3.3-70B-Instruct", "meta-llama/llama-3.3-70b-instruct:free", "qwen/qwen3-235b-a22b:free"]) assert.ok(!ids.includes(gone), gone);
+  for (const k of ["MISTRAL_API_KEY", "GEMINI_API_KEY", "CEREBRAS_API_KEY", "SAMBANOVA_API_KEY"]) assert.ok(!keys.includes(k), k);
+  assert.ok(!DEFAULT_PROVIDERS.some((p) => /googleapis|models\.github\.ai|azure/.test(p.url)));
+  assert.equal(new Set(DEFAULT_PROVIDERS.flatMap((p) => p.models).filter((m) => !m.shadowOnly).map((m) => m.family)).size, 5);   // 5 familles fixes + 1 découverte
+  assert.deepEqual(ARBITER_PREFER, ["deepseek-v4-pro"]); assert.equal(TASK_PREFER[0], "deepseek-flash");
 });
 
 const pass = (j) => ({ ok: true, value: j });
-// faux serveur qui parle les deux formats : chat completions (OpenAI) et generateContent (Google natif)
+// faux serveur « chat completions »
 const BALLOT = '{"votes":[]}';
-const okBallot = async (url) => new Response(JSON.stringify(/:generateContent$/.test(url)
-  ? { candidates: [{ content: { parts: [{ text: "réflexion", thought: true }, { text: BALLOT }] } }] }
-  : { choices: [{ message: { content: BALLOT } }] }), { status: 200 });
+const okBallot = async () => new Response(JSON.stringify({ choices: [{ message: { content: BALLOT } }] }), { status: 200 });
 
-test("Groq + Gemini : votants gpt-oss et qwen3.8 (gemini-3.8 en ombre) ; arbitre Gemma 26b par l'API native de Google", async () => {
+test("socle réel : DeepSeek + Groq + OpenRouter votent ensemble ; requête chat completions, max_tokens par fournisseur", async () => {
   const calls = [];
   const f = async (url, init) => { calls.push({ url, headers: init.headers, body: JSON.parse(init.body) }); return okBallot(url); };
-  const r = new LLMRouter({ env: { GROQ_API_KEY: "k", GEMINI_API_KEY: "secret-g" }, fetch: f });
+  const r = new LLMRouter({ env: { DEEPSEEK_API_KEY: "secret-d", GROQ_API_KEY: "k", OPENROUTER_API_KEY: "o" }, fetch: f, sleep: async () => {} });
   const sys = [{ role: "system", content: "Règles" }, { role: "user", content: "Dossier" }];
-  const v = await r.collect(3, sys, pass, { role: "voter" });
-  assert.deepEqual(v.results.map((x) => x.model), ["openai/gpt-oss-120b", "qwen/qwen3.8-27b"]);
-  assert.ok(r.shadowModels().some((m) => m.model === "gemini-3.8-flash"));
-  const a = await r.collect(1, sys, pass, { excludeFamilies: v.results.map((x) => x.family), role: "arbiter" });
-  assert.equal(a.results[0].model, "gemma-4-26b-a4b-it"); assert.deepEqual(a.results[0].value, { votes: [] });   // la partie « thought » est ignorée
-  const g = calls.at(-1);
-  assert.equal(g.url, "https://generativelanguage.googleapis.com/v1beta/models/gemma-4-26b-a4b-it:generateContent");
-  assert.equal(g.headers["x-goog-api-key"], "secret-g"); assert.ok(!g.url.includes("secret-g")); assert.equal(g.headers.authorization, undefined);
-  assert.deepEqual(g.body.systemInstruction, { parts: [{ text: "Règles" }] });
-  assert.deepEqual(g.body.contents, [{ role: "user", parts: [{ text: "Dossier" }] }]);
-  assert.equal(g.body.generationConfig.responseMimeType, "application/json");
+  const v = await r.collectAll(sys, pass);
+  assert.deepEqual(v.results.map((x) => x.model).sort(), ["deepseek-flash", "deepseek-v4-pro", "openai/gpt-oss-120b", "openrouter/free", "qwen/qwen3.8-27b"]);
+  const d = calls.find((c) => c.body.model === "deepseek-v4-pro");
+  assert.equal(d.url, "https://api.deepseek.com/chat/completions"); assert.equal(d.headers.authorization, "Bearer secret-d");
+  assert.equal(d.body.max_tokens, 8000); assert.deepEqual(d.body.response_format, { type: "json_object" });
+  assert.equal(calls.find((c) => c.body.model === "openai/gpt-oss-120b").body.max_tokens, 4000);
+  // sans clé DeepSeek : les autres votent quand même (non bloquant)
+  const r2 = new LLMRouter({ env: { GROQ_API_KEY: "k" }, fetch: f });
+  assert.deepEqual(r2.available().map((m) => m.model), ["openai/gpt-oss-120b", "qwen/qwen3.8-27b"]);
 });
-
-test("secours : Gemini 3.8 en 429 (ombre) → jamais interrogé comme votant ; Gemma 26b en 429 → Gemma 31b ; Google indisponible → OpenRouter", async () => {
-  const f = async (url, init) => {
-    if (/gemini-3\.8-flash/.test(init.body)) return new Response('{"error":{"code":429,"message":"Resource exhausted"}}', { status: 429 });
-    if (url.includes("gemma-4-26b-a4b-it:generateContent")) return new Response('{"error":{"code":429,"message":"Resource exhausted"}}', { status: 429 });
-    return okBallot(url); };
-  const r = new LLMRouter({ env: { GROQ_API_KEY: "k", GEMINI_API_KEY: "g", OPENROUTER_API_KEY: "o" }, fetch: f });
-  const v = await r.collect(3, [], pass, { role: "voter" });
-  assert.deepEqual(v.results.map((x) => x.model), ["openai/gpt-oss-120b", "qwen/qwen3.8-27b", "openrouter/free"]);   // gemini-3.8, ernie et 3.5-flash-lite sont en ombre
-  assert.deepEqual(v.errors, []);   // le 429 de gemini-3.8 ne pollue plus les votants
-  const sh = await r.collectShadow([], pass);
-  assert.ok(sh.errors.some((e) => /gemini\/gemini-3\.8-flash : HTTP 429/.test(e)));
-  const a = await r.collect(1, [], pass, { excludeFamilies: v.results.map((x) => x.family), role: "arbiter" });
-  assert.equal(a.results[0].model, "gemma-4-31b-it"); assert.match(a.errors[0], /gemma\/gemma-4-26b-a4b-it : HTTP 429/);
-  // Google entièrement indisponible pour Gemma : OpenRouter (même famille gemma, puis ernie) en dernier recours
-  const down = async (url) => (url.includes(":generateContent") ? new Response("", { status: 500 }) : okBallot(url));
-  const r2 = new LLMRouter({ env: { GEMINI_API_KEY: "g", OPENROUTER_API_KEY: "o" }, fetch: down });
-  assert.equal((await r2.collect(1, [], pass, { excludeFamilies: ["gemini", "gpt-oss", "qwen3.8"], role: "arbiter" })).results[0].model, "google/gemma-4-31b-it:free");
+test("arbitre : deepseek-v4-pro en panne → repli sur le n° 1 du classement ; préférence suivie tous fournisseurs confondus", async () => {
+  const seen = [];
+  const f = async (url, init) => { const m = JSON.parse(init.body).model; seen.push(m);
+    return m === "deepseek-v4-pro" ? new Response('{"error":{"message":"Service Unavailable"}}', { status: 503 }) : okBallot(url); };
+  const r = new LLMRouter({ env: { DEEPSEEK_API_KEY: "d", GROQ_API_KEY: "k" }, fetch: f });
+  const a = await r.collect(1, [], pass, { prefer: ["deepseek-v4-pro", "qwen/qwen3.8-27b", "openai/gpt-oss-120b"], role: "arbiter" });
+  assert.deepEqual(seen, ["deepseek-v4-pro", "qwen/qwen3.8-27b"]); assert.equal(a.results[0].model, "qwen/qwen3.8-27b");
+  assert.match(a.errors[0], /deepseek\/deepseek-v4-pro : HTTP 503/);
 });

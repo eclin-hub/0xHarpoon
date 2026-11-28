@@ -175,7 +175,7 @@ const wake = wakeReasons({ dossier, portfolio: p, markets: extra.markets, now })
 const ai = { wake, mode: noNet || noLlm ? "désactivé" : wake.length ? null : "en veille", decisions: [], refused: [], models: [] };
 if (!ai.mode) {
   const router = llmRouter;
-  if (!router.available().length) { ai.mode = "secours"; problems.push("aucune clé LLM (GROQ_API_KEY, CEREBRAS_API_KEY…) : agent de secours, aucune ouverture"); }
+  if (!router.available().length) { ai.mode = "secours"; problems.push("aucune clé LLM (DEEPSEEK_API_KEY, GROQ_API_KEY, OPENROUTER_API_KEY) : agent de secours, aucune ouverture"); }
   else {
     const d = await decide({ router, dossier, portfolio: p, markets: extra.markets, now, xContext, ranking, regime: regimeContext(regime) });
     ranking = recordCycle({ ...ranking, health: updateHealth(ranking.health, router.log, now) }, d.weights ?? {}, router.log);
@@ -198,7 +198,7 @@ if (!ai.mode) {
     if (ex.trades.length) { const m = markToMarket(p, { markets: extra.markets, pmBooks: extra.pmBooks }, now); p = m.portfolio; point = { ...m.point, mode: p.mode }; }
   }
 }
-// Flux ∞ : compilation des Blueprints en attente, après le vote (mistral-small d'abord, puis Groq, puis openrouter/free).
+// Flux ∞ : compilation des Blueprints en attente, après le vote (deepseek-flash d'abord, puis Groq, puis openrouter/free).
 // Les nouveaux Blueprints entrent en Division 1 au cycle suivant. Jamais bloquant.
 if (!noX && !noNet && !noLlm && xr.alpha && xr.cache) {
   try { const cr = await compileLibrary(xr.alpha, xr.cache, blueprintExtractor(), { now }); xr.alpha = cr.alpha; xr.cache = cr.cache; }

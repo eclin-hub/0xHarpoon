@@ -148,6 +148,13 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 - Blueprints : qwen3.8 d'abord, normalisation avant validation, compilation à chaque cycle même avec une collecte réutilisée.
 - D1 labo synthétique (GJR-GARCH, sauts, régimes), D2 live sur les vrais prix horaires, D3 champions mêlés aux LLM (65 / 35). Rien n'est encore en D2 en production : il faut d'abord des Blueprints compilés (clé Groq) qui passent la D1, puis au moins 15 trades réels pour atteindre la D3.
 
+### Socle LLM nettoyé : DeepSeek, Groq, OpenRouter (28/11/2026)
+- Retirés du code et des workflows : Mistral (402), Gemini / Gemma via Google AI Studio (429, JSON incomplets), Ernie (réponses vides), Cerebras et SambaNova (sans clé). Ajouté : DeepSeek (`DEEPSEEK_API_KEY`), identifiants vérifiés dans sa documentation (`deepseek-v4-pro`, `deepseek-flash`).
+- Socle de 6 votants : deepseek-v4-pro, deepseek-flash, gpt-oss-120b, qwen3.8-27b, openrouter/free et 1 modèle OpenRouter ≥ 24 Md (catalogue réel : `google/gemma-4-31b-it:free`) ; 16,7 % chacun au score neutre, 30 % au plus.
+- Arbitrage et régime macro : deepseek-v4-pro d'abord ; Blueprints et mutation Gen-2 : deepseek-flash d'abord (le quota de Groq reste au vote). L'arbitre peut désormais être un des votants.
+- Classement : seuls les modèles du routeur actif s'affichent (`configured`), les anciens trades fantômes de Gemini, Ernie ou Mistral restent dans le shadow book sans être montrés.
+- À vérifier au prochain cycle réel : réponses de DeepSeek (délai, mode JSON avec raisonnement) et coût par cycle (DeepSeek est payant).
+
 ### Votants OpenRouter découverts dans le catalogue (28/11/2026)
 - Cycle réel : `meta-llama/llama-3.3-70b-instruct:free` (404 « payant seulement ») et `qwen/qwen3-235b-a22b:free` (404 « déprécié le 9 oct. 2026 ») retirés ; votants gratuits désormais découverts dans le catalogue public d'OpenRouter (6 h de cache). Catalogue réel du jour : 13 modèles gratuits → `particle-ai/particle-1:free`, `recursive/flint-v1.0:free`, `nvidia/nemotron-3.5-super-vl:free` (réponses réelles à vérifier au prochain cycle : clé OpenRouter absente en local).
 - `openrouter/free` en « délai » : il atteignait la limite de 60 s, déjà la valeur par défaut ; la limite est gardée à 60 s (35 s aurait multiplié les abandons), désormais réglable par fournisseur.

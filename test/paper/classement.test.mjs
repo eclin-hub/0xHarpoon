@@ -158,19 +158,19 @@ test("JSON habillé : balises markdown, texte avant / après, accolades dans la 
   assert.throws(() => extractJson("pas de JSON"), /aucun JSON/); assert.throws(() => extractJson('{"a": 1'), /incomplet/);
 });
 
-test("Blueprints compilés après le vote : collecte sans compilation, puis compileLibrary ; mistral-small essayé en premier", async () => {
+test("Blueprints compilés après le vote : collecte sans compilation, puis compileLibrary ; deepseek-flash essayé en premier", async () => {
   const posts = { "arxiv:1": { id: "arxiv:1", kind: "infinity", interest: 80, src: "arxiv", author: "A", text: "Momentum factor.", t: NOW - H, url: null } };
   let calls = 0;
-  const ex = async () => { calls++; return { blueprint: { name: "Momentum", thesis: "t", universe: ["BTC"], side: "both", horizon_hours: 24, blocks: [{ type: "momentum", weight: 1, params: {} }], entry: { score_above: 0.2 }, exit: { stop_atr: 2, max_hold_hours: 24 } }, model: "mistral-small-latest" }; };
+  const ex = async () => { calls++; return { blueprint: { name: "Momentum", thesis: "t", universe: ["BTC"], side: "both", horizon_hours: 24, blocks: [{ type: "momentum", weight: 1, params: {} }], entry: { score_above: 0.2 }, exit: { stop_atr: 2, max_hold_hours: 24 } }, model: "deepseek-flash" }; };
   const { alpha, cache } = await runXAlpha({ cache: { posts }, env: {}, free: false, net: false, now: NOW, deferCompile: true, extract: ex });
   assert.equal(calls, 0); assert.equal(alpha.infinity.blueprints.length, 0); assert.equal(alpha.infinity.translator, "après le vote de trading");
   assert.ok(!alpha.notes.some((n) => /traducteur indisponible/.test(n)));
-  const after = await compileLibrary(alpha, cache, ex, { now: NOW, env: { MISTRAL_API_KEY: "m", GROQ_API_KEY: "g" } });
-  assert.equal(calls, 1); assert.equal(after.alpha.infinity.blueprints.length, 1); assert.match(after.alpha.infinity.translator, /^mistral-small → qwen3.8/);
+  const after = await compileLibrary(alpha, cache, ex, { now: NOW, env: { DEEPSEEK_API_KEY: "d", GROQ_API_KEY: "g" } });
+  assert.equal(calls, 1); assert.equal(after.alpha.infinity.blueprints.length, 1); assert.match(after.alpha.infinity.translator, /^deepseek-flash → qwen3.8/);
   const order = [];
-  const ext = blueprintExtractor({ env: { MISTRAL_API_KEY: "m", GROQ_API_KEY: "g", OPENROUTER_API_KEY: "o" }, fetch: reply((m) => { order.push(m); return { none: true }; }) });
+  const ext = blueprintExtractor({ env: { DEEPSEEK_API_KEY: "d", GROQ_API_KEY: "g", OPENROUTER_API_KEY: "o" }, fetch: reply((m) => { order.push(m); return { none: true }; }) });
   await ext({ author: "a", text: "x", src: "arxiv" });
-  assert.deepEqual(order, ["mistral-small-latest", "qwen/qwen3.8-27b", "openai/gpt-oss-120b", "openrouter/free"]);
+  assert.deepEqual(order, ["deepseek-flash", "deepseek-v4-pro", "qwen/qwen3.8-27b", "openai/gpt-oss-120b", "openrouter/free"]);
 });
 
 test("dépouillement pondéré : 4 OPEN sur 6 ouvrent sans arbitre si leur poids ≥ 75 %, arbitre à poids égaux ; conviction pondérée", () => {

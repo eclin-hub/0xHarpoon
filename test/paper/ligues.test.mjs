@@ -5,7 +5,7 @@ import { coerceBlueprint, validateBlueprint, BLUEPRINT_PROMPT_V } from "../../li
 import { blueprintExtractor, runXAlpha, updateLibrary, ingest, X_CONFIG } from "../../lib/paper/x_scraper.mjs";
 import { generateScenario, runSyntheticBenchmark, GJR } from "../../lib/paper/synthetic_market.mjs";
 import { newBook } from "../../lib/paper/blueprint_eval.mjs";
-import { emptyLeagues, admitBlueprints, stepLeagues, maybeMutate, championSignals, libraryStatus, updateLiveMarket, d1Verdict, LEAGUE } from "../../lib/paper/league_engine.mjs";
+import { emptyLeagues, admitBlueprints, stepLeagues, maybeMutate, defaultMutator, championSignals, libraryStatus, updateLiveMarket, d1Verdict, LEAGUE } from "../../lib/paper/league_engine.mjs";
 import { metaWeights, mixDecisions, DEFAULT_PROVIDERS } from "../../lib/paper/router.mjs";
 
 const NOW = Date.UTC(2026, 10, 28, 12), H = 3600e3;
@@ -218,7 +218,13 @@ test("mutation Gen-2 : hybride des 2 meilleurs survivants, repasse par D1, au pl
   assert.equal(g2.author, "gemma-4-26b-a4b-it");
   st = await maybeMutate(st, { now: NOW + 3 * H, mutator, bench: PASS });
   assert.equal(seen.length, 1);
-  assert.equal(DEFAULT_PROVIDERS.find((p) => p.name === "gemma").models[0].id, "gemma-4-26b-a4b-it");
+  // mutateur par défaut : deepseek-flash d'abord, Groq ensuite
+  const order = [];
+  const f = async (url, init) => { const m = JSON.parse(init.body).model; order.push(m); return new Response(JSON.stringify({ choices: [{ message: { content: m === "deepseek-flash" ? "pas de JSON" : JSON.stringify(BP) } }] }), { status: 200 }); };
+  const mut = defaultMutator({ env: { DEEPSEEK_API_KEY: "d", GROQ_API_KEY: "g" }, fetch: f });
+  const out = await mut(st.entries[0], st.entries[1]);
+  assert.deepEqual(order.slice(0, 2), ["deepseek-flash", "deepseek-v4-pro"]); assert.equal(out.model, "deepseek-v4-pro");
+  assert.equal(defaultMutator({ env: {} }), null);
 });
 
 /* ---------- meta-ensemble ---------- */

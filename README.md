@@ -190,7 +190,7 @@ A $10,000 **simulated** portfolio driven by the terminal's whale signals (full s
 
 Setup:
 
-1. **Settings → Secrets and variables → Actions**: add `GROQ_API_KEY` (free; Groq alone gives only two voters; add `GEMINI_API_KEY` (Google AI Studio, free) for the third voter, which also serves the arbiter (Gemma 4, through Google's native `generateContent` API); `OPENROUTER_API_KEY` (`:free` models) is an optional last resort). GitHub Models was retired on July 30, 2026 and is no longer used. Optional, for a fourth model family (arbiter): `CEREBRAS_API_KEY`, `SAMBANOVA_API_KEY`, `OPENROUTER_API_KEY`, `GEMINI_API_KEY`; override the model list with the `PAPER_LLM_PROVIDERS` variable (JSON) when a model id is retired.
+1. **Settings → Secrets and variables → Actions**: add `DEEPSEEK_API_KEY` (paid, pay-as-you-go: `deepseek-v4-pro` votes, arbitrates and reads the macro regime; `deepseek-flash` compiles Blueprints and breeds Gen-2 hybrids), `GROQ_API_KEY` (free: `gpt-oss-120b`, `qwen3.8-27b`) and `OPENROUTER_API_KEY` (free: `openrouter/free` plus one `:free` model of at least 24B parameters discovered in the catalog). A missing key simply drops that provider. Mistral, Gemini/Gemma (Google AI Studio), Ernie, Cerebras, SambaNova and GitHub Models are no longer used. Override the model list with the `PAPER_LLM_PROVIDERS` variable (JSON) when a model id is retired.
 2. Run **`Agent de paper trading`** once from the **Actions** tab (after `Mise à jour des données` has created the `state` branch).
 3. Optional *Border* pocket: schedule a Claude task 3–4 times a day with the instructions in [`scripts/border_prompt.md`](scripts/border_prompt.md); it writes `border_proposals.json` to a dedicated `border` branch.
 

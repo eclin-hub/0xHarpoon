@@ -56,12 +56,12 @@ test("5 régimes : krach, choc de volatilité, squeeze, tendance, compression", 
   assert.equal(REGIMES.length, 5);
 });
 
-test("synthèse LLM : meilleur votant actif, cache 2 h invalidé dès qu'un événement entre dans la fenêtre ; jamais de levée d'un stress dur", async () => {
+test("synthèse LLM : deepseek-v4-pro d'abord, puis le meilleur votant actif ; cache 2 h invalidé dès qu'un événement entre dans la fenêtre ; jamais de levée d'un stress dur", async () => {
   const calls = [];
   const router = { collect: async (n, messages, validate, opts) => { calls.push(opts.prefer); return { results: [{ model: opts.prefer?.[0] ?? "x", value: validate({ regime: "TREND_RISK_ON", confidence: 85, rationale: "Tendance propre." }).value }], errors: [] }; } };
   const ranking = { active: ["openai/gpt-oss-120b", "qwen/qwen3.8-27b"], order: ["openai/gpt-oss-120b", "qwen/qwen3.8-27b"] };
   let r = await evaluateMacroRegime({ calendarEvents: [], live: calm(), router, ranking, now: NOW });
-  assert.equal(calls.length, 1); assert.equal(calls[0][0], "openai/gpt-oss-120b");            // meilleur actif en tête
+  assert.equal(calls.length, 1); assert.deepEqual(calls[0].slice(0, 2), ["deepseek-v4-pro", "openai/gpt-oss-120b"]);   // deepseek-v4-pro, puis le meilleur actif
   assert.equal(r.regime.regime, "TREND_RISK_ON"); assert.match(r.regime.source, /^LLM/);        // régime « mou » nuancé par un LLM sûr de lui
   r = await evaluateMacroRegime({ calendarEvents: [], live: calm(), router, ranking, cache: r.cache, now: NOW + H });
   assert.equal(calls.length, 1); assert.equal(r.regime.llm.cached, true);                      // cache de 2 h
