@@ -24,18 +24,21 @@ test("(a) modèles ombre (gemini-3.8-flash, gemini-3.5-flash-lite, ernie) : poid
   const all = DEFAULT_PROVIDERS.flatMap((p) => p.models);
   assert.deepEqual(all.filter((m) => m.shadowOnly).map((m) => m.id), ["gemini-3.8-flash", "gemini-3.5-flash-lite", "baidu/ernie-5.5-flash-preview:free"]);
   assert.ok(!all.some((m) => m.id === "gemini-3.6-flash"));
-  assert.deepEqual(all.filter((m) => m.role === "voter" && !/llama|qwen-3-32b|Llama|DeepSeek/.test(m.id)).map((m) => m.id), ["openai/gpt-oss-120b", "qwen/qwen3.8-27b"]);
+  assert.deepEqual(all.filter((m) => m.role === "voter" && !/llama|qwen-3-32b|Llama|DeepSeek/.test(m.id)).map((m) => m.id),
+    ["openai/gpt-oss-120b", "qwen/qwen3.8-27b", "mistral-small-latest", "qwen/qwen3-235b-a22b:free", "openrouter/free"]);
   assert.equal(all.find((m) => m.role === "arbiter").id, "gemma-4-26b-a4b-it");
   // vrai routeur, faux serveur : les votants disent REJECT, les deux modèles ombre disent OPEN
   const f = async (url, init) => {
     const model = JSON.parse(init.body).model, shadow = /gemini-3\.[58]|ernie/.test(model);
     return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify({ votes: [vote(CAND.id, shadow ? "OPEN" : "REJECT", shadow ? 95 : 70)] }) } }] }), { status: 200 });
   };
-  const router = new LLMRouter({ env: { GROQ_API_KEY: "k", GEMINI_API_KEY: "g", OPENROUTER_API_KEY: "o" }, providers: DEFAULT_PROVIDERS.filter((p) => p.name !== "gemma"), fetch: f });
+  // OpenRouter limité à ses modèles ombre et arbitre ici : les votants décisionnels sont ceux de Groq
+  const providers = DEFAULT_PROVIDERS.filter((p) => p.name !== "gemma").map((p) => (p.name === "openrouter" ? { ...p, models: p.models.filter((m) => m.role !== "voter") } : p));
+  const router = new LLMRouter({ env: { GROQ_API_KEY: "k", GEMINI_API_KEY: "g", OPENROUTER_API_KEY: "o" }, providers, fetch: f });
   assert.ok(!router.available().some((m) => /gemini|ernie/.test(m.model)));
   const d = await decide({ router, dossier: dossier(), portfolio: initialPortfolio(), now: NOW });
   assert.equal(d.mode, "vote");
-  assert.deepEqual(d.votes.filter((v) => v.weight === 1).map((v) => v.model), ["openai/gpt-oss-120b", "qwen/qwen3.8-27b"]);
+  assert.deepEqual(d.votes.filter((v) => v.weight > 0).map((v) => [v.model, v.weight]), [["openai/gpt-oss-120b", 0.5], ["qwen/qwen3.8-27b", 0.5]]);   // poids égaux sans classement
   assert.deepEqual(d.errors, []); assert.deepEqual(d.shadowErrors, []);
   const sh = d.votes.filter((v) => v.weight === 0);
   assert.deepEqual(sh.map((v) => v.model).sort(), ["baidu/ernie-5.5-flash-preview:free", "gemini-3.5-flash-lite", "gemini-3.8-flash"]);

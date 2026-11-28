@@ -63,8 +63,8 @@ App.views.paper = (() => {
     const b = base(); if (!b) return;
     const get = async (f, kind) => { const r = await fetch(b + f + (App.PAGES ? "?t=" + Date.now() : ""), { cache: "no-store" }); if (!r.ok) return kind === "jsonl" ? [] : null; return kind === "jsonl" ? jsonl(await r.text()) : r.json(); };
     try {
-      const [pf, mt, cd, eq, tr, vt, pm] = await Promise.all([get("portfolio_state.json"), get("metrics.json"), get("candidates.json"), get("equity_curve.jsonl", "jsonl"), get("trades_history.jsonl", "jsonl"), get("model_votes.jsonl", "jsonl"), get("pm_markets.json")]);
-      Object.assign(D, { pf, mt, cd, eq, tr, vt, pm: pm || {}, at: Date.now(), err: pf ? null : "Aucun état trouvé : l'agent n'a pas encore tourné." });
+      const [pf, mt, cd, eq, tr, vt, pm, rk] = await Promise.all([get("portfolio_state.json"), get("metrics.json"), get("candidates.json"), get("equity_curve.jsonl", "jsonl"), get("trades_history.jsonl", "jsonl"), get("model_votes.jsonl", "jsonl"), get("pm_markets.json"), get("llm_ranking.json")]);
+      Object.assign(D, { pf, mt, cd, eq, tr, vt, pm: pm || {}, rk, at: Date.now(), err: pf ? null : "Aucun état trouvé : l'agent n'a pas encore tourné." });
     } catch (e) { D.err = "Lecture impossible : " + e.message; D.at = Date.now(); }
     render();
   }
@@ -138,18 +138,22 @@ App.views.paper = (() => {
         h("td", { class: "muted" }, tally(d.candidate_id)), h("td", { class: "num" }, d.conviction ?? "—"), h("td", { class: "muted", title: d.arbiter ? `arbitre ${d.arbiter.model} : ${d.arbiter.reason}` : null }, d.via || "")],
         h("div", {}, d.arbiter ? h("p", { class: "muted", style: "margin:0 0 8px;font-size:.8rem" }, `Arbitre ${d.arbiter.model} : ${d.arbiter.reason}`) : null,
           table(["Modèle", "Vote", "Conviction", "Métrique citée", "Invalidation"], vs.filter((v) => v.candidate_id === d.candidate_id).map((v) => h("tr", {},
-            h("td", { class: "mono" }, v.model, v.weight === 0 ? h("span", { class: "sub2" }, "ombre : poids nul") : null), h("td", {}, dchip(v.action), v.valid ? null : h("span", { class: "muted", title: v.invalid_reason }, " écarté")),
+            h("td", { class: "mono" }, v.model, v.weight === 0 ? h("span", { class: "sub2" }, v.probe ? "ombre : repêchage, poids nul" : "ombre : poids nul") : typeof v.weight === "number" && v.weight < 1 ? h("span", { class: "sub2" }, `poids ${pct(v.weight, 0)}`) : null), h("td", {}, dchip(v.action), v.valid ? null : h("span", { class: "muted", title: v.invalid_reason }, " écarté")),
             h("td", { class: "num" }, v.conviction), h("td", { class: "muted", title: v.cited_risk_metric }, (v.citation_ok ? "✓ " : "✗ ") + (v.cited_risk_metric || "")), h("td", { class: "muted", title: v.invalidation_condition }, v.invalidation_condition))))), 5))));
   }
 
+  // Classement dynamique des modèles (llm_ranking.json) : remplace l'ancien tableau du PnL contrefactuel par modèle
   function models() {
-    const ms = D.mt?.models || [];
-    return panel("PnL contrefactuel par modèle", { sub: "ce qu'aurait obtenu chaque modèle seul ; 1 R = 1 % du capital de départ",
-      noteText: "Chaque vote OPEN valide ouvre une position fantôme pour son modèle, que le comité l'ait suivie ou non. Mesure indépendante des plafonds de risque, en multiples du risque pris." },
-      ms.length ? table(["Modèle", "Ouvertes · terminées", "Réussite", "R cumulé", "R moyen", "≈ $"], ms.map((m) => h("tr", {}, h("td", { class: "mono", title: `famille ${m.family}` }, m.model),
-        h("td", { class: "num" }, `${m.open} · ${m.closed}`), h("td", { class: "num" }, pctOr(m.winRate, 0)), h("td", { class: "num " + cls(m.sumR) }, f2(m.sumR)),
-        h("td", { class: "num" }, f2(m.avgR)), h("td", { class: "num " + cls(m.pnlUsd) }, signed(m.pnlUsd || 0)))))
-        : empty("Pas encore de vote."));
+    const rk = D.rk, ms = rk?.models || [];
+    const st = (m) => h("span", { class: "chip " + (m.status.startsWith("Actif") ? "up" : "neutral"), title: m.fails ? `échecs récents ${pct(m.fails, 0)}${rk.health?.[m.model]?.lastError ? " · " + rk.health[m.model].lastError : ""}` : null }, m.status);
+    const P = rk?.params || {};
+    return panel("Classement des modèles IA", { sub: `${rk ? when(rk.at) + " · " : ""}${P.minActive ?? 6} votants actifs au plus, poids plafonné à ${pct(P.cap ?? P.maxWeight ?? 0.3, 0)} · trades fantômes clos sur ${P.windowDays ?? 30} j (${P.maxTrades ?? 40} au plus)`,
+      noteText: "Score : PSR, facteur de profit et taux de réussite des trades fantômes (chaque vote OPEN valide ouvre une position fantôme pour son modèle), ramenés vers 1 (neutre) par un prior bayésien : score neutre sous 5 trades clos, légère pénalité en cas d'échecs répétés. Les 6 meilleurs de familles distinctes votent avec un poids proportionnel à leur score, plafonné à 30 % ; les autres sont en sourdine (poids nul), mais 2 d'entre eux votent en ombre à chaque réveil et redeviennent actifs dès qu'ils remontent dans le Top 6. 1 R = 1 % du capital de départ." },
+      ms.length ? table(["Modèle", "Statut", "Trades shadow", "Réussite", "R cumulé · Sharpe", "Poids de vote"], ms.map((m) => h("tr", {},
+        h("td", { class: "mono", title: `rang ${m.rank} · famille ${m.family} · ${m.provider} · score ${f2(m.score, 2)}` }, m.model, h("span", { class: "sub2" }, `#${m.rank} · score ${f2(m.score, 2)}`)),
+        h("td", {}, st(m)), h("td", { class: "num" }, String(m.trades)), h("td", { class: "num" }, pctOr(m.winRate, 0)),
+        h("td", { class: "num " + cls(m.sumR || 0) }, `${f2(m.sumR)} R · ${f2(m.sharpe)}`), h("td", { class: "num" }, m.weight > 0 ? pct(m.weight, 1) : "0 %"))))
+        : empty("Pas encore de classement : il apparaît au premier cycle avec une clé LLM."));
   }
 
   // 6 colonnes ; type et raison en ligne secondaire ; changements de mode dans un tiroir
@@ -175,7 +179,7 @@ App.views.paper = (() => {
 
   return {
     title: () => ["Agent de ", h("em", {}, "paper trading")],
-    sub: "10 000 $ fictifs : candidats filtrés par le code, vote de trois modèles, risque et exécution déterministes.",
+    sub: "10 000 $ fictifs : candidats filtrés par le code, vote pondéré de 6 modèles classés sur leurs résultats, risque et exécution déterministes.",
     init(box) { z.box = h("div", { style: "display:flex;flex-direction:column;gap:var(--gap)" }); box.append(z.box); render(); load(); },
     update() { if (Date.now() - D.at > 60_000) load(); },
   };

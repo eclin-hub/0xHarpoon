@@ -203,15 +203,23 @@ test("LLMRouter : erreurs avec le début du corps (modèle retiré, réponse non
   assert.ok(out.errors[0].length <= "p3/D : HTTP 404 : ".length + 200);
 });
 
-test("DEFAULT_PROVIDERS : ordre Groq, Gemini, OpenRouter en secours ; modèles retirés absents", async () => {
+test("DEFAULT_PROVIDERS : ordre Groq, Gemini, Cerebras, Mistral, OpenRouter ; modèles retirés absents", async () => {
   const { DEFAULT_PROVIDERS } = await import("../../lib/paper/router.mjs");
-  assert.deepEqual(DEFAULT_PROVIDERS.map((p) => p.name), ["groq", "gemini", "gemma", "cerebras", "sambanova", "openrouter"]);
+  assert.deepEqual(DEFAULT_PROVIDERS.map((p) => p.name), ["groq", "gemini", "gemma", "cerebras", "mistral", "sambanova", "openrouter"]);
+  const by = (n) => DEFAULT_PROVIDERS.find((p) => p.name === n);
+  assert.deepEqual([by("cerebras").keyEnv, by("cerebras").url], ["CEREBRAS_API_KEY", "https://api.cerebras.ai/v1/chat/completions"]);
+  assert.deepEqual(by("cerebras").models.map((m) => m.id), ["llama-3.3-70b", "qwen-3-32b"]);
+  assert.deepEqual([by("mistral").keyEnv, by("mistral").url, by("mistral").models[0].id], ["MISTRAL_API_KEY", "https://api.mistral.ai/v1/chat/completions", "mistral-small-latest"]);
+  for (const id of ["meta-llama/llama-3.3-70b-instruct:free", "qwen/qwen3-235b-a22b:free", "openrouter/free"]) assert.ok(by("openrouter").models.some((m) => m.id === id && m.role === "voter"), id);
   assert.equal(DEFAULT_PROVIDERS.find((p) => p.name === "gemma").keyEnv, "GEMINI_API_KEY");
   assert.ok(!DEFAULT_PROVIDERS.some((p) => p.name === "github" || /models\.github\.ai/.test(p.url)));
   const ids = DEFAULT_PROVIDERS.flatMap((p) => p.models.map((m) => m.id));
   for (const gone of ["llama-3.3-70b-versatile", "qwen/qwen3-32b", "llama-3.1-8b-instant", "gemini-2.0-flash", "gemini-2.5-flash", "gemini-2.5-pro",
     "nvidia/nemotron-3-ultra-550b-a55b:free", "nvidia/nemotron-3.5-lightning:free", "deepseek/deepseek-chat-v3-0324:free"]) assert.ok(!ids.includes(gone), gone);
-  assert.ok(DEFAULT_PROVIDERS.find((p) => p.name === "openrouter").models.every((m) => m.id.endsWith(":free")));
+  assert.ok(by("openrouter").models.every((m) => m.id.endsWith(":free") || m.id === "openrouter/free"));   // jamais de modèle payant
+  // familles distinctes des votants décisionnels : au moins 6 dès que toutes les clés sont là (llama Cerebras = llama OpenRouter)
+  const fams = new Set(DEFAULT_PROVIDERS.flatMap((p) => p.models).filter((m) => m.role === "voter" && !m.shadowOnly).map((m) => m.family));
+  assert.ok(fams.size >= 6, [...fams].join());
 });
 
 const pass = (j) => ({ ok: true, value: j });
@@ -246,7 +254,7 @@ test("secours : Gemini 3.8 en 429 (ombre) → jamais interrogé comme votant ; G
     return okBallot(url); };
   const r = new LLMRouter({ env: { GROQ_API_KEY: "k", GEMINI_API_KEY: "g", OPENROUTER_API_KEY: "o" }, fetch: f });
   const v = await r.collect(3, [], pass, { role: "voter" });
-  assert.deepEqual(v.results.map((x) => x.model), ["openai/gpt-oss-120b", "qwen/qwen3.8-27b"]);   // gemini-3.8, ernie et 3.5-flash-lite sont en ombre
+  assert.deepEqual(v.results.map((x) => x.model), ["openai/gpt-oss-120b", "qwen/qwen3.8-27b", "meta-llama/llama-3.3-70b-instruct:free"]);   // gemini-3.8, ernie et 3.5-flash-lite sont en ombre
   assert.deepEqual(v.errors, []);   // le 429 de gemini-3.8 ne pollue plus les votants
   const sh = await r.collectShadow([], pass);
   assert.ok(sh.errors.some((e) => /gemini\/gemini-3\.8-flash : HTTP 429/.test(e)));

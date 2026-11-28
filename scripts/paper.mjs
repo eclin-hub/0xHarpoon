@@ -30,6 +30,7 @@ import { emptyShadow, addShadows, updateShadows, modelStats } from "../lib/paper
 import { summarize } from "../lib/paper/metrics.mjs";
 import { borderCandidates, borderNeeds, markSeen } from "../lib/paper/border.mjs";
 import { runXAlpha, promptContext } from "../lib/paper/x_scraper.mjs";
+import { emptyRanking, rankModels, updateHealth, recordCycle } from "../lib/paper/llm_ranking.mjs";
 
 const args = process.argv.slice(2);
 const dry = args.includes("--dry-run"), noNet = args.includes("--no-net"), noLlm = args.includes("--no-llm"), noX = args.includes("--no-x");
@@ -136,11 +137,18 @@ let p = t.portfolio, point = t.point;
 const trades = [...t.trades], votesLog = [];
 const wake = wakeReasons({ dossier, portfolio: p, markets: extra.markets, now });
 const ai = { wake, mode: noNet || noLlm ? "désactivé" : wake.length ? null : "en veille", decisions: [], refused: [], models: [] };
+// classement dynamique des modèles (shadow_book.json) : ordre et poids des votants, modèles en sourdine à repêcher.
+// Recalculé à chaque cycle pour l'affichage ; la rotation du repêchage n'avance qu'aux réveils.
+const llmRouter = new LLMRouter();
+const rankPrev = (await store.readJson(FILES.llmRanking).catch(() => null)) ?? emptyRanking();
+let ranking = rankModels({ models: llmRouter.rankable(), book: shadow, state: rankPrev, now });
+if (ai.mode) ranking = { ...ranking, rotation: rankPrev.rotation ?? 0, probes: [] };
 if (!ai.mode) {
-  const router = new LLMRouter();
+  const router = llmRouter;
   if (!router.available().length) { ai.mode = "secours"; problems.push("aucune clé LLM (GROQ_API_KEY, CEREBRAS_API_KEY…) : agent de secours, aucune ouverture"); }
   else {
-    const d = await decide({ router, dossier, portfolio: p, markets: extra.markets, now, xContext });
+    const d = await decide({ router, dossier, portfolio: p, markets: extra.markets, now, xContext, ranking });
+    ranking = recordCycle({ ...ranking, health: updateHealth(ranking.health, router.log, now) }, d.weights ?? {}, d.probes ?? []);
     if (xr.alpha && d.mode !== "fallback") xr.alpha.epsilon.router = { injected: d.xInjected.length > 0, at: new Date(now).toISOString(), tickers: d.xInjected };
     const exits = {};   // dernière fermeture complète par actif ou marché (délai de ré-entrée)
     for (const x of [...pastTrades, ...t.trades]) if (x.type === "close" || x.type === "settle") exits[exitKey(x)] = x.at;
@@ -153,7 +161,7 @@ if (!ai.mode) {
     p = ex.portfolio; trades.push(...ex.trades); votesLog.push(...d.votes, ...d.records);
     shadow = addShadows(shadow, d.votes, dossier, now).book;
     if (d.mode !== "fallback") p = { ...p, borderSeen: markSeen(borderSeen, border.candidates.map((c) => c.proposalId)) };   // une proposition n'est votée qu'une fois
-    Object.assign(ai, { mode: d.mode, decisions: d.decisions.map((x) => `${x.action} ${x.id} (${x.via})`), refused: ex.refused, models: router.log, shadowErrors: d.shadowErrors ?? [] });
+    Object.assign(ai, { mode: d.mode, decisions: d.decisions.map((x) => `${x.action} ${x.id} (${x.via})`), refused: ex.refused, models: router.log, shadowErrors: d.shadowErrors ?? [], weights: d.weights, probes: d.probes });
     problems.push(...d.errors);
     if (d.mode !== "fallback" && wake.includes("revue quotidienne")) p = { ...p, lastReviewDay: new Date(now).toISOString().slice(0, 10) };
     if (ex.trades.length) { const m = markToMarket(p, { markets: extra.markets, pmBooks: extra.pmBooks }, now); p = m.portfolio; point = { ...m.point, mode: p.mode }; }
@@ -180,6 +188,7 @@ const summary = {
   funding: t.funding.length,
   candidates: { kept: sel.candidates.map((c) => `${c.id} score=${c.score}`), wakeLLM: sel.wakeLLM, rejected: dossier.rejected.length },
   ai,
+  ranking: { active: ranking.active, probes: ranking.probes, weights: ranking.applied ?? Object.fromEntries(ranking.models.filter((m) => m.weight > 0).map((m) => [m.model, m.weight])) },
   metrics: { sharpe: metrics.performance.sharpe, maxDrawdown: metrics.performance.maxDrawdown, closedTrades: metrics.trades.closed, shadowOpen: shadow.open.length, shadowClosed: sh.closed.length },
   leagues: { d1q: leagues.entries.filter((e) => e.division === "D1Q").length, d2: leagues.entries.filter((e) => e.division === "D2").length,
     d3: leagues.entries.filter((e) => e.division === "D3").length, out: leagues.entries.filter((e) => e.division === "OUT").length, llmWeight: leagues.meta?.llm, log: leagues.log.slice(0, 5).map((l) => l.msg) },
@@ -202,6 +211,7 @@ if (!dry) {
   await store.writeJson(FILES.pmMarkets, pmi.cache);
   await store.writeJson(FILES.leagues, leagues);
   await store.writeJson(FILES.leagueMarket, live);
+  await store.writeJson(FILES.llmRanking, ranking);
   if (xr.alpha && !noX) {
     if (xr.alpha.epsilon && !xr.alpha.epsilon.router.at && prevX?.epsilon?.router?.at) xr.alpha.epsilon.router = prevX.epsilon.router;   // dernier réveil connu
     await store.writeJson(FILES.xAlpha, xr.alpha);
