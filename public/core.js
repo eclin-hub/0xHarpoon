@@ -47,7 +47,7 @@ function panel(title, { sub, tools, noteText } = {}, ...body) {
 }
 // Badges communs à toutes les pages : sens, division, flux, source, statut
 const TAG = { long: ["LONG", "up"], short: ["SHORT", "down"], D1: ["D1", "neutral"], D2: ["D2", "cyan"], D3: ["D3", "up"], eps: ["ε", "cyan"], inf: ["∞", "violet"],
-  x: ["X", "neutral"], arxiv: ["arXiv", "violet"], rss: ["RSS", "warn"], mutation: ["Gen-2", "violet"], hl: ["Hyperliquid", "cyan"], pm: ["Polymarket", "violet"] };
+  x: ["X", "neutral"], arxiv: ["arXiv", "violet"], rss: ["RSS", "warn"], reddit: ["Reddit", "warn"], github: ["GitHub", "cyan"], mutation: ["Gen-2", "violet"], hl: ["Hyperliquid", "cyan"], pm: ["Polymarket", "violet"] };
 const tag = (k, text, title) => { const [t, c] = TAG[k] || [k, "neutral"]; return h("span", { class: "chip " + c, title: title || null }, text || t); };
 // Tiroir fermé par défaut (détails techniques, JSON, journaux)
 const drawer = (summary, ...body) => h("details", { class: "fold" }, h("summary", {}, summary), h("div", { class: "in" }, ...body));

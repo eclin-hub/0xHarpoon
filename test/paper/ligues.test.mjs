@@ -145,7 +145,8 @@ test("promotion D1 → D2 : seuils PF / DD / survie / 25 trades ; places limité
   const out = st.entries.find((e) => e.id === "2611.3");
   assert.equal(out.division, "OUT"); assert.match(out.outReason, /PF 0\.9 < 1\.25.*DD 20\.0 % > 12 %.*survie au stress 40 % < 80 %/);
   assert.equal(admitBlueprints(st, [lib("2611.9")], { now: NOW, bench: () => ({ ...PASS(), trades: 24 }) }).entries.at(-1).division, "OUT");   // 24 trades : trop peu
-  for (let k = 4; k < 12; k++) st = admitBlueprints(st, [lib(`2611.${k}`)], { now: NOW, bench: PASS });
+  const noCap = { ...LEAGUE, d1: { ...LEAGUE.d1, maxPerDay: Infinity } };   // plafond quotidien testé à part (builders.test.mjs)
+  for (let k = 4; k < 12; k++) st = admitBlueprints(st, [lib(`2611.${k}`)], { now: NOW, bench: PASS, cfg: noCap });
   st = stepLeagues(st, { series: {} }, { now: NOW });
   assert.equal(st.entries.filter((e) => e.division === "D2").length, 6); assert.equal(st.entries.filter((e) => e.division === "D1Q").length, 4);
   const d2 = st.entries.find((e) => e.division === "D2");

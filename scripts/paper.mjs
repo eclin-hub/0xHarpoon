@@ -33,7 +33,7 @@ import { exitKey } from "../lib/paper/risk.mjs";
 import { emptyShadow, addShadows, updateShadows, modelStats } from "../lib/paper/shadow.mjs";
 import { summarize } from "../lib/paper/metrics.mjs";
 import { borderCandidates, borderNeeds, markSeen } from "../lib/paper/border.mjs";
-import { runXAlpha, promptContext, compileLibrary, blueprintExtractor } from "../lib/paper/x_scraper.mjs";
+import { runXAlpha, promptContext, compileLibrary, blueprintExtractor, builderScorer } from "../lib/paper/x_scraper.mjs";
 import { withExplain } from "../lib/paper/explain.mjs";
 import { emptyRanking, rankModels, updateHealth, recordCycle } from "../lib/paper/llm_ranking.mjs";
 
@@ -113,8 +113,9 @@ dossier.candidates = dossier.candidates.map((c) => annotatePm(c, pmi.cache));
 const prevX = await store.readJson(FILES.xAlpha).catch(() => null);
 const xForce = args.includes("--x-force") || /^(1|true)$/i.test(process.env.X_FORCE || "");
 // Blueprints compilés APRÈS le vote (compileLibrary, plus bas) : le quota par minute de Groq reste aux votants
+// carnet permanent : empreintes des idées déjà compilées, jamais renvoyées au LLM (chasse « Alpha & Builders »)
 const xr = noX ? { alpha: prevX, cache: null } : await runXAlpha({ prev: prevX, cache: (await store.readJson(FILES.xCache).catch(() => null)) ?? {}, now, net: !noNet, force: xForce,
-  extract: noNet || noLlm ? null : undefined, deferCompile: !noNet && !noLlm }).catch((e) => { problems.push(`X : ${e.message || e}`); return { alpha: prevX, cache: null }; });
+  extract: noNet || noLlm ? null : undefined, scorer: noNet || noLlm ? null : undefined, deferCompile: !noNet && !noLlm, ledger: await store.readJson(FILES.ledger).catch(() => null) }).catch((e) => { problems.push(`X : ${e.message || e}`); return { alpha: prevX, cache: null }; });
 const xContext = xr.alpha ? promptContext(xr.alpha.epsilon?.tickers, now) : null;
 
 // classement dynamique des modèles (shadow_book.json) : rang et poids cible (4 % à 30 %) de tous les modèles actifs,
@@ -217,7 +218,7 @@ if (!ai.mode) {
 // Flux ∞ : compilation des Blueprints en attente, après le vote (deepseek-flash d'abord, puis Groq, puis openrouter/free).
 // Les nouveaux Blueprints entrent en Division 1 au cycle suivant. Jamais bloquant.
 if (!noX && !noNet && !noLlm && xr.alpha && xr.cache) {
-  try { const cr = await compileLibrary(xr.alpha, xr.cache, blueprintExtractor({ catalog }), { now }); xr.alpha = cr.alpha; xr.cache = cr.cache; }
+  try { const cr = await compileLibrary(xr.alpha, xr.cache, blueprintExtractor({ catalog }), { now, scorer: builderScorer({ catalog }) }); xr.alpha = cr.alpha; xr.cache = cr.cache; }
   catch (e) { problems.push(`X : compilation des Blueprints : ${e.message || e}`); }
 }
 // y compris les positions ouvertes avant cette mise à jour ; cote du signal à l'entrée (candidat du cycle, sinon historique) et maintenant

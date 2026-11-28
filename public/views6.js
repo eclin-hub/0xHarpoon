@@ -9,8 +9,10 @@ App.views.xalpha = (() => {
   const STATUS = { "En attente D1": "neutral", "En test": "cyan", "Promu": "up", "Éliminé D1": "down", "Éliminé D2": "down" };
   const when = (iso) => (iso ? new Date(iso).toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "—");
   // source d'un post : X (@compte), presse (RSS) ou article arXiv
-  const SRC = { x: "X", rss: "RSS", arxiv: "arXiv" };
-  const who = (src, author) => (src && src !== "x" ? `${author} (${SRC[src] || src})` : "@" + (author || "?"));
+  const SRC = { x: "X", rss: "RSS", arxiv: "arXiv", reddit: "Reddit", github: "GitHub" };
+  const who = (src, author) => (src === "github" ? `${author} (GitHub)` : src === "reddit" ? `u/${author} (Reddit)` : src && src !== "x" ? `${author} (${SRC[src] || src})` : "@" + (author || "?"));
+  // badge d'origine : X · Builder, Reddit · Quant, GitHub, arXiv (texte complet en infobulle)
+  const srcBadge = (src, badge) => tag(src || "x", SRC[src] || src || "X", badge || null);
   const f2 = (x) => (x == null || !Number.isFinite(x) ? "—" : x.toFixed(2));
   const ttl = (iso) => {
     const ms = Date.parse(iso) - Date.now();
@@ -50,6 +52,9 @@ App.views.xalpha = (() => {
       drawer("État de la collecte", h("p", { class: "muted", style: "margin:0 0 6px;font-size:.8rem" }, x.status),
         h("div", { class: "muted", style: "font-size:.78rem" }, `${s.raw ?? 0} éléments lus · ${s.spam ?? 0} spams · ${s.dup ?? 0} doublons · ${s.epsilon ?? 0} ε · ${s.infinity ?? 0} ∞`,
           x.free ? ` · sources gratuites : ${x.free.rss} articles RSS, ${x.free.arxiv} arXiv` : "", ` · traducteur ${x.infinity?.translator || "—"}`),
+        x.builders?.counts ? h("div", { class: "muted", style: "font-size:.78rem;margin-top:4px" }, `Alpha & Builders : ${x.builders.counts.x} posts X indexés, ${x.builders.counts.reddit} Reddit, ${x.builders.counts.github} GitHub`
+          + ` → filtre : ${x.builders.filter?.promo ?? 0} promo, ${x.builders.filter?.short ?? 0} trop courts, ${x.builders.filter?.noMech ?? 0} sans règle mécanique, ${x.builders.filter?.dup ?? 0} doublons, ${x.builders.filter?.kept ?? 0} retenus`
+          + (x.builders.compile ? ` · deepseek-flash : ${x.builders.compile.scored} notés, ${x.builders.compile.compiled} compilés (≥ 7/10)` : "") + ` · ${x.builders.queued ?? 0} en file`) : null,
         (x.notes || []).length ? h("ul", { class: "muted", style: "font-size:.76rem;margin:6px 0 0 18px" }, x.notes.map((n) => h("li", {}, n))) : null));
   }
 
@@ -94,7 +99,7 @@ App.views.xalpha = (() => {
         drawer("Blueprint JSON", h("pre", { class: "json" }, JSON.stringify(bp, null, 2))),
         x.source?.excerpt ? h("p", { class: "muted", style: "font-size:.76rem;margin:8px 0 0" }, "Source : ", x.source.url ? h("a", { href: x.source.url, target: "_blank", rel: "noopener noreferrer" }, who(sk, x.source.author)) : who(sk, x.source.author), ` · ${x.source.excerpt}`) : null));
       const r = h("tr", { class: "row", style: "cursor:pointer", onclick: () => { d.hidden = !d.hidden; } },
-        h("td", {}, h("b", {}, x.name), h("span", { class: "sub2" }, `${bp.side} · ${bp.universe.join(", ")} · ${bp.horizon_hours} h`)), h("td", {}, tag(sk)),
+        h("td", {}, h("b", {}, x.name), h("span", { class: "sub2" }, `${bp.side} · ${bp.universe.join(", ")} · ${bp.horizon_hours} h`)), h("td", {}, srcBadge(sk, x.source?.badge)),
         h("td", {}, h("span", { class: "chip " + (STATUS[x.status] || "neutral") }, x.status)), h("td", { class: "num" }, x.interest), h("td", { class: "muted" }, when(x.createdAt)));
       return [r, d];
     });
@@ -107,15 +112,20 @@ App.views.xalpha = (() => {
   /* ---------- 3-League Strategy Arena (data/paper/leagues.json, league_engine.mjs) ---------- */
   const DIV = { D1: "D1 · Labo synthétique", D2: "D2 · Ligue supérieure live", D3: "D3 · Ensemble actif" };
   const pctv = (x, d = 1) => (x == null || !Number.isFinite(x) ? "—" : (x * 100).toFixed(d) + " %");
-  const srcOf = (e) => (e.src === "mutation" ? `mutation (${(e.parentSrc || []).map((s) => SRC[s] || s).join(" + ")})` : SRC[e.src] || e.src);
+  const srcOf = (e) => (e.src === "mutation" ? `mutation (${(e.parentSrc || []).map((s) => SRC[s] || s).join(" + ")})` : e.badge || SRC[e.src] || e.src);
   const gauge = (x, title) => h("div", { title, style: "width:90px;height:7px;border-radius:4px;background:var(--line,rgba(255,255,255,.08));overflow:hidden" },
     h("div", { style: `width:${Math.round(Math.max(0, Math.min(1, x || 0)) * 100)}%;height:100%;background:${(x || 0) >= 1 ? "var(--up,#2bffb0)" : "var(--cyan,#22e6ff)"}` }));
+  // extrait du post / dépôt d'origine, lien vers la source (tableau D1)
+  const excerptLine = (e) => (e.excerpt ? h("span", { class: "sub2 clamp2", title: e.excerpt, style: "white-space:normal;max-width:46ch" },
+    e.url ? h("a", { href: e.url, target: "_blank", rel: "noopener noreferrer", class: "muted" }, "« " + e.excerpt.slice(0, 140) + (e.excerpt.length > 140 ? "… »" : " »")) : "« " + e.excerpt.slice(0, 140) + " »") : null);
   // statistiques D1 figées (d1Stats), d1 pour les états plus anciens
   const d1s = (e) => e.d1Stats || e.d1 || null;
   const d1Line = (e) => { const x = d1s(e); return x ? `Labo D1 : PF ${f2(x.profitFactor)} · DD ${pctv(x.maxDrawdown)} · Stress ${pctv(x.stressSurvivalRate, 0)}` : null; };
   // withD1 : sous-ligne discrète rappelant le score de montée (tableaux D2 et D3)
-  const nameCell = (e, withD1 = false) => h("td", { title: e.outReason || null }, e.url ? h("a", { href: e.url, target: "_blank", rel: "noopener noreferrer", style: "color:inherit;font-weight:600" }, e.name) : h("b", {}, e.name),
-    h("span", { class: "sub2" }, `${e.gen} · ${srcOf(e)}`), withD1 && d1Line(e) ? h("span", { class: "sub2", title: "score obtenu au labo synthétique pour monter en D2" }, d1Line(e)) : null);
+  const nameCell = (e, withD1 = false, withExcerpt = false) => h("td", { title: e.outReason || null }, e.url ? h("a", { href: e.url, target: "_blank", rel: "noopener noreferrer", style: "color:inherit;font-weight:600" }, e.name) : h("b", {}, e.name),
+    " ", e.src && e.src !== "mutation" ? srcBadge(e.src, e.badge) : null,
+    h("span", { class: "sub2" }, `${e.gen} · ${srcOf(e)}${e.testability != null ? ` · testabilité ${e.testability}/10` : ""}`), withD1 && d1Line(e) ? h("span", { class: "sub2", title: "score obtenu au labo synthétique pour monter en D2" }, d1Line(e)) : null,
+    withExcerpt ? excerptLine(e) : null);
   // Tiroir d'une stratégie D2 / D3 (x_alpha.json → leagues) : positions ouvertes et derniers trades clos
   const spc = (x, d = 2) => (x == null || !Number.isFinite(x) ? "—" : (x > 0 ? "+" : "") + (x * 100).toFixed(d) + " %");
   const pxv = (x) => (x == null ? "—" : x >= 1000 ? x.toLocaleString("fr-FR", { maximumFractionDigits: 0 }) : x >= 1 ? x.toFixed(2) : x.toFixed(4));
@@ -202,9 +212,9 @@ App.views.xalpha = (() => {
           h("td", { class: "num" }, m2(e).trades ?? 0), h("td", { class: "num" }, f2(m2(e).profitFactor)), h("td", { class: "num" }, f2(m2(e).psr)),
           h("td", { class: "num" }, pctv(m2(e).maxDrawdown)), h("td", { class: "num" }, prog(m2(e).progress))), e)))
           : empty("Aucune stratégie en D2.")),
-      panel("D1 · Labo synthétique", { sub: "5 scénarios de 500 h : GJR-GARCH, sauts, régimes, crise imposée" },
+      panel("D1 · Labo synthétique", { sub: `5 scénarios de 500 h : GJR-GARCH, sauts, régimes, crise imposée · ${L.d1Queue?.cap ?? 8} nouveaux candidats / 24 h au plus${L.d1Queue ? ` (${L.d1Queue.admitted24h} admis, ${L.d1Queue.waiting} en attente)` : ""}` },
         d1.length ? tbl(["Blueprint", "Trades", "PF", "Max DD", "Survie stress", "Verdict"], d1.map((e) => { const x = d1s(e), ok = passed(e);
-          return h("tr", { title: ok ? `réussite ${pctv(x.winRate, 0)} · PSR ${f2(x.psr)}` : e.outReason || "" }, nameCell(e),
+          return h("tr", { title: ok ? `réussite ${pctv(x.winRate, 0)} · PSR ${f2(x.psr)}` : e.outReason || "" }, nameCell(e, false, true),
             h("td", { class: "num" }, x.trades), h("td", { class: "num" + (ok ? " up" : "") }, f2(x.profitFactor)), h("td", { class: "num" }, pctv(x.maxDrawdown)), h("td", { class: "num" }, pctv(x.stressSurvivalRate, 0)),
             h("td", { class: "num" }, ok ? qualChip(e) : prog(e.d1?.progress, h("span", { class: "chip down" }, "éliminé")))); }))
           : empty("Aucun Blueprint évalué pour l'instant.")));

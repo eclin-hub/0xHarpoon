@@ -40,6 +40,8 @@ const FILTERS = [["all", "Toutes", () => true], ["qual", "Qualifiées D2/D3", (s
 const SORTS = [["date", "Date", (s) => Date.parse(s.dates?.createdAt || 0)], ["pf", "PF Labo D1", (s) => s.d1Stats?.profitFactor ?? -Infinity],
   ["live", "PnL / PSR Live", (s) => (s.d2Stats ? (s.d2Stats.totalReturn ?? 0) * 1000 + (s.d2Stats.psr ?? 0) : -Infinity)]];
 const PAGE = 25;
+// badge d'origine (X · Builder, Reddit · Quant, GitHub, arXiv, Mutation)
+const SRC_TONE = { x: "neutral", arxiv: "violet", reddit: "warn", github: "cyan", rss: "warn", mutation: "violet" };
 const st = { filter: "all", sort: "date", q: "", shown: PAGE, open: new Set() }, D = { L: null };
 
 async function load() {
@@ -82,6 +84,8 @@ function detail(s) {
   return h("div", { style: "display:flex;flex-direction:column;gap:12px;padding:6px 2px;white-space:normal" },
     h("div", { style: "display:flex;flex-wrap:wrap;gap:6px 18px" }, steps.map(([l, t]) => h("span", { style: "font-size:.78rem" }, h("span", { class: "muted" }, l + " "), h("span", { class: "mono" }, when(t))))),
     s.exitReason ? h("div", { style: "font-size:.8rem" }, h("span", { class: "chip down" }, "motif"), " ", s.exitReason) : null,
+    s.excerpt || s.url ? h("div", { style: "font-size:.78rem" }, h("span", { class: "muted" }, `Source (${s.source}) : `), s.excerpt ? `« ${s.excerpt} » ` : "",
+      s.url ? h("a", { href: s.url, target: "_blank", rel: "noopener noreferrer" }, "ouvrir ↗") : null) : null,
     h("div", { style: "display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px" },
       kv("Labo D1 (figé)", s.d1Stats, [["trades", "trades", String], ["profitFactor", "PF", f2], ["winRate", "réussite", (x) => pct(x, 0)], ["maxDrawdown", "DD", pct], ["sharpe", "Sharpe", f2], ["psr", "PSR", f2], ["stressSurvivalRate", "stress", (x) => pct(x, 0)]]),
       kv(`Live D2${s.d2Stats?.final ? " (bilan final)" : " (en cours)"}`, s.d2Stats, [["trades", "trades", (x) => String(x ?? 0)], ["profitFactor", "PF", f2], ["psr", "PSR", f2], ["winRate", "réussite", (x) => pct(x, 0)], ["maxDrawdown", "DD", pct], ["totalReturn", "rendement", (x) => pct(x, 2)]]),
@@ -99,7 +103,7 @@ function renderTable() {
     const tr = h("tr", { class: "row", style: "cursor:pointer", title: "Clic : fiche complète", onclick: () => { open ? st.open.delete(s.id) : st.open.add(s.id); renderTable(); } },
       h("td", {}, s.url ? h("a", { href: s.url, target: "_blank", rel: "noopener noreferrer", style: "color:inherit;font-weight:600", onclick: (e) => e.stopPropagation() }, s.name) : h("b", {}, s.name),
         h("span", { class: "sub2" }, `${FAMILY[s.family] || s.family} · ${(s.blueprint?.universe || []).join(", ")}`)),
-      h("td", {}, s.source, h("span", { class: "sub2" }, s.generation + (s.author ? ` · ${s.author}` : ""))),
+      h("td", {}, h("span", { class: "chip " + (SRC_TONE[s.src] || "neutral"), title: s.source }, s.source), h("span", { class: "sub2" }, s.generation + (s.author ? ` · ${s.author}` : ""))),
       h("td", {}, h("span", { class: "chip " + tone, title: s.exitReason || null }, lbl)),
       h("td", { class: "num" }, d1 ? `${f2(d1.profitFactor)} · ${pct(d1.maxDrawdown)} · ${pct(d1.stressSurvivalRate, 0)}` : "—"),
       h("td", { class: "num" }, d2 ? `${d2.trades ?? 0} · ${f2(d2.profitFactor)} · ${f2(d2.psr)}` : "—", d2?.totalReturn != null ? h("span", { class: "sub2" }, `rendement ${pct(d2.totalReturn, 2)}`) : null),
