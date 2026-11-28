@@ -153,7 +153,7 @@ if (!ai.mode) {
     p = ex.portfolio; trades.push(...ex.trades); votesLog.push(...d.votes, ...d.records);
     shadow = addShadows(shadow, d.votes, dossier, now).book;
     if (d.mode !== "fallback") p = { ...p, borderSeen: markSeen(borderSeen, border.candidates.map((c) => c.proposalId)) };   // une proposition n'est votée qu'une fois
-    Object.assign(ai, { mode: d.mode, decisions: d.decisions.map((x) => `${x.action} ${x.id} (${x.via})`), refused: ex.refused, models: router.log });
+    Object.assign(ai, { mode: d.mode, decisions: d.decisions.map((x) => `${x.action} ${x.id} (${x.via})`), refused: ex.refused, models: router.log, shadowErrors: d.shadowErrors ?? [] });
     problems.push(...d.errors);
     if (d.mode !== "fallback" && wake.includes("revue quotidienne")) p = { ...p, lastReviewDay: new Date(now).toISOString().slice(0, 10) };
     if (ex.trades.length) { const m = markToMarket(p, { markets: extra.markets, pmBooks: extra.pmBooks }, now); p = m.portfolio; point = { ...m.point, mode: p.mode }; }

@@ -1,8 +1,8 @@
 // Compétition à 3 divisions : compilation des Blueprints, marché synthétique, promotions, relégations, meta-ensemble.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { coerceBlueprint, validateBlueprint } from "../../lib/paper/blueprint.mjs";
-import { blueprintExtractor, runXAlpha, updateLibrary } from "../../lib/paper/x_scraper.mjs";
+import { coerceBlueprint, validateBlueprint, BLUEPRINT_PROMPT_V } from "../../lib/paper/blueprint.mjs";
+import { blueprintExtractor, runXAlpha, updateLibrary, ingest, X_CONFIG } from "../../lib/paper/x_scraper.mjs";
 import { generateScenario, runSyntheticBenchmark, GJR } from "../../lib/paper/synthetic_market.mjs";
 import { newBook } from "../../lib/paper/blueprint_eval.mjs";
 import { emptyLeagues, admitBlueprints, stepLeagues, maybeMutate, championSignals, libraryStatus, updateLiveMarket, d1Verdict, LEAGUE } from "../../lib/paper/league_engine.mjs";
@@ -49,6 +49,53 @@ test("compilation : abstracts arXiv et posts X en attente compilés même quand 
   assert.equal(alpha.infinity.blueprints.at(-1).source.src, "x");                                                      // le post X (intérêt 90) passe en premier
   const next = await updateLibrary(alpha.infinity.blueprints, { posts, done: Object.fromEntries(alpha.infinity.blueprints.map((b) => [b.source.postId, "x"])) }, async () => ({ blueprint: BP }), { now: NOW });
   assert.equal(next.library.length, 9);   // ensuite 3 par cycle
+});
+
+test("compilation : seuil arXiv 60 (abstracts q-fin déjà filtrés) contre 75 pour X ; chaque échec ou rejet tracé dans x.notes", async () => {
+  const P = (id, src, interest) => ({ id, kind: "infinity", interest, src, author: src === "arxiv" ? "A. Martin et al." : "quant", text: "GARCH volatility regime with momentum filter.", t: NOW - H, url: null });
+  const posts = { "arxiv:a": P("arxiv:a", "arxiv", 66), "arxiv:b": P("arxiv:b", "arxiv", 62), "arxiv:c": P("arxiv:c", "arxiv", 58), x1: P("x1", "x", 70) };
+  // cycle du 28/11/2026 00:10 UTC : infinity 11, blueprints 0 — avec l'ancien seuil unique (75), rien n'était tenté
+  const old = await updateLibrary([], { posts }, async () => ({ blueprint: BP }), { now: NOW, cfg: { ...X_CONFIG, interestMinArxiv: undefined } });
+  assert.equal(old.library.length, 0); assert.match(old.notes[0], /4 post\(s\) ∞ en attente, aucun au seuil \(max 70/);
+  // nouveau seuil : les deux arXiv ≥ 60 sont compilés ; arXiv 58 et X 70 attendent
+  const seen = [];
+  const r = await updateLibrary([], { posts }, async (p) => { seen.push(p.id); return p.id === "arxiv:b" ? { error: "groq/qwen/qwen3.8-27b : réponse invalide : universe : tickers parmi BTC | groq/openai/gpt-oss-120b : HTTP 429 : rate limit" } : { blueprint: BP, model: "qwen/qwen3.8-27b" }; }, { now: NOW });
+  assert.deepEqual(seen, ["arxiv:a", "arxiv:b"]);
+  assert.deepEqual(r.library.map((b) => b.source.postId), ["arxiv:a"]);
+  assert.ok(r.notes.some((n) => /Blueprint échoué, arXiv A\. Martin et al\. \(arxiv:b, intérêt 62\) : groq\/qwen.*réponse invalide.*\| groq\/openai\/gpt-oss-120b : HTTP 429/.test(n)), r.notes.join(" / "));
+  assert.ok(r.notes.some((n) => /1 compilé\(s\), 0 sans règle testable, 1 échec\(s\) sur 2 tenté\(s\)/.test(n)));
+  // {"none":true} : tracé aussi ; pas de traducteur : dit pourquoi
+  const none = await updateLibrary([], { posts: { "arxiv:a": posts["arxiv:a"] } }, async () => ({ blueprint: null }), { now: NOW });
+  assert.match(none.notes[0], /Blueprint écarté.*aucune règle testable/);
+  assert.match((await updateLibrary([], { posts }, null, { now: NOW })).notes[0], /traducteur indisponible/);
+  // de bout en bout : les notes remontent dans x.notes et les Blueprints compilés entrent en Division 1
+  const { alpha } = await runXAlpha({ cache: { posts }, env: {}, free: false, net: false, now: NOW, extract: async () => ({ blueprint: BP, model: "openai/gpt-oss-120b" }) });
+  assert.equal(alpha.infinity.blueprints.length, 2); assert.equal(alpha.infinity.interestMinArxiv, 60);
+  assert.ok(alpha.notes.some((n) => /2 compilé\(s\)/.test(n)));
+  const st = admitBlueprints(emptyLeagues(), alpha.infinity.blueprints, { now: NOW, bench: PASS });
+  assert.equal(st.entries.length, 2); assert.ok(st.entries.every((e) => e.src === "arxiv" && e.gen === "Gen-1"));
+});
+
+test("compilation : {\"none\":true} de qwen3.8 → gpt-oss-120b essayé ; écarté seulement si tous le disent ; prompt v2 → anciens rejets réessayés ; arXiv de 15 jours gardé", async () => {
+  const BPJ = JSON.stringify(BP), order = [];
+  const reply = (fn) => async (url, init) => { const m = JSON.parse(init.body).model, body = JSON.parse(init.body); order.push(m);
+    return new Response(JSON.stringify({ choices: [{ message: { content: fn(m, body) } }] }), { status: 200 }); };
+  const post = { id: "arxiv:1", src: "arxiv", author: "A", text: "GARCH volatility forecasting." };
+  const ex = blueprintExtractor({ env: { GROQ_API_KEY: "k" }, fetch: reply((m, b) => { assert.equal(JSON.parse(b.messages[1].content).source, "arxiv"); return m.startsWith("qwen") ? '{"none":true}' : BPJ; }) });
+  const r = await ex(post);
+  assert.deepEqual(order, ["qwen/qwen3.8-27b", "openai/gpt-oss-120b"]); assert.equal(r.model, "openai/gpt-oss-120b"); assert.equal(r.blueprint.name, BP.name);
+  const both = await blueprintExtractor({ env: { GROQ_API_KEY: "k" }, fetch: reply(() => '{"none":true}') })(post);
+  assert.equal(both.blueprint, null); assert.equal(both.error, undefined); assert.match(both.reason, /qwen.*aucune règle testable.*\| .*gpt-oss-120b.*aucune règle testable/);
+  // état réel du 28/11/2026 : 3 abstracts « done » sans Blueprint (prompt v1) → réessayés une fois avec le prompt v2
+  const P = (id) => ({ id, kind: "infinity", interest: 78, src: "arxiv", author: "B", text: "Deep factor model for statistical arbitrage.", t: NOW - 3 * 24 * H, url: null });
+  const cache = { posts: { a: P("a"), b: P("b"), c: P("c") }, done: { a: "2026-11-27T23:24:31Z", b: "2026-11-27T23:24:31Z", c: "2026-11-27T23:24:31Z" } };
+  const up = await updateLibrary([], cache, async () => ({ blueprint: BP, model: "qwen/qwen3.8-27b" }), { now: NOW });
+  assert.equal(up.library.length, 3); assert.equal(up.cache.doneV, BLUEPRINT_PROMPT_V); assert.match(up.notes[0], /3 post\(s\) écarté\(s\) auparavant réessayé/);
+  assert.equal((await updateLibrary(up.library, up.cache, async () => ({ blueprint: BP }), { now: NOW })).library.length, 3);   // pas de seconde reprise
+  // un abstract arXiv de 15 jours reste dans le cache (le flux couvre ~3 semaines)
+  const old = { id: "arxiv:2611.14245v1", text: "Momentum and mean reversion in cryptocurrency factor models with GARCH volatility regimes.", author: "C", createdAt: new Date(NOW - 15 * 24 * H).toISOString(), src: "arxiv" };
+  const ing = ingest([old], {}, { env: {}, now: NOW });
+  assert.equal(ing.stats.infinity, 1); assert.ok(ing.cache.posts["arxiv:2611.14245v1"]);
 });
 
 /* ---------- marché synthétique ---------- */

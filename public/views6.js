@@ -98,7 +98,7 @@ App.views.xalpha = (() => {
         h("td", {}, h("span", { class: "chip " + (STATUS[x.status] || "neutral") }, x.status)), h("td", { class: "num" }, x.interest), h("td", { class: "muted" }, when(x.createdAt)));
       return [r, d];
     });
-    return panel("Flux ∞ : bibliothèque de stratégies", { sub: "threads quant X et articles arXiv d'intérêt ≥ " + (inf.interestMin ?? 75) + "/100, traduits en Blueprints déclaratifs · clic pour le détail",
+    return panel("Flux ∞ : bibliothèque de stratégies", { sub: "threads quant X d'intérêt ≥ " + (inf.interestMin ?? 75) + "/100 et articles arXiv ≥ " + (inf.interestMinArxiv ?? inf.interestMin ?? 60) + "/100, traduits en Blueprints déclaratifs · clic pour le détail",
       noteText: "Aucun code n'est exécuté : un Blueprint est un assemblage de blocs connus (momentum, RSI, z-score de Bollinger, cassure ATR, régime de volatilité, biais X, avance Polymarket, score linéaire) aux paramètres bornés. Statuts : En attente D1, En test (D1 réussie ou D2), Promu (D3), Éliminé." },
       rows.length ? tbl(["Blueprint", "Source", "Statut", "Intérêt", "Compilé"], rows) : empty("Aucun Blueprint pour l'instant."),
       inf.errors?.length ? h("div", { style: "margin-top:10px" }, drawer(`${inf.errors.length} traduction(s) en échec au dernier cycle`, h("ul", { class: "muted", style: "font-size:.76rem;margin:0 0 0 18px" }, inf.errors.map((e) => h("li", {}, e))))) : null);

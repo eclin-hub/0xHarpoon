@@ -148,6 +148,12 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 - Blueprints : qwen3.8 d'abord, normalisation avant validation, compilation à chaque cycle même avec une collecte réutilisée.
 - D1 labo synthétique (GJR-GARCH, sauts, régimes), D2 live sur les vrais prix horaires, D3 champions mêlés aux LLM (65 / 35). Rien n'est encore en D2 en production : il faut d'abord des Blueprints compilés (clé Groq) qui passent la D1, puis au moins 15 trades réels pour atteindre la D3.
 
+### Blueprints débloqués, Gemini 3.8 en ombre (28/11/2026)
+- Cycle de 00:10 UTC : `infinity: 11`, `blueprints: 0`. Trois causes : (1) seuil d'intérêt unique de 75, que les abstracts arXiv (sans likes ni format thread) dépassent rarement ; (2) conservation des posts ∞ limitée à 7 jours alors que le flux arXiv couvre ~3 semaines : la plupart des abstracts étaient effacés juste après avoir été comptés ; (3) les 3 abstracts à 78 avaient bien été envoyés à Groq à 23:24 UTC, mais qwen3.8 a répondu `{"none":true}` (prompt écrit pour « une idée postée sur X ») et ce rejet était silencieux.
+- Correctifs : seuil arXiv 60 (X reste à 75), conservation 21 jours, prompt v2 qui demande d'approcher le signal central d'un article par les blocs connus, `{"none":true}` de qwen3.8 → gpt-oss-120b essayé, posts écartés par le prompt v1 réessayés une fois, et chaque échec ou rejet (modèle par modèle) tracé dans `x.notes`. En réel sur arXiv : 13 abstracts sur 15 au seuil (contre 3).
+- `scripts/blueprint_smoke.mjs` : test réel de bout en bout (arXiv → Groq → validateur → Division 1) sans rien écrire dans `data/` ; il demande `GROQ_API_KEY`.
+- `gemini-3.8-flash` en ombre (HTTP 429 en 210 ms) : votants gpt-oss-120b et qwen3.8 (quorum 2 inchangé), arbitre gemma-4-26b. Les échecs des modèles ombre vont dans `ai.shadowErrors`, plus dans `problems`.
+
 ### Refonte de l'interface (28/11/2026)
 - Direction « terminal quantitatif épuré » : fonds pleins, bordures de 1 px, plus de halos ni de lueurs, palette et graphiques harmonisés (bloc final de `public/app.css`).
 - Doublons supprimés : la vue d'ensemble ne recopie plus Directions, Signaux d'edge, À la une ni le flux ; « comptes net short » et les notionnels n'apparaissent qu'à un endroit ; la fraîcheur des données n'est plus affichée qu'une fois dans le rail (détail par source dans un tiroir).
