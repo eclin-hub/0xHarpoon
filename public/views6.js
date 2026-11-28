@@ -176,7 +176,7 @@ App.views.xalpha = (() => {
     if (!base()) return z.box.replaceChildren(empty("Instantané : la page X Alpha n'est visible que sur le site en ligne ou dans la version locale (node server.mjs)."));
     if (D.err) return z.box.replaceChildren(empty(D.err), leagues());
     if (!D.x) return z.box.replaceChildren(empty("Chargement…"));
-    z.box.replaceChildren(head(), epsilon(), infinity(), leagues(),
+    z.box.replaceChildren(head(), regimeBand(D.x?.regime) || "", epsilon(), infinity(), leagues(),
       h("p", { class: "disclaimer" }, "Posts filtrés (spams, airdrops, parrainage, doublons) et pondérés par crédibilité et engagement ; le flux ε ne sert que de contexte aux votants, jamais de déclencheur."));
   }
 

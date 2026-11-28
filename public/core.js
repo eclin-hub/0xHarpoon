@@ -53,6 +53,24 @@ const tag = (k, text, title) => { const [t, c] = TAG[k] || [k, "neutral"]; retur
 const drawer = (summary, ...body) => h("details", { class: "fold" }, h("summary", {}, summary), h("div", { class: "in" }, ...body));
 function kpi(l, v, s, tone) { const e = h("div", { class: "v " + (tone || "") }, v); return h("div", { class: "kpi" }, h("div", { class: "l" }, l), e, s ? h("div", { class: "s" }, s) : null); }
 function empty(msg) { return h("div", { class: "empty" }, msg); }
+// Bandeau du régime macro (regime_agent.mjs, publié dans metrics.json et x_alpha.json) : régime actif, prochain événement
+// critique du calendrier avec compte à rebours, familles de stratégies autorisées et coupées. Une ligne, pas un indicateur.
+const REGIME_TONE = { TREND_RISK_ON: "up", SQUEEZE_CROWDED: "warn", MACRO_EVENT_STRESS: "down", RANGE_COMPRESSION: "cyan", RISK_OFF_CRASH: "down" };
+const FAMILY_LBL = { trend_breakout: "Tendance", mean_reversion: "Retour à la moyenne", stat_arb_leadlag: "Arbitrage / lead-lag", volatility_squeeze: "Squeeze de volatilité", defensive_hedge: "Couverture" };
+function regimeBand(r) {
+  if (!r?.regime) return null;
+  const left = (iso) => { const m = Math.round((Date.parse(iso) - Date.now()) / 60e3); return m >= 0 ? `dans ${m >= 60 ? `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, "0")}` : `${m} min`}` : `il y a ${-m} min`; };
+  const ev = r.calendar?.inWindow?.[0] || r.calendar?.next;
+  const fam = (r.policy?.families || []).map((f) => h("span", { class: "chip " + (f.weight === 0 ? "down" : f.weight > 1 ? "up" : f.weight < 1 || f.cond ? "warn" : "neutral"),
+    title: `${f.status}${f.weight !== 1 && f.weight !== 0 ? ` (× ${f.weight})` : ""}${f.cond ? ` · ${f.cond}` : ""}` }, (f.weight === 0 ? "✕ " : "") + (FAMILY_LBL[f.family] || f.family)));
+  const why = [...(r.reasons || []), r.llm?.rationale ? `${r.llm.model} : ${r.llm.rationale}` : null].filter(Boolean).join(" · ");
+  return h("div", { class: "regime-band", title: why },
+    h("span", { class: "l" }, "Régime macro"), h("span", { class: "chip " + (REGIME_TONE[r.regime] || "neutral") }, r.regime), h("span", { class: "muted" }, r.label || ""),
+    r.risk?.minConviction ? h("span", { class: "chip down", title: "Nouvelles ouvertures : taille × " + r.risk.sizeMult + ", conviction minimale " + r.risk.minConviction }, `risque × ${r.risk.sizeMult} · conviction ≥ ${r.risk.minConviction}`) : null,
+    h("span", { class: "sep" }), h("span", { class: "l" }, "Prochain événement"),
+    ev ? h("span", { class: "mono" + (r.calendar?.inWindow?.length ? " down" : ""), title: new Date(ev.t).toLocaleString("fr-FR") }, `${ev.cur} ${ev.title} · ${left(ev.t)}`) : h("span", { class: "muted" }, "aucun événement critique cette semaine"),
+    h("span", { class: "sep" }), h("span", { class: "chips" }, fam));
+}
 
 /* tableau triable : cols = [{t, cls, sort:(row)=>valeur, cell:(row)=>noeud}] ; clé de tri stockée dans ui.sort[id] */
 function sortableTable(id, cols, rows, { rowKey, detail, colspan, defaultSort } = {}) {

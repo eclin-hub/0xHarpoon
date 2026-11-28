@@ -17,7 +17,9 @@ import { emptyScores, updateScores, setPriors, priorsFromHl, priorsFromPm, keyOf
 import { gatherHl, gatherPm, finalizeHl, finalizePm, selectCandidates } from "../lib/paper/candidates.mjs";
 import { coinSentiment, partnersOf, findPairs, updateHistory, movedMarkets, detectLeadLag } from "../lib/paper/cross.mjs";
 import { CONFIG } from "../lib/paper/config.mjs";
-import { LLMRouter, metaWeights, mixDecisions } from "../lib/paper/router.mjs";
+import { LLMRouter, metaWeights, mixDecisions, META } from "../lib/paper/router.mjs";
+import { evaluateMacroRegime, emptyRegimeCache, regimeContext, withRegime, STRESS, REGIME_CFG } from "../lib/paper/regime_agent.mjs";
+import { fetchCalendar } from "../lib/alt.mjs";
 import { emptyLeagues, admitBlueprints, maybeMutate, defaultMutator, updateLiveMarket, stepLeagues, championSignals, libraryStatus, TICKER_OF } from "../lib/paper/league_engine.mjs";
 import { wakeReasons, decide } from "../lib/paper/decision.mjs";
 import { executeDecisions } from "../lib/paper/execute.mjs";
@@ -111,6 +113,13 @@ const xr = noX ? { alpha: prevX, cache: null } : await runXAlpha({ prev: prevX, 
   extract: noNet || noLlm ? null : undefined }).catch((e) => { problems.push(`X : ${e.message || e}`); return { alpha: prevX, cache: null }; });
 const xContext = xr.alpha ? promptContext(xr.alpha.epsilon?.tickers, now) : null;
 
+// classement dynamique des modèles (shadow_book.json) : ordre et poids des votants, modèles en sourdine à repêcher.
+// Recalculé à chaque cycle pour l'affichage ; la rotation du repêchage n'avance qu'aux réveils. Le meilleur votant actif
+// sert aussi à la synthèse du régime macro.
+const llmRouter = new LLMRouter();
+const rankPrev = (await store.readJson(FILES.llmRanking).catch(() => null)) ?? emptyRanking();
+let ranking = rankModels({ models: llmRouter.rankable(), book: shadow, state: rankPrev, now });
+
 // Compétition à 3 divisions : D1 (labo synthétique) pour les nouveaux Blueprints du Flux ∞, mutation Gen-2 périodique,
 // D2 et D3 sur les vrais prix horaires. Jamais bloquant : une erreur laisse les ligues en l'état.
 let leagues = (await store.readJson(FILES.leagues).catch(() => null)) ?? emptyLeagues();
@@ -121,12 +130,28 @@ try {
     try { candles[T] = await fetchOhlc(coin, "1h", 21); } catch (e) { problems.push(`ligues : bougies ${coin} : ${e.message || e}`); }
   }
   live = updateLiveMarket(live, { markets: extra.markets, xTickers: xr.alpha?.epsilon?.tickers, history, now, candles });
+} catch (e) { problems.push(`ligues : prix live : ${e.message || e}`); }
+
+// Méta-Agent de Régime Macro : calendrier économique, volatilité / funding / Flux ε, synthèse LLM (cache 2 h). Il décide
+// quelles familles de stratégies D2/D3 sont autorisées et règle le risque des nouvelles ouvertures. Jamais bloquant.
+let regimeCache = (await store.readJson(FILES.regimeCache).catch(() => null)) ?? emptyRegimeCache(), regime = null;
+try {
+  const rr = await evaluateMacroRegime({ fetchCalendar: noNet ? null : fetchCalendar, live, markets: extra.markets, epsilon: xr.alpha?.epsilon?.tickers,
+    router: noNet || noLlm || !llmRouter.available().length ? null : llmRouter, ranking, cache: regimeCache, now });
+  regime = rr.regime; regimeCache = rr.cache;
+  for (const n of regime.notes) problems.push(`régime : ${n}`);
+} catch (e) { problems.push(`régime : ${e.message || e}`); }
+const stress = STRESS.includes(regime?.regime);
+
+try {
   leagues = admitBlueprints(leagues, xr.alpha?.infinity?.blueprints, { now });
   leagues = await maybeMutate(leagues, { now, mutator: noNet || noLlm ? null : defaultMutator() });
-  leagues = stepLeagues(leagues, live, { now });
+  leagues = stepLeagues(leagues, live, { now, regime });
 } catch (e) { problems.push(`ligues : ${e.message || e}`); }
-const champions = championSignals(leagues, live);
-leagues.meta = { at: new Date(now).toISOString(), ...metaWeights(champions, t.portfolio) };
+const champions = championSignals(leagues, live, regime);
+// en stress, le meta-ensemble relève aussi sa conviction minimale (60 → 70)
+const metaCfg = stress ? { ...META, minConviction: REGIME_CFG.stressRisk.minConviction } : META;
+leagues.meta = { at: new Date(now).toISOString(), regime: regime?.regime ?? null, ...metaWeights(champions, t.portfolio, metaCfg) };
 if (xr.alpha?.infinity?.blueprints) {   // statut des Blueprints dans la bibliothèque ∞
   const status = libraryStatus(leagues);
   xr.alpha.infinity.blueprints = xr.alpha.infinity.blueprints.map((b) => (status[b.id] ? { ...b, status: status[b.id] } : b));
@@ -137,25 +162,21 @@ let p = t.portfolio, point = t.point;
 const trades = [...t.trades], votesLog = [];
 const wake = wakeReasons({ dossier, portfolio: p, markets: extra.markets, now });
 const ai = { wake, mode: noNet || noLlm ? "désactivé" : wake.length ? null : "en veille", decisions: [], refused: [], models: [] };
-// classement dynamique des modèles (shadow_book.json) : ordre et poids des votants, modèles en sourdine à repêcher.
-// Recalculé à chaque cycle pour l'affichage ; la rotation du repêchage n'avance qu'aux réveils.
-const llmRouter = new LLMRouter();
-const rankPrev = (await store.readJson(FILES.llmRanking).catch(() => null)) ?? emptyRanking();
-let ranking = rankModels({ models: llmRouter.rankable(), book: shadow, state: rankPrev, now });
 if (ai.mode) ranking = { ...ranking, rotation: rankPrev.rotation ?? 0, probes: [] };
 if (!ai.mode) {
   const router = llmRouter;
   if (!router.available().length) { ai.mode = "secours"; problems.push("aucune clé LLM (GROQ_API_KEY, CEREBRAS_API_KEY…) : agent de secours, aucune ouverture"); }
   else {
-    const d = await decide({ router, dossier, portfolio: p, markets: extra.markets, now, xContext, ranking });
+    const d = await decide({ router, dossier, portfolio: p, markets: extra.markets, now, xContext, ranking, regime: regimeContext(regime) });
     ranking = recordCycle({ ...ranking, health: updateHealth(ranking.health, router.log, now) }, d.weights ?? {}, d.probes ?? []);
     if (xr.alpha && d.mode !== "fallback") xr.alpha.epsilon.router = { injected: d.xInjected.length > 0, at: new Date(now).toISOString(), tickers: d.xInjected };
     const exits = {};   // dernière fermeture complète par actif ou marché (délai de ré-entrée)
     for (const x of [...pastTrades, ...t.trades]) if (x.type === "close" || x.type === "settle") exits[exitKey(x)] = x.at;
     // meta-ensemble : les champions de D3 pèsent 35 % de la conviction des ouvertures sur les actifs qu'ils couvrent
-    const mix = mixDecisions(d.decisions, dossier, champions, metaWeights(champions, p), { tickerOf: (c) => TICKER_OF[c] });
-    leagues.meta = { ...leagues.meta, ...metaWeights(champions, p), mixed: mix.mixed, vetoed: mix.vetoed };
-    const ex = await executeDecisions(p, mix.decisions, dossier, { markets: extra.markets, deps: { fetchL2Book, fetchBook }, now, exits });
+    const mix = mixDecisions(d.decisions, dossier, champions, metaWeights(champions, p, metaCfg), { tickerOf: (c) => TICKER_OF[c], cfg: metaCfg });
+    leagues.meta = { ...leagues.meta, ...metaWeights(champions, p, metaCfg), mixed: mix.mixed, vetoed: mix.vetoed };
+    // régime de stress : taille × 0,5 et conviction minimale 70 pour toute nouvelle ouverture (risk.mjs)
+    const ex = await executeDecisions(p, mix.decisions, dossier, { markets: extra.markets, deps: { fetchL2Book, fetchBook }, now, exits }, withRegime(CONFIG, regime));
     ex.refused.push(...mix.vetoed);
     if (mix.mixed.length) votesLog.push(...mix.mixed.map((m) => ({ at: new Date(now).toISOString(), type: "meta", candidate_id: m.id, ...m })));
     p = ex.portfolio; trades.push(...ex.trades); votesLog.push(...d.votes, ...d.records);
@@ -179,6 +200,11 @@ point = { ...point, bench: { BTC: extra.markets.BTC?.mark ?? null, GOLD: extra.m
 // métriques sur tout l'historique (SPEC §7)
 const metrics = summarize({ points: [...(await store.readJsonl(FILES.equity)), point], trades: [...pastTrades, ...trades],
   shadow: modelStats(shadow, extra.markets), startCapital: next.startCapital });
+// régime macro publié (metrics.json pour Paper trading, x_alpha.json pour X Alpha / 3-League Arena)
+const regimePub = regime ? { at: regime.at, regime: regime.regime, label: regime.label, source: regime.source, confidence: regime.confidence, hard: regime.hard, reasons: regime.reasons,
+  llm: regime.llm, calendar: regime.calendar, policy: regime.policy, risk: regime.risk, metrics: regime.metrics, eps: regime.eps } : null;
+metrics.regime = regimePub;
+if (xr.alpha) xr.alpha.regime = regimePub;
 
 const summary = {
   at: next.lastTick, dryRun: dry,
@@ -188,6 +214,7 @@ const summary = {
   funding: t.funding.length,
   candidates: { kept: sel.candidates.map((c) => `${c.id} score=${c.score}`), wakeLLM: sel.wakeLLM, rejected: dossier.rejected.length },
   ai,
+  regime: regime ? { regime: regime.regime, source: regime.source, reasons: regime.reasons, next: regime.calendar.next, cut: regime.policy.cut, risk: regime.risk } : null,
   ranking: { active: ranking.active, probes: ranking.probes, weights: ranking.applied ?? Object.fromEntries(ranking.models.filter((m) => m.weight > 0).map((m) => [m.model, m.weight])) },
   metrics: { sharpe: metrics.performance.sharpe, maxDrawdown: metrics.performance.maxDrawdown, closedTrades: metrics.trades.closed, shadowOpen: shadow.open.length, shadowClosed: sh.closed.length },
   leagues: { d1q: leagues.entries.filter((e) => e.division === "D1Q").length, d2: leagues.entries.filter((e) => e.division === "D2").length,
@@ -212,6 +239,7 @@ if (!dry) {
   await store.writeJson(FILES.leagues, leagues);
   await store.writeJson(FILES.leagueMarket, live);
   await store.writeJson(FILES.llmRanking, ranking);
+  await store.writeJson(FILES.regimeCache, regimeCache);
   if (xr.alpha && !noX) {
     if (xr.alpha.epsilon && !xr.alpha.epsilon.router.at && prevX?.epsilon?.router?.at) xr.alpha.epsilon.router = prevX.epsilon.router;   // dernier réveil connu
     await store.writeJson(FILES.xAlpha, xr.alpha);

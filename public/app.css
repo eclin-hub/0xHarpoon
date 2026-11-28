@@ -412,3 +412,10 @@ td .chips { flex-wrap: nowrap; overflow: hidden; }
 /* bandeaux du flux : grille sur deux rangées au plus, sans défilement horizontal */
 .astrip { grid-auto-flow: row; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); grid-auto-columns: auto; grid-template-rows: auto auto; grid-auto-rows: 0; row-gap: 0; overflow: hidden; scroll-snap-type: none; padding-bottom: 0; }
 .astrip > * { min-width: 0; margin-bottom: 10px; }
+
+/* bandeau du régime macro (core.js, regimeBand) : une ligne compacte sous les indicateurs */
+.regime-band { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; padding: 8px 12px; border: 1px solid var(--line, rgba(255,255,255,.08)); border-radius: 6px; font-size: .78rem; }
+.regime-band .l { color: var(--dim, #8a93a3); text-transform: uppercase; letter-spacing: .04em; font-size: .68rem; }
+.regime-band .sep { width: 1px; align-self: stretch; background: var(--line, rgba(255,255,255,.08)); }
+.regime-band .mono.down { color: var(--rose, #f87171); }
+.regime-band .chips { gap: 4px; }

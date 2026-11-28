@@ -173,7 +173,7 @@ App.views.paper = (() => {
     if (!base()) return z.box.replaceChildren(empty("Instantané : l'agent de paper trading n'est visible que sur le site en ligne ou dans la version locale (node server.mjs)."));
     if (D.err) return z.box.replaceChildren(empty(D.err));
     if (!D.pf) return z.box.replaceChildren(empty("Chargement…"));
-    z.box.replaceChildren(kpis(), curve(), positions(), candidates(), votes(), models(), history(),
+    z.box.replaceChildren(kpis(), regimeBand(D.mt?.regime) || "", curve(), positions(), candidates(), votes(), models(), history(),
       h("p", { class: "disclaimer" }, `Capital fictif, aucune somme réelle engagée · dernier cycle ${when(D.pf.lastTick)} · ordres simulés sur les carnets réels ; tailles, stops et freins de drawdown fixés par le code.`));
   }
 

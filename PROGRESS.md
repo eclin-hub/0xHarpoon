@@ -148,6 +148,12 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 - Blueprints : qwen3.8 d'abord, normalisation avant validation, compilation à chaque cycle même avec une collecte réutilisée.
 - D1 labo synthétique (GJR-GARCH, sauts, régimes), D2 live sur les vrais prix horaires, D3 champions mêlés aux LLM (65 / 35). Rien n'est encore en D2 en production : il faut d'abord des Blueprints compilés (clé Groq) qui passent la D1, puis au moins 15 trades réels pour atteindre la D3.
 
+### Méta-Agent de Régime Macro (28/11/2026)
+- `lib/paper/regime_agent.mjs` : calendrier économique live (ForexFactory, déjà utilisé par le terminal via `lib/alt.mjs`, désormais lu aussi par l'agent), volatilité / tendance / funding sur BTC, ETH, NVDA et BRENTOIL, Flux ε, synthèse LLM en cache 2 h → 5 régimes. Vérifié en réel : calendrier de la semaine (77 événements, Core PCE du 25/11 reconnu comme critique, CPI australien non) ; prix réels de la branche state → `RANGE_COMPRESSION` (force de tendance 0,08, volatilité 1,1 × la normale).
+- Familles de stratégies déduites des règles des Blueprints ; filtrage par régime en D2/D3 (ouvertures) et dans le meta-ensemble (poids des champions) ; en stress, taille × 0,5 et conviction minimale 70.
+- Bandeau « Régime macro » sur Paper trading et X Alpha (vérifié dans l'app avec un FOMC simulé à 2 h).
+- Limite connue : le flux ForexFactory ne couvre que la semaine en cours ; le samedi et le dimanche, les événements de la semaine suivante n'apparaissent qu'après sa mise à jour.
+
 ### Pool multi-LLM élargi et classement dynamique (28/11/2026)
 - Nouveaux votants gratuits : Cerebras (`llama-3.3-70b`, `qwen-3-32b`), Mistral (`mistral-small-latest`), OpenRouter (`llama-3.3-70b-instruct:free`, `qwen3-235b-a22b:free`, `openrouter/free`). Secret `MISTRAL_API_KEY` ajouté au workflow ; un secret absent laisse le fournisseur de côté. Identifiants non encore vérifiés en réel : à surveiller dans « Classement des modèles IA » (colonne Statut, infobulle de la dernière erreur).
 - `lib/paper/llm_ranking.mjs` : score par modèle sur le shadow book (PSR, PF, réussite, prior neutre sous 5 trades, pénalité d'échecs), 6 votants actifs, poids plafonné à 30 %, sourdine à 0 % et repêchage par rotation (2 modèles en ombre par réveil). `decision.mjs` : dépouillement pondéré. Vérifié sur le vrai shadow book (22 trades clos) : gpt-oss-120b en tête (score 1,16, 18,8 %), les autres au prior neutre (16,2 %).
