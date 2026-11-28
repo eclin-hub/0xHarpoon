@@ -195,6 +195,9 @@ function route() {
   const prev = App.cur; if (prev && prev !== id && App.views[prev]?.leave) App.views[prev].leave();
   App.cur = id;
   for (const r of ROUTES) { $("v-" + r.id).hidden = r.id !== id; const n = $("nav-" + r.id); id === r.id ? n.setAttribute("aria-current", "page") : n.removeAttribute("aria-current"); }
+  // téléphone : la bande de navigation défile pour garder la page active visible, centrée
+  if (window.matchMedia?.("(max-width: 920px)").matches) { const rail = $("rail"), n = $("nav-" + id); if (rail && n) { const go = (behavior) => rail.scrollTo({ left: Math.max(0, n.offsetLeft - rail.offsetLeft - (rail.clientWidth - n.offsetWidth) / 2), behavior });
+    go(prev ? "smooth" : "auto"); if (!prev) document.fonts?.ready?.then(() => go("auto")); } }
   const v = App.views[id], box = $("v-" + id);
   if (v && !App.inited[id]) {
     const r = ROUTES.find((x) => x.id === id); box.append(h("div", { class: "pagehead" }, h("h1", { id: "h-" + id, tabindex: "-1" }, ...v.title(), ), v.sub ? h("p", {}, v.sub) : null));

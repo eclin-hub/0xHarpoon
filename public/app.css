@@ -422,3 +422,15 @@ td .chips { flex-wrap: nowrap; overflow: hidden; }
 
 /* colonne « Avis / Raison » (Paper trading) : une seule ligne, jamais tronquée ; le tableau défile horizontalement (.scroll) */
 td.reason { white-space: nowrap; max-width: none; overflow: visible; text-overflow: clip; color: var(--muted); font-size: 0.8rem; }
+
+/* Téléphone : la barre latérale devient une bande horizontale qu'on fait défiler au doigt, section par section
+   (Synthèse, Monde, Marchés, Baleines, Outil). La règle .rail { overflow-x: hidden } plus haut bloquait ce défilement. */
+@media (max-width: 920px) {
+  .rail { align-self: start; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; scroll-snap-type: x proximity; scroll-padding-inline: 12px; scrollbar-width: none; }
+  .rail::-webkit-scrollbar { display: none; }
+  .rail > * { flex: none; }
+  .rail .grp { display: flex; align-items: center; }
+  .rail .nav, .rail .grp > .cap { scroll-snap-align: start; }   /* arrêts du défilement : chaque section et chaque page */
+  .rail .grp > .cap { display: inline-block; padding: 0 6px 0 10px; border-left: 1px solid var(--line); font: 600 0.6rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.06em; color: var(--dim); white-space: nowrap; }
+  .rail .vault-box, .rail .vlock { max-width: 150px; }
+}
