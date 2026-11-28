@@ -54,6 +54,10 @@ if (process.argv.includes("--site")) {
     } catch {}
   }
   console.log("site/paper :", nPaper, "fichiers");
+  // carnet des stratégies : page autonome ouverte depuis X Alpha (nouvel onglet), avec la feuille de style du site
+  await writeFile(path.join(site, "ledger.html"), await pub("ledger.html"));
+  await writeFile(path.join(site, "app.css"), css);
+  console.log("site/ledger.html + app.css");
   console.log("site/index.html", (html.length / 1024) | 0, "KB · site/state.json", (raw.length / 1024) | 0, "KB");
 } else if (process.argv.includes("--artifact")) {
   const head = html.match(/<head>([\s\S]*?)<\/head>/)[1].replace(/<meta charset[^>]*>\s*|<meta name="viewport"[^>]*>\s*/g, "");

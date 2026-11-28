@@ -47,6 +47,14 @@ jobs:
           X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
           TWITTERAPI_IO_KEY: ${{ secrets.TWITTERAPI_IO_KEY }}
 
+      # Carnet permanent des stratégies (data/paper/strategy_ledger.json, écrit par l'agent de paper trading) : publié avec
+      # sa page autonome site/ledger.html. Vérification non bloquante : avant le premier cycle de l'agent, le carnet n'existe pas.
+      - name: Vérifier le carnet des stratégies publié
+        continue-on-error: true
+        run: |
+          test -f site/ledger.html && test -f site/app.css && echo "site/ledger.html et site/app.css présents"
+          if [ -f site/paper/strategy_ledger.json ]; then echo "carnet publié : $(grep -o '"id":' site/paper/strategy_ledger.json | wc -l) fiche(s)"; else echo "::warning::strategy_ledger.json absent (pas encore de cycle de l'agent)"; fi
+
       - name: Sauvegarder l'historique (branche state)
         run: |
           cd data

@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carnet des stratégies · 0xHarpoon</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Martian+Mono:wght@400;500&family=Unbounded:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<!-- Carnet permanent des stratégies (data/paper/strategy_ledger.json, league_engine.updateLedger) : toutes les stratégies
+     testées depuis le début, éliminées comprises. Page autonome ouverte depuis X Alpha ; mêmes styles que le site (app.css). -->
+<div class="stage"><div class="stage-in" id="box">
+  <div class="pagehead">
+    <h1>Carnet des <em>stratégies</em></h1>
+    <a href="index.html#xalpha" class="muted" style="font-size:.8rem;margin-left:auto">← X Alpha / 3-League Arena</a>
+    <p>Chaque Blueprint testé depuis le début : score au labo synthétique (D1), résultats live (D2, D3), dates de passage et motif de sortie. Rien n'est jamais effacé.</p>
+  </div>
+  <div class="empty" id="msg">Chargement…</div>
+</div></div>
+<script>
+"use strict";
+// Mini-DOM : h(tag, attributs, ...enfants)
+const h = (tag, attrs = {}, ...kids) => {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) if (v != null && v !== false) k.startsWith("on") ? e.addEventListener(k.slice(2), v) : e.setAttribute(k, v === true ? "" : v);
+  for (const k of kids.flat(Infinity)) if (k != null && k !== false) e.append(k instanceof Node ? k : String(k));
+  return e;
+};
+const f2 = (x, d = 2) => (x == null || !Number.isFinite(x) ? "—" : x.toFixed(d));
+const pct = (x, d = 1) => (x == null || !Number.isFinite(x) ? "—" : (x * 100).toFixed(d) + " %");
+const day = (iso) => (iso ? new Date(iso).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "2-digit" }) : "—");
+const when = (iso) => (iso ? new Date(iso).toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }) : null);
+
+const STATUS = { D1_PENDING: ["En attente D1", "neutral"], D1_QUALIFIED: ["Qualifiée D1", "cyan"], D1_OUT: ["Éliminée D1", "down"], D2_ACTIVE: ["Active D2", "cyan"],
+  D2_OUT: ["Éliminée D2", "down"], D3_CHAMPION: ["Champion D3", "up"], D3_RELEGATED: ["Reléguée D3 → D2", "warn"] };
+const FAMILY = { trend_breakout: "tendance", mean_reversion: "retour à la moyenne", stat_arb_leadlag: "arbitrage / lead-lag", volatility_squeeze: "squeeze de volatilité", defensive_hedge: "couverture" };
+const QUALIFIED = ["D1_QUALIFIED", "D2_ACTIVE", "D2_OUT", "D3_CHAMPION", "D3_RELEGATED"], ACTIVE = ["D2_ACTIVE", "D3_CHAMPION", "D3_RELEGATED"], OUT = ["D1_OUT", "D2_OUT"];
+const FILTERS = [["all", "Toutes", () => true], ["qual", "Qualifiées D2/D3", (s) => QUALIFIED.includes(s.status)], ["active", "Actives", (s) => ACTIVE.includes(s.status)], ["out", "Éliminées", (s) => OUT.includes(s.status)]];
+const SORTS = [["date", "Date", (s) => Date.parse(s.dates?.createdAt || 0)], ["pf", "PF Labo D1", (s) => s.d1Stats?.profitFactor ?? -Infinity],
+  ["live", "PnL / PSR Live", (s) => (s.d2Stats ? (s.d2Stats.totalReturn ?? 0) * 1000 + (s.d2Stats.psr ?? 0) : -Infinity)]];
+const PAGE = 25;
+const st = { filter: "all", sort: "date", q: "", shown: PAGE, open: new Set() }, D = { L: null };
+
+async function load() {
+  // GitHub Pages : paper/strategy_ledger.json à côté de la page ; serveur local : /api/paper/
+  for (const url of ["paper/strategy_ledger.json", "/api/paper/strategy_ledger.json"]) {
+    try { const r = await fetch(url + "?t=" + Date.now(), { cache: "no-store" }); if (r.ok) { D.L = await r.json(); break; } } catch {}
+  }
+  render();
+}
+
+function kpis(all) {
+  const kpi = (l, v, s) => h("div", { class: "kpi" }, h("div", { class: "l" }, l), h("div", { class: "v" }, v), s ? h("div", { class: "s", title: s }, s) : null);
+  const evald = all.filter((s) => s.d1Stats), qual = evald.filter((s) => QUALIFIED.includes(s.status));
+  const best = evald.filter((s) => Number.isFinite(s.d1Stats.profitFactor)).sort((a, b) => b.d1Stats.profitFactor - a.d1Stats.profitFactor)[0];
+  return h("div", { class: "kpis" },
+    kpi("Total testées", String(all.length), `${all.filter((s) => s.generation === "Gen-2").length} hybrides Gen-2 · ${OUT.reduce((a, k) => a + all.filter((s) => s.status === k).length, 0)} éliminées`),
+    kpi("Taux de qualification D1", evald.length ? pct(qual.length / evald.length, 0) : "—", `${qual.length} sur ${evald.length} évaluées au labo`),
+    kpi("Actives D2 / D3", `${all.filter((s) => s.status === "D2_ACTIVE" || s.status === "D3_RELEGATED").length} / ${all.filter((s) => s.status === "D3_CHAMPION").length}`, "en test live · champions de l'ensemble"),
+    kpi("Meilleur PF Labo D1", best ? f2(best.d1Stats.profitFactor) : "—", best ? best.name : null));
+}
+
+function toolbar() {
+  const seg = (items, key) => h("div", { class: "seg", role: "group" }, items.map(([k, label]) => h("button", { type: "button", "aria-pressed": String(st[key] === k), onclick: () => { st[key] = k; st.shown = PAGE; render(); } }, label)));
+  const search = h("input", { type: "search", class: "search", placeholder: "Nom ou ticker (BTC, NVDA…)", value: st.q, "aria-label": "Rechercher une stratégie" });
+  search.addEventListener("input", () => { st.q = search.value; st.shown = PAGE; renderTable(); });
+  return h("div", { class: "toolbar" }, seg(FILTERS, "filter"), search, h("span", { class: "muted", style: "font-size:.78rem;margin-left:auto" }, "Tri"), seg(SORTS, "sort"));
+}
+
+const match = (s, q) => { if (!q) return true; const t = q.trim().toLowerCase(); return s.name.toLowerCase().includes(t) || (s.blueprint?.universe || []).some((u) => u.toLowerCase() === t || u.toLowerCase().includes(t)) || (s.author || "").toLowerCase().includes(t); };
+
+function rows() {
+  const f = FILTERS.find((x) => x[0] === st.filter)[2], key = SORTS.find((x) => x[0] === st.sort)[2];
+  return (D.L.strategies || []).filter((s) => f(s) && match(s, st.q)).sort((a, b) => key(b) - key(a));
+}
+
+function detail(s) {
+  const d = s.dates || {}, steps = [["Créée", d.createdAt], ["Évaluée au labo D1", d.evaluatedD1At], ["Promue en D2", d.promotedD2At], ["Promue en D3", d.promotedD3At], ["Reléguée de D3", d.relegatedD3At], ["Clôturée", d.closedAt]].filter(([, t]) => t);
+  const kv = (label, obj, keys) => obj ? h("div", {}, h("div", { class: "muted", style: "font-size:.72rem;margin-bottom:4px" }, label),
+    h("div", { class: "mono", style: "font-size:.78rem;white-space:normal" }, keys.map(([k, l, fmt]) => `${l} ${fmt(obj[k])}`).join(" · "))) : null;
+  return h("div", { style: "display:flex;flex-direction:column;gap:12px;padding:6px 2px;white-space:normal" },
+    h("div", { style: "display:flex;flex-wrap:wrap;gap:6px 18px" }, steps.map(([l, t]) => h("span", { style: "font-size:.78rem" }, h("span", { class: "muted" }, l + " "), h("span", { class: "mono" }, when(t))))),
+    s.exitReason ? h("div", { style: "font-size:.8rem" }, h("span", { class: "chip down" }, "motif"), " ", s.exitReason) : null,
+    h("div", { style: "display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px" },
+      kv("Labo D1 (figé)", s.d1Stats, [["trades", "trades", String], ["profitFactor", "PF", f2], ["winRate", "réussite", (x) => pct(x, 0)], ["maxDrawdown", "DD", pct], ["sharpe", "Sharpe", f2], ["psr", "PSR", f2], ["stressSurvivalRate", "stress", (x) => pct(x, 0)]]),
+      kv(`Live D2${s.d2Stats?.final ? " (bilan final)" : " (en cours)"}`, s.d2Stats, [["trades", "trades", (x) => String(x ?? 0)], ["profitFactor", "PF", f2], ["psr", "PSR", f2], ["winRate", "réussite", (x) => pct(x, 0)], ["maxDrawdown", "DD", pct], ["totalReturn", "rendement", (x) => pct(x, 2)]]),
+      kv("Ensemble D3", s.d3Stats, [["rollingPsr", "PSR glissant", f2], ["drawdown", "DD depuis D3", pct], ["maxCorr", "corrélation max", f2]])),
+    (s.history || []).length ? h("div", { style: "font-size:.76rem" }, h("span", { class: "muted" }, "Historique : "), s.history.map((x, i) => [i ? " → " : "", h("span", { class: "mono", title: x.note || null }, `${STATUS[x.status]?.[0] || x.status} (${day(x.at)})`)])) : null,
+    s.parents?.length ? h("div", { class: "muted", style: "font-size:.76rem" }, "Parents : ", s.parents.join(" × ")) : null,
+    h("details", { class: "fold" }, h("summary", {}, "Règles complètes (Blueprint JSON)"), h("div", { class: "in" }, h("pre", { class: "json" }, JSON.stringify(s.blueprint, null, 2)))));
+}
+
+let tbody = null, more = null, count = null;
+function renderTable() {
+  const rs = rows(), vis = rs.slice(0, st.shown);
+  tbody.replaceChildren(...vis.flatMap((s) => {
+    const [lbl, tone] = STATUS[s.status] || [s.status, "neutral"], d1 = s.d1Stats, d2 = s.d2Stats, open = st.open.has(s.id);
+    const tr = h("tr", { class: "row", style: "cursor:pointer", title: "Clic : fiche complète", onclick: () => { open ? st.open.delete(s.id) : st.open.add(s.id); renderTable(); } },
+      h("td", {}, s.url ? h("a", { href: s.url, target: "_blank", rel: "noopener noreferrer", style: "color:inherit;font-weight:600", onclick: (e) => e.stopPropagation() }, s.name) : h("b", {}, s.name),
+        h("span", { class: "sub2" }, `${FAMILY[s.family] || s.family} · ${(s.blueprint?.universe || []).join(", ")}`)),
+      h("td", {}, s.source, h("span", { class: "sub2" }, s.generation + (s.author ? ` · ${s.author}` : ""))),
+      h("td", {}, h("span", { class: "chip " + tone, title: s.exitReason || null }, lbl)),
+      h("td", { class: "num" }, d1 ? `${f2(d1.profitFactor)} · ${pct(d1.maxDrawdown)} · ${pct(d1.stressSurvivalRate, 0)}` : "—"),
+      h("td", { class: "num" }, d2 ? `${d2.trades ?? 0} · ${f2(d2.profitFactor)} · ${f2(d2.psr)}` : "—", d2?.totalReturn != null ? h("span", { class: "sub2" }, `rendement ${pct(d2.totalReturn, 2)}`) : null),
+      h("td", { class: "num" }, day(s.dates?.createdAt)));
+    return open ? [tr, h("tr", {}, h("td", { colspan: "6", style: "white-space:normal;max-width:none" }, detail(s)))] : [tr];
+  }));
+  count.textContent = `${rs.length} stratégie(s)${st.q ? ` pour « ${st.q} »` : ""}`;
+  more.hidden = rs.length <= st.shown;
+  more.textContent = `Voir plus (${Math.min(PAGE, rs.length - st.shown)} sur ${rs.length - st.shown} restantes)`;
+}
+
+function render() {
+  const box = document.getElementById("box"), head = box.querySelector(".pagehead");
+  if (!D.L) { box.replaceChildren(head, h("div", { class: "empty" }, "Carnet introuvable : il apparaît au premier cycle de l'agent de paper trading.")); return; }
+  const all = D.L.strategies || [];
+  tbody = h("tbody"); count = h("span", { class: "muted", style: "font-size:.78rem" });
+  more = h("button", { type: "button", class: "more-btn", onclick: () => { st.shown += PAGE; renderTable(); } });
+  const table = h("div", { class: "scroll" }, h("table", {}, h("thead", {}, h("tr", {}, ["Stratégie", "Source / Gen", "Statut", "Labo D1 (PF · DD · Stress)", "Live D2/D3 (Trades · PF · PSR)", "Date"].map((t, i) => h("th", { scope: "col", class: i >= 3 ? "num" : null }, t)))), tbody));
+  box.replaceChildren(head, kpis(all),
+    h("section", { class: "panel" }, h("div", { class: "head" }, h("h2", {}, "Toutes les stratégies"), count, h("span", { class: "muted", style: "margin-left:auto;font-size:.74rem" }, `mis à jour ${when(D.L.updatedAt) || "—"}`)),
+      h("div", { class: "body", style: "display:flex;flex-direction:column;gap:12px" }, toolbar(), table, more)));
+  renderTable();
+}
+load();
+</script>
+</body>
+</html>

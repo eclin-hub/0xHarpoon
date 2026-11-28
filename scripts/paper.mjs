@@ -20,7 +20,7 @@ import { CONFIG } from "../lib/paper/config.mjs";
 import { LLMRouter, metaWeights, mixDecisions, META } from "../lib/paper/router.mjs";
 import { evaluateMacroRegime, emptyRegimeCache, regimeContext, withRegime, STRESS, REGIME_CFG } from "../lib/paper/regime_agent.mjs";
 import { fetchCalendar } from "../lib/alt.mjs";
-import { emptyLeagues, admitBlueprints, maybeMutate, defaultMutator, updateLiveMarket, stepLeagues, championSignals, libraryStatus, TICKER_OF } from "../lib/paper/league_engine.mjs";
+import { emptyLeagues, admitBlueprints, maybeMutate, defaultMutator, updateLiveMarket, stepLeagues, championSignals, libraryStatus, TICKER_OF, updateLedger } from "../lib/paper/league_engine.mjs";
 import { wakeReasons, decide } from "../lib/paper/decision.mjs";
 import { executeDecisions } from "../lib/paper/execute.mjs";
 import { markToMarket } from "../lib/paper/simulator.mjs";
@@ -152,6 +152,9 @@ const champions = championSignals(leagues, live, regime);
 // en stress, le meta-ensemble relève aussi sa conviction minimale (60 → 70)
 const metaCfg = stress ? { ...META, minConviction: REGIME_CFG.stressRisk.minConviction } : META;
 leagues.meta = { at: new Date(now).toISOString(), regime: regime?.regime ?? null, ...metaWeights(champions, t.portfolio, metaCfg) };
+// carnet permanent : relu, fusionné avec l'état des ligues de ce cycle (jamais de suppression), réécrit
+let ledger = null;
+try { ledger = updateLedger(await store.readJson(FILES.ledger).catch(() => null), leagues, now); } catch (e) { problems.push(`carnet des stratégies : ${e.message || e}`); }
 if (xr.alpha?.infinity?.blueprints) {   // statut des Blueprints dans la bibliothèque ∞
   const status = libraryStatus(leagues);
   xr.alpha.infinity.blueprints = xr.alpha.infinity.blueprints.map((b) => (status[b.id] ? { ...b, status: status[b.id] } : b));
@@ -218,7 +221,7 @@ const summary = {
   ranking: { active: ranking.active, probes: ranking.probes, weights: ranking.applied ?? Object.fromEntries(ranking.models.filter((m) => m.weight > 0).map((m) => [m.model, m.weight])) },
   metrics: { sharpe: metrics.performance.sharpe, maxDrawdown: metrics.performance.maxDrawdown, closedTrades: metrics.trades.closed, shadowOpen: shadow.open.length, shadowClosed: sh.closed.length },
   leagues: { d1q: leagues.entries.filter((e) => e.division === "D1Q").length, d2: leagues.entries.filter((e) => e.division === "D2").length,
-    d3: leagues.entries.filter((e) => e.division === "D3").length, out: leagues.entries.filter((e) => e.division === "OUT").length, llmWeight: leagues.meta?.llm, log: leagues.log.slice(0, 5).map((l) => l.msg) },
+    d3: leagues.entries.filter((e) => e.division === "D3").length, out: leagues.entries.filter((e) => e.division === "OUT").length, ledger: ledger?.strategies?.length ?? null, llmWeight: leagues.meta?.llm, log: leagues.log.slice(0, 5).map((l) => l.msg) },
   x: xr.alpha ? { status: xr.alpha.status, notes: xr.alpha.notes, collectedAt: xr.alpha.collectedAt, epsilon: Object.keys(xContext || {}), blueprints: xr.alpha.infinity?.blueprints?.length ?? 0, stats: xr.alpha.stats } : "désactivé",
   whales: { tracked: Object.keys(scores.whales).length, newOutcomes: sc.applied.length, skipped: sc.skipped.length, warmupEndsAt: scores.warmupEndsAt },
   enrich: noNet ? "désactivé" : { markets: Object.keys(extra.markets).length, hlBooks: Object.keys(extra.hlBooks).length, pmBooks: Object.keys(extra.pmBooks).length, resolutions: Object.keys(extra.resolutions).length, pmTitles: Object.keys(pmi.cache).length, gammaCalls: pmi.calls },
@@ -238,6 +241,7 @@ if (!dry) {
   await store.writeJson(FILES.pmMarkets, pmi.cache);
   await store.writeJson(FILES.leagues, leagues);
   await store.writeJson(FILES.leagueMarket, live);
+  if (ledger) await store.writeJson(FILES.ledger, ledger);
   await store.writeJson(FILES.llmRanking, ranking);
   await store.writeJson(FILES.regimeCache, regimeCache);
   if (xr.alpha && !noX) {

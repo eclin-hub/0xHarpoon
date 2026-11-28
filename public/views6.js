@@ -110,8 +110,12 @@ App.views.xalpha = (() => {
   const srcOf = (e) => (e.src === "mutation" ? `mutation (${(e.parentSrc || []).map((s) => SRC[s] || s).join(" + ")})` : SRC[e.src] || e.src);
   const gauge = (x, title) => h("div", { title, style: "width:90px;height:7px;border-radius:4px;background:var(--line,rgba(255,255,255,.08));overflow:hidden" },
     h("div", { style: `width:${Math.round(Math.max(0, Math.min(1, x || 0)) * 100)}%;height:100%;background:${(x || 0) >= 1 ? "var(--up,#2bffb0)" : "var(--cyan,#22e6ff)"}` }));
-  const nameCell = (e) => h("td", { title: e.outReason || null }, e.url ? h("a", { href: e.url, target: "_blank", rel: "noopener noreferrer", style: "color:inherit;font-weight:600" }, e.name) : h("b", {}, e.name),
-    h("span", { class: "sub2" }, `${e.gen} · ${srcOf(e)}`));
+  // statistiques D1 figées (d1Stats), d1 pour les états plus anciens
+  const d1s = (e) => e.d1Stats || e.d1 || null;
+  const d1Line = (e) => { const x = d1s(e); return x ? `Labo D1 : PF ${f2(x.profitFactor)} · DD ${pctv(x.maxDrawdown)} · Stress ${pctv(x.stressSurvivalRate, 0)}` : null; };
+  // withD1 : sous-ligne discrète rappelant le score de montée (tableaux D2 et D3)
+  const nameCell = (e, withD1 = false) => h("td", { title: e.outReason || null }, e.url ? h("a", { href: e.url, target: "_blank", rel: "noopener noreferrer", style: "color:inherit;font-weight:600" }, e.name) : h("b", {}, e.name),
+    h("span", { class: "sub2" }, `${e.gen} · ${srcOf(e)}`), withD1 && d1Line(e) ? h("span", { class: "sub2", title: "score obtenu au labo synthétique pour monter en D2" }, d1Line(e)) : null);
   const tbl = (heads, rows) => h("div", { class: "scroll" }, h("table", {}, h("thead", {}, h("tr", {}, heads.map((x) => h("th", { scope: "col" }, x)))), h("tbody", {}, rows)));
 
   function pipeline(E) {
@@ -145,29 +149,36 @@ App.views.xalpha = (() => {
     const L = D.lg;
     if (!L) return panel("3-League Strategy Arena", {}, empty("La compétition démarre dès que la bibliothèque ∞ contient un Blueprint."));
     const E = L.entries || [], W = Object.fromEntries((L.meta?.champions || []).map((c) => [c.id, c]));
-    const d1 = E.filter((e) => e.d1 && (e.division === "D1Q" || (e.division === "OUT" && !e.d2))).sort((a, b) => Date.parse(b.d1.at) - Date.parse(a.d1.at));
+    // D1 : les qualifiées d'abord (où qu'elles soient montées depuis), puis les éliminées ; les plus récentes en tête
+    const passed = (e) => e.division === "D1Q" || e.division === "D2" || e.division === "D3" || (e.division === "OUT" && e.d2);
+    const byDate = (a, b) => Date.parse(d1s(b)?.evaluatedAt || d1s(b)?.at || 0) - Date.parse(d1s(a)?.evaluatedAt || d1s(a)?.at || 0);
+    const d1 = [...E.filter((e) => d1s(e) && passed(e)).sort(byDate), ...E.filter((e) => d1s(e) && e.division === "OUT" && !e.d2).sort(byDate)];
+    const qualChip = (e) => h("span", { class: "chip up", title: e.division === "D1Q" ? "en attente d'une place en D2" : e.division === "OUT" ? `éliminée ensuite en D2 : ${e.outReason || ""}` : `aujourd'hui en ${e.division}` },
+      e.division === "D3" ? "qualifié → D3" : e.division === "D1Q" ? "qualifié · attente D2" : "qualifié → D2");
     const d2 = E.filter((e) => e.division === "D2"), d3 = E.filter((e) => e.division === "D3");
     const m2 = (e) => e.d2?.metrics || {};
     const prog = (x, ok) => h("div", { style: "display:flex;align-items:center;gap:8px;justify-content:flex-end" }, gauge(x, `progression ${pctv(x, 0)}`), ok);
     return h("div", { style: "display:flex;flex-direction:column;gap:var(--gap)" },
       panel("3-League Strategy Arena", { sub: "les Blueprints du Flux ∞ gravissent les divisions ; seuls les champions de D3 pèsent sur l'agent",
+        tools: h("a", { href: "ledger.html", target: "_blank", rel: "noopener", class: "muted", style: "font-size:.78rem;white-space:nowrap", title: "Toutes les stratégies testées depuis le début, éliminées comprises (nouvel onglet)" }, "Carnet complet des stratégies ↗"),
         noteText: "D1 → D2 : PF ≥ 1,25, DD ≤ 12 %, survie au stress ≥ 80 %, ≥ 25 trades simulés. D2 → D3 : ≥ 15 trades réels, PSR ≥ 0,75, PF ≥ 1,30, corrélation < 0,60 avec D3. Relégation D2 : après 20 trades, PSR < 0,35 ou DD > 15 %. D3 → D2 : DD > 8 % ou PSR glissant < 0,50 (pas de retour avant 72 h)." },
         pipeline(E), curves(E),
         (L.log || []).length ? h("div", { style: "margin-top:12px" }, drawer(`Journal de la compétition (${L.log.length})`, h("ul", { class: "muted log", style: "font-size:.76rem;margin:0 0 0 18px" }, L.log.map((l) => h("li", {}, `${when(l.at)} — ${l.msg}`))))) : null),
       panel(["D3 · Ensemble actif"], { sub: "champions mêlés au vote des LLM" },
-        d3.length ? tbl(["Champion", "Trades", "PF", "PSR glissant", "DD depuis D3", "Poids"], d3.map((e) => h("tr", {}, nameCell(e),
+        d3.length ? tbl(["Champion", "Trades", "PF", "PSR glissant", "DD depuis D3", "Poids"], d3.map((e) => h("tr", {}, nameCell(e, true),
           h("td", { class: "num" }, m2(e).trades), h("td", { class: "num" }, f2(m2(e).profitFactor)), h("td", { class: "num" }, f2(e.d3?.rollingPsr)),
           h("td", { class: "num" }, pctv(e.d3?.drawdown)), h("td", { class: "num", title: W[e.id] ? `PSR ${f2(W[e.id].psr)} × orthogonalité ${f2(W[e.id].orth)}` : "" }, pctv(W[e.id]?.weight, 1)))))
           : empty("Aucun champion en D3 : le panel LLM garde 100 % du poids.")),
       panel("D2 · Ligue live", { sub: "paramètres gelés, 10 000 $ virtuels, vrais prix horaires" },
-        d2.length ? tbl(["Stratégie", "Trades", "PF", "PSR", "Max DD", "Vers D3"], d2.map((e) => h("tr", { title: `depuis ${when(e.d2.since)} · réussite ${pctv(m2(e).winRate, 0)} · rendement ${pctv(m2(e).totalReturn, 2)}` }, nameCell(e),
+        d2.length ? tbl(["Stratégie", "Trades", "PF", "PSR", "Max DD", "Vers D3"], d2.map((e) => h("tr", { title: `depuis ${when(e.d2.since)} · réussite ${pctv(m2(e).winRate, 0)} · rendement ${pctv(m2(e).totalReturn, 2)}` }, nameCell(e, true),
           h("td", { class: "num" }, m2(e).trades ?? 0), h("td", { class: "num" }, f2(m2(e).profitFactor)), h("td", { class: "num" }, f2(m2(e).psr)),
           h("td", { class: "num" }, pctv(m2(e).maxDrawdown)), h("td", { class: "num" }, prog(m2(e).progress)))))
           : empty("Aucune stratégie en D2.")),
       panel("D1 · Labo synthétique", { sub: "5 scénarios de 500 h : GJR-GARCH, sauts, régimes, crise imposée" },
-        d1.length ? tbl(["Blueprint", "Trades", "PF", "DD médian", "Survie", "Vers D2"], d1.map((e) => h("tr", { title: e.outReason || `réussite ${pctv(e.d1.winRate, 0)} · PSR ${f2(e.d1.psr)}` }, nameCell(e),
-          h("td", { class: "num" }, e.d1.trades), h("td", { class: "num" }, f2(e.d1.profitFactor)), h("td", { class: "num" }, pctv(e.d1.maxDrawdown)), h("td", { class: "num" }, pctv(e.d1.stressSurvivalRate, 0)),
-          h("td", { class: "num" }, prog(e.d1.progress, e.division === "D1Q" ? h("span", { class: "chip cyan" }, "qualifié") : h("span", { class: "chip down" }, "éliminé"))))))
+        d1.length ? tbl(["Blueprint", "Trades", "PF", "Max DD", "Survie stress", "Verdict"], d1.map((e) => { const x = d1s(e), ok = passed(e);
+          return h("tr", { title: ok ? `réussite ${pctv(x.winRate, 0)} · PSR ${f2(x.psr)}` : e.outReason || "" }, nameCell(e),
+            h("td", { class: "num" }, x.trades), h("td", { class: "num" + (ok ? " up" : "") }, f2(x.profitFactor)), h("td", { class: "num" }, pctv(x.maxDrawdown)), h("td", { class: "num" }, pctv(x.stressSurvivalRate, 0)),
+            h("td", { class: "num" }, ok ? qualChip(e) : prog(e.d1?.progress, h("span", { class: "chip down" }, "éliminé")))); }))
           : empty("Aucun Blueprint évalué pour l'instant.")));
   }
 

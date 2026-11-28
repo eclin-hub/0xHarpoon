@@ -148,6 +148,11 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 - Blueprints : qwen3.8 d'abord, normalisation avant validation, compilation à chaque cycle même avec une collecte réutilisée.
 - D1 labo synthétique (GJR-GARCH, sauts, régimes), D2 live sur les vrais prix horaires, D3 champions mêlés aux LLM (65 / 35). Rien n'est encore en D2 en production : il faut d'abord des Blueprints compilés (clé Groq) qui passent la D1, puis au moins 15 trades réels pour atteindre la D3.
 
+### Carnet permanent des stratégies (28/11/2026)
+- `d1Stats` figées à l'évaluation D1 et gardées après promotion ; `strategy_ledger.json` (jamais purgé) mis à jour à chaque cycle et publié ; page autonome `public/ledger.html` ouverte depuis l'arène X Alpha.
+- X Alpha : tableau D1 avec les qualifiées en tête (badge « qualifié → D2 »), sous-ligne « Labo D1 : PF · DD · Stress » dans D2 et D3, lien discret vers le carnet ; aucun nouveau bloc.
+- Vérifié sur l'état réel (branche state) : 9 stratégies, 1 qualifiée (GraphFactorStatArb, PF labo 1,31, active en D2), 8 éliminées en D1 ; page et filtres vérifiés sur le serveur local ; construction du site vérifiée (`site/ledger.html`, `site/app.css`, `site/paper/strategy_ledger.json`).
+
 ### Méta-Agent de Régime Macro (28/11/2026)
 - `lib/paper/regime_agent.mjs` : calendrier économique live (ForexFactory, déjà utilisé par le terminal via `lib/alt.mjs`, désormais lu aussi par l'agent), volatilité / tendance / funding sur BTC, ETH, NVDA et BRENTOIL, Flux ε, synthèse LLM en cache 2 h → 5 régimes. Vérifié en réel : calendrier de la semaine (77 événements, Core PCE du 25/11 reconnu comme critique, CPI australien non) ; prix réels de la branche state → `RANGE_COMPRESSION` (force de tendance 0,08, volatilité 1,1 × la normale).
 - Familles de stratégies déduites des règles des Blueprints ; filtrage par régime en D2/D3 (ouvertures) et dans le meta-ensemble (poids des champions) ; en stress, taille × 0,5 et conviction minimale 70.
