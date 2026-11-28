@@ -126,8 +126,8 @@ test("collecte : Google News (3 requêtes) + Hacker News (4) + GitHub, comptes p
   assert.ok(r.notes.some((n) => /Hacker News « polymarket » : HTTP 503/.test(n))); assert.ok(r.notes.some((n) => /Google News gn-x : aucun résultat/.test(n)));
   const gh = parseGithub({ items: [{ full_name: "o/hl-bot", description: "Funding arb bot", owner: { login: "o" }, html_url: "https://github.com/o/hl-bot", topics: ["hyperliquid"] }, { full_name: "f/fork", fork: true }] });
   assert.equal(gh.length, 1); assert.match(gh[0].text, /Topics: hyperliquid/);
-  assert.equal(builderScorer({ env: { GROQ_API_KEY: "k" } }), null);   // Groq seul : pas de notation (quota réservé au vote)
-  assert.ok(builderScorer({ env: { DEEPSEEK_API_KEY: "k" } }));
+  assert.ok(builderScorer({ env: { GROQ_API_KEY: "k" } }));   // Groq seul : gpt-oss-120b puis qwen3.8 en repli
+  assert.ok(builderScorer({ env: { DEEPSEEK_API_KEY: "k" } })); assert.equal(builderScorer({ env: {} }), null);
 });
 
 test("D1 : au plus 8 nouveaux candidats Gen-1 par 24 h glissantes, les plus intéressants d'abord ; le reste attend", () => {

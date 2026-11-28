@@ -18,7 +18,7 @@ const FAIL = () => ({ trades: 40, profitFactor: 0.9, winRate: 0.45, maxDrawdown:
 
 /* ---------- compilation des Blueprints ---------- */
 
-test("compilation : JSON presque correct normalisé (alias, bornes, champs inconnus) ; qwen3.8 essayé en premier", async () => {
+test("compilation : JSON presque correct normalisé (alias, bornes, champs inconnus) ; sur Groq, gpt-oss-120b puis qwen3.8", async () => {
   const raw = { name: "Momentum crypto", thesis: "Suivre la tendance.", universe: ["bitcoin", "xyz:NVDA", "DOGE"], side: "LONG", horizon_hours: 5000,
     blocks: [{ type: "Bollinger", weight: 3, params: { period: 20, z: 9, color: "red" } }, { type: "eval", weight: 1 }, { type: "ml", weight: 0.5, params: { features: ["funding", "magic"], coefs: [-2, 1] } }],
     entry: 0.4, exit: { stop_atr: 0.1, max_hold_hours: 48 }, code: "rm -rf /" };
@@ -30,10 +30,10 @@ test("compilation : JSON presque correct normalisé (alias, bornes, champs incon
   assert.equal(v.value.entry.score_above, 0.4); assert.equal(v.value.exit.stop_atr, 0.5); assert.equal(v.value.code, undefined);
   assert.equal(validateBlueprint(coerceBlueprint({ name: "x", thesis: "y", universe: ["!!"], blocks: [{ type: "rsi", weight: 1 }] })).ok, false);   // aucun actif utilisable : refusé
   const order = [];
-  const f = async (url, init) => { const m = JSON.parse(init.body).model; order.push(m); return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(m.startsWith("qwen") ? { nope: 1 } : raw) } }] }), { status: 200 }); };
+  const f = async (url, init) => { const m = JSON.parse(init.body).model; order.push(m); return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(m.startsWith("openai") ? { nope: 1 } : raw) } }] }), { status: 200 }); };
   const ex = blueprintExtractor({ env: { GROQ_API_KEY: "k" }, fetch: f });
   const r = await ex({ author: "a", text: "thread" });
-  assert.deepEqual(order, ["qwen/qwen3.8-27b", "openai/gpt-oss-120b"]); assert.equal(r.model, "openai/gpt-oss-120b"); assert.equal(r.blueprint.universe[0], "BTC");
+  assert.deepEqual(order, ["openai/gpt-oss-120b", "qwen/qwen3.8-27b"]); assert.equal(r.model, "qwen/qwen3.8-27b"); assert.equal(r.blueprint.universe[0], "BTC");
 });
 
 test("compilation : abstracts arXiv et posts X en attente compilés même quand la collecte est réutilisée ; bibliothèque vide → quota relevé", async () => {
@@ -76,16 +76,16 @@ test("compilation : seuil arXiv 60 (abstracts q-fin déjà filtrés) contre 75 p
   assert.equal(st.entries.length, 2); assert.ok(st.entries.every((e) => e.src === "arxiv" && e.gen === "Gen-1"));
 });
 
-test("compilation : {\"none\":true} de qwen3.8 → gpt-oss-120b essayé ; écarté seulement si tous le disent ; prompt v2 → anciens rejets réessayés ; arXiv de 15 jours gardé", async () => {
+test("compilation : {\"none\":true} de gpt-oss-120b → qwen3.8 essayé ; écarté seulement si tous le disent ; prompt v2 → anciens rejets réessayés ; arXiv de 15 jours gardé", async () => {
   const BPJ = JSON.stringify(BP), order = [];
   const reply = (fn) => async (url, init) => { const m = JSON.parse(init.body).model, body = JSON.parse(init.body); order.push(m);
     return new Response(JSON.stringify({ choices: [{ message: { content: fn(m, body) } }] }), { status: 200 }); };
   const post = { id: "arxiv:1", src: "arxiv", author: "A", text: "GARCH volatility forecasting." };
-  const ex = blueprintExtractor({ env: { GROQ_API_KEY: "k" }, fetch: reply((m, b) => { assert.equal(JSON.parse(b.messages[1].content).source, "arxiv"); return m.startsWith("qwen") ? '{"none":true}' : BPJ; }) });
+  const ex = blueprintExtractor({ env: { GROQ_API_KEY: "k" }, fetch: reply((m, b) => { assert.equal(JSON.parse(b.messages[1].content).source, "arxiv"); return m.startsWith("openai") ? '{"none":true}' : BPJ; }) });
   const r = await ex(post);
-  assert.deepEqual(order, ["qwen/qwen3.8-27b", "openai/gpt-oss-120b"]); assert.equal(r.model, "openai/gpt-oss-120b"); assert.equal(r.blueprint.name, BP.name);
+  assert.deepEqual(order, ["openai/gpt-oss-120b", "qwen/qwen3.8-27b"]); assert.equal(r.model, "qwen/qwen3.8-27b"); assert.equal(r.blueprint.name, BP.name);
   const both = await blueprintExtractor({ env: { GROQ_API_KEY: "k" }, fetch: reply(() => '{"none":true}') })(post);
-  assert.equal(both.blueprint, null); assert.equal(both.error, undefined); assert.match(both.reason, /qwen.*aucune règle testable.*\| .*gpt-oss-120b.*aucune règle testable/);
+  assert.equal(both.blueprint, null); assert.equal(both.error, undefined); assert.match(both.reason, /gpt-oss-120b.*aucune règle testable.*\| .*qwen.*aucune règle testable/);
   // état réel du 28/11/2026 : 3 abstracts « done » sans Blueprint (prompt v1) → réessayés une fois avec le prompt v2
   const P = (id) => ({ id, kind: "infinity", interest: 78, src: "arxiv", author: "B", text: "Deep factor model for statistical arbitrage.", t: NOW - 3 * 24 * H, url: null });
   const cache = { posts: { a: P("a"), b: P("b"), c: P("c") }, done: { a: "2026-11-27T23:24:31Z", b: "2026-11-27T23:24:31Z", c: "2026-11-27T23:24:31Z" } };
@@ -138,16 +138,17 @@ test("runSyntheticBenchmark : 5 scénarios de 500 barres, métriques complètes 
 
 /* ---------- divisions ---------- */
 
-test("promotion D1 → D2 : seuils PF / DD / survie / 25 trades ; places limitées à 6, paramètres gelés", () => {
+test("promotion D1 → D2 : seuils PF / DD / survie / 12 trades ; places limitées à 6, paramètres gelés", () => {
   let st = admitBlueprints(emptyLeagues(), [lib("2611.1"), lib("2611.2", "x")], { now: NOW, bench: (bp) => (bp.name === BP.name ? PASS() : FAIL()) });   // le labo reçoit une copie (avec la famille)
   assert.deepEqual(st.entries.map((e) => e.division), ["D1Q", "D1Q"]);
   st = admitBlueprints(st, [lib("2611.3", "arxiv", { ...BP, name: "Faible" })], { now: NOW, bench: FAIL });
   const out = st.entries.find((e) => e.id === "2611.3");
-  assert.equal(out.division, "OUT"); assert.match(out.outReason, /PF 0\.9 < 1\.25.*DD 20\.0 % > 12 %.*survie au stress 40 % < 80 %/);
-  assert.equal(admitBlueprints(st, [lib("2611.9")], { now: NOW, bench: () => ({ ...PASS(), trades: 24 }) }).entries.at(-1).division, "OUT");   // 24 trades : trop peu
+  assert.equal(out.division, "OUT"); assert.match(out.outReason, /PF 0\.9 < 1\.15.*DD 20\.0 % > 18 %.*survie au stress 40 % < 66 %/);
+  assert.equal(admitBlueprints(st, [lib("2611.9")], { now: NOW, bench: () => ({ ...PASS(), trades: 11 }) }).entries.at(-1).division, "OUT");   // 11 trades : trop peu
   const noCap = { ...LEAGUE, d1: { ...LEAGUE.d1, maxPerDay: Infinity } };   // plafond quotidien testé à part (builders.test.mjs)
   for (let k = 4; k < 12; k++) st = admitBlueprints(st, [lib(`2611.${k}`)], { now: NOW, bench: PASS, cfg: noCap });
-  st = stepLeagues(st, { series: {} }, { now: NOW });
+  // une seule famille ici : plafond par famille levé (diversification testée dans d1_calibrage.test.mjs)
+  st = stepLeagues(st, { series: {} }, { now: NOW, cfg: { ...LEAGUE, d2: { ...LEAGUE.d2, maxPerFamily: Infinity } } });
   assert.equal(st.entries.filter((e) => e.division === "D2").length, 6); assert.equal(st.entries.filter((e) => e.division === "D1Q").length, 4);
   const d2 = st.entries.find((e) => e.division === "D2");
   assert.equal(d2.d2.book.capital, 10_000); assert.deepEqual(d2.blueprint, BP);

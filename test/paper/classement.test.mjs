@@ -166,11 +166,11 @@ test("Blueprints compilés après le vote : collecte sans compilation, puis comp
   assert.equal(calls, 0); assert.equal(alpha.infinity.blueprints.length, 0); assert.equal(alpha.infinity.translator, "après le vote de trading");
   assert.ok(!alpha.notes.some((n) => /traducteur indisponible/.test(n)));
   const after = await compileLibrary(alpha, cache, ex, { now: NOW, env: { DEEPSEEK_API_KEY: "d", GROQ_API_KEY: "g" } });
-  assert.equal(calls, 1); assert.equal(after.alpha.infinity.blueprints.length, 1); assert.match(after.alpha.infinity.translator, /^deepseek-flash → qwen3.8/);
+  assert.equal(calls, 1); assert.equal(after.alpha.infinity.blueprints.length, 1); assert.match(after.alpha.infinity.translator, /^deepseek-flash → deepseek-chat → gpt-oss-120b → qwen3.8/);
   const order = [];
   const ext = blueprintExtractor({ env: { DEEPSEEK_API_KEY: "d", GROQ_API_KEY: "g", OPENROUTER_API_KEY: "o" }, fetch: reply((m) => { order.push(m); return { none: true }; }) });
   await ext({ author: "a", text: "x", src: "arxiv" });
-  assert.deepEqual(order, ["deepseek-flash", "deepseek-v4-pro", "qwen/qwen3.8-27b", "openai/gpt-oss-120b", "openrouter/free"]);
+  assert.deepEqual(order, ["deepseek-flash", "deepseek-chat", "openai/gpt-oss-120b", "qwen/qwen3.8-27b"]);   // chaîne de compilation (COMPILE_PREFER)
 });
 
 test("dépouillement pondéré : 4 OPEN sur 6 ouvrent sans arbitre si leur poids ≥ 75 %, arbitre à poids égaux ; conviction pondérée", () => {

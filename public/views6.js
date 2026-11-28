@@ -54,8 +54,20 @@ App.views.xalpha = (() => {
           x.free ? ` · sources gratuites : ${x.free.rss} articles RSS, ${x.free.arxiv} arXiv` : "", ` · traducteur ${x.infinity?.translator || "—"}`),
         x.builders?.counts ? h("div", { class: "muted", style: "font-size:.78rem;margin-top:4px" }, `Alpha & Builders (Google News, Hacker News, GitHub) : ${x.builders.counts.x ?? 0} X, ${x.builders.counts.substack ?? 0} Substack, ${x.builders.counts.reddit ?? 0} Reddit, ${x.builders.counts.hn ?? 0} HN, ${x.builders.counts.github ?? 0} GitHub`
           + ` → filtre : ${x.builders.filter?.promo ?? 0} promo, ${x.builders.filter?.short ?? 0} trop courts, ${x.builders.filter?.noMech ?? 0} sans règle mécanique, ${x.builders.filter?.dup ?? 0} doublons, ${x.builders.filter?.kept ?? 0} retenus`
-          + (x.builders.compile ? ` · deepseek-flash : ${x.builders.compile.scored} notés, ${x.builders.compile.compiled} compilés (≥ 7/10)` : "") + ` · ${x.builders.queued ?? 0} en file`) : null,
+          + (x.builders.compile ? ` · notation : ${x.builders.compile.scored} notés, ${x.builders.compile.compiled} compilés (≥ 6/10)${x.builders.compile.model ? ` par ${x.builders.compile.model}` : ""}` : "") + ` · ${x.builders.queued ?? 0} en file`) : null,
+        compileLine(x.compile),
         (x.notes || []).length ? h("ul", { class: "muted", style: "font-size:.76rem;margin:6px 0 0 18px" }, x.notes.map((n) => h("li", {}, n))) : null));
+  }
+  // Bilan de compilation du dernier cycle : compilés / en attente, modèle effectif, erreurs de la chaîne de repli
+  function compileLine(c) {
+    if (!c) return h("div", { class: "muted", style: "font-size:.78rem;margin-top:4px" }, "Compilation : pas encore de bilan (publié au prochain cycle).");
+    const models = Object.entries(c.models || {}).map(([m, n]) => `${m} ×${n}`).join(", ");
+    const wait = (c.pending?.posts ?? 0) + (c.pending?.builders ?? 0);
+    return h("div", { style: "font-size:.78rem;margin-top:6px;display:flex;flex-direction:column;gap:3px" },
+      h("div", {}, h("span", { class: "chip " + (c.made ? "up" : c.errors?.length ? "down" : "neutral") }, `${c.made} compilé(s)`), " ",
+        h("span", { class: "muted" }, `au cycle de ${when(c.at)} (quota ${c.quota}) : ${c.builders} Builders + ${c.posts} posts ∞ · en attente dans le cache : ${wait} (${c.pending?.builders ?? 0} Builders, ${c.pending?.posts ?? 0} posts ∞ au seuil)`)),
+      h("div", { class: "muted" }, `Modèle effectif : ${models || (c.available?.posts || c.available?.builders ? "aucun (rien compilé)" : "aucun disponible (clés DeepSeek / Groq absentes)")}`),
+      c.errors?.length ? h("ul", { class: "down", style: "font-size:.74rem;margin:2px 0 0 18px" }, c.errors.map((e) => h("li", {}, e))) : null);
   }
 
   function epsilon() {
@@ -199,7 +211,7 @@ App.views.xalpha = (() => {
     return h("div", { style: "display:flex;flex-direction:column;gap:var(--gap)" },
       panel("3-League Strategy Arena", { sub: "les Blueprints du Flux ∞ gravissent les divisions ; seuls les champions de D3 pèsent sur l'agent",
         tools: h("a", { href: "ledger.html", target: "_blank", rel: "noopener", class: "muted", style: "font-size:.78rem;white-space:nowrap", title: "Toutes les stratégies testées depuis le début, éliminées comprises (nouvel onglet)" }, "Carnet complet des stratégies ↗"),
-        noteText: "D1 → D2 : PF ≥ 1,25, DD ≤ 12 %, survie au stress ≥ 80 %, ≥ 25 trades simulés. D2 → D3 : ≥ 15 trades réels, PSR ≥ 0,75, PF ≥ 1,30, corrélation < 0,60 avec D3. Relégation D2 : après 20 trades, PSR < 0,35 ou DD > 15 %. D3 → D2 : DD > 8 % ou PSR glissant < 0,50 (pas de retour avant 72 h)." },
+        noteText: "D1 → D2 : PF ≥ 1,15, DD ≤ 18 %, survie au stress ≥ 66 % (4 scénarios sur 5), ≥ 12 trades simulés ; D2 : 6 places, 3 au plus par famille. D2 → D3 : ≥ 15 trades réels, PSR ≥ 0,75, PF ≥ 1,30, corrélation < 0,60 avec D3. Relégation D2 : après 20 trades, PSR < 0,35 ou DD > 15 %. D3 → D2 : DD > 8 % ou PSR glissant < 0,50 (pas de retour avant 72 h)." },
         pipeline(E), curves(E),
         (L.log || []).length ? h("div", { style: "margin-top:12px" }, drawer(`Journal de la compétition (${L.log.length})`, h("ul", { class: "muted log", style: "font-size:.76rem;margin:0 0 0 18px" }, L.log.map((l) => h("li", {}, `${when(l.at)} — ${l.msg}`))))) : null),
       panel(["D3 · Ensemble actif"], { sub: "champions mêlés au vote des LLM" },
