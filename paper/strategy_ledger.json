@@ -1,0 +1,1019 @@
+{
+ "version": 1,
+ "updatedAt": "2026-11-28T13:29:35.603Z",
+ "strategies": [
+  {
+   "id": "bp-arxiv:2611.14245v1",
+   "history": [
+    {
+     "at": "2026-11-28T04:10:34.857Z",
+     "status": "D1_OUT",
+     "note": "D1 : PF 0.886 < 1.25, DD 17.0 % > 12 %, survie au stress 20 % < 80 %"
+    }
+   ],
+   "dates": {
+    "createdAt": "2026-11-28T04:10:34.857Z",
+    "evaluatedD1At": "2026-11-28T04:10:34.857Z",
+    "closedAt": "2026-11-28T04:10:34.857Z"
+   },
+   "name": "Liquidation Impact Momentum",
+   "family": "trend_breakout",
+   "generation": "Gen-1",
+   "source": "arXiv",
+   "author": "Ryan Donnelly et al.",
+   "url": "https://arxiv.org/abs/2611.14245v1",
+   "parents": [],
+   "blueprint": {
+    "name": "Liquidation Impact Momentum",
+    "thesis": "Le papier modélise l'exécution optimale sous impact transitoire; on approxime son signal par un momentum très court et un filtre de régime de volatilité sur les actifs les plus liquides.",
+    "universe": [
+     "BTC",
+     "ETH",
+     "SOL"
+    ],
+    "side": "both",
+    "horizon_hours": 8,
+    "blocks": [
+     {
+      "type": "momentum",
+      "weight": 0.7,
+      "params": {
+       "lookback": 4
+      }
+     },
+     {
+      "type": "volatility_regime",
+      "weight": 0.3,
+      "params": {
+       "lookback": 24,
+       "max_atr_pct": 0.08
+      }
+     }
+    ],
+    "entry": {
+     "score_above": 0.25
+    },
+    "exit": {
+     "stop_atr": 1.5,
+     "take_profit_atr": 3,
+     "max_hold_hours": 8
+    }
+   },
+   "d1Stats": {
+    "trades": 1128,
+    "profitFactor": 0.886,
+    "winRate": 0.36,
+    "maxDrawdown": 0.17,
+    "sharpe": -2.67,
+    "psr": 0.064,
+    "stressSurvivalRate": 0.2,
+    "evaluatedAt": "2026-11-28T04:10:34.857Z"
+   },
+   "exitReason": "D1 : PF 0.886 < 1.15, survie au stress 20 % < 66 %",
+   "status": "D1_OUT",
+   "lastSeenAt": "2026-11-28T13:29:35.603Z",
+   "src": "arxiv",
+   "excerpt": null,
+   "fingerprint": null
+  },
+  {
+   "id": "bp-arxiv:2611.14117v1",
+   "history": [
+    {
+     "at": "2026-11-28T02:10:47.146Z",
+     "status": "D1_OUT",
+     "note": "D1 : PF 0.652 < 1.25, DD 30.2 % > 12 %, survie au stress 0 % < 80 %"
+    }
+   ],
+   "dates": {
+    "createdAt": "2026-11-28T02:10:47.146Z",
+    "evaluatedD1At": "2026-11-28T02:10:47.146Z",
+    "closedAt": "2026-11-28T02:10:47.146Z"
+   },
+   "name": "OrderFlowMicropricePredictor",
+   "family": "trend_breakout",
+   "generation": "Gen-1",
+   "source": "arXiv",
+   "author": "Fedor Shabashev",
+   "url": "https://arxiv.org/abs/2611.14117v1",
+   "parents": [],
+   "blueprint": {
+    "name": "OrderFlowMicropricePredictor",
+    "thesis": "Le modèle pré-entraîné sur le flux d'ordres prédit les micro‑prix à l'échelle sub‑seconde, offrant un signal exploitable pour le market‑making et l'exécution. Cette approche capture la dynamique microstructure des crypto‑actifs.",
+    "universe": [
+     "BTC",
+     "ETH"
+    ],
+    "side": "both",
+    "horizon_hours": 1,
+    "blocks": [
+     {
+      "type": "linear_ml_score",
+      "weight": 0.7,
+      "params": {
+       "intercept": 0,
+       "features": [
+        "momentum",
+        "atr_pct"
+       ],
+       "coefs": [
+        0.5,
+        -0.3
+       ]
+      }
+     },
+     {
+      "type": "momentum",
+      "weight": 0.3,
+      "params": {
+       "lookback": 5
+      }
+     }
+    ],
+    "entry": {
+     "score_above": 0.2
+    },
+    "exit": {
+     "stop_atr": 1,
+     "take_profit_atr": 2,
+     "max_hold_hours": 2
+    }
+   },
+   "d1Stats": {
+    "trades": 1169,
+    "profitFactor": 0.652,
+    "winRate": 0.413,
+    "maxDrawdown": 0.302,
+    "sharpe": -11.245,
+    "psr": 0,
+    "stressSurvivalRate": 0,
+    "evaluatedAt": "2026-11-28T02:10:47.146Z"
+   },
+   "exitReason": "D1 : PF 0.652 < 1.15, DD 30.2 % > 18 %, survie au stress 0 % < 66 %",
+   "status": "D1_OUT",
+   "lastSeenAt": "2026-11-28T13:29:35.603Z",
+   "src": "arxiv",
+   "excerpt": null,
+   "fingerprint": null
+  },
+  {
+   "id": "bp-arxiv:2611.21897v1",
+   "history": [
+    {
+     "at": "2026-11-28T02:10:47.146Z",
+     "status": "D1_OUT",
+     "note": "D1 : PF 0.538 < 1.25"
+    }
+   ],
+   "dates": {
+    "createdAt": "2026-11-28T02:10:47.146Z",
+    "evaluatedD1At": "2026-11-28T02:10:47.146Z",
+    "closedAt": "2026-11-28T02:10:47.146Z"
+   },
+   "name": "Volatility Regime Breakout",
+   "family": "volatility_squeeze",
+   "generation": "Gen-1",
+   "source": "arXiv",
+   "author": "Farzana Afroz et al.",
+   "url": "https://arxiv.org/abs/2611.21897v1",
+   "parents": [],
+   "blueprint": {
+    "name": "Volatility Regime Breakout",
+    "thesis": "Exploiter les changements de volatilité détectés par un modèle GARCH pour entrer sur des cassures de prix.",
+    "universe": [
+     "NVDA"
+    ],
+    "side": "both",
+    "horizon_hours": 24,
+    "blocks": [
+     {
+      "type": "volatility_regime",
+      "weight": 0.6,
+      "params": {
+       "lookback": 50,
+       "max_atr_pct": 0.1
+      }
+     },
+     {
+      "type": "atr_breakout",
+      "weight": 0.4,
+      "params": {
+       "period": 20,
+       "mult": 2
+      }
+     }
+    ],
+    "entry": {
+     "score_above": 0.3
+    },
+    "exit": {
+     "stop_atr": 2,
+     "take_profit_atr": 5,
+     "max_hold_hours": 48
+    }
+   },
+   "d1Stats": {
+    "trades": 76,
+    "profitFactor": 0.538,
+    "winRate": 0.263,
+    "maxDrawdown": 0.076,
+    "sharpe": -5.217,
+    "psr": 0.025,
+    "stressSurvivalRate": 1,
+    "evaluatedAt": "2026-11-28T02:10:47.146Z"
+   },
+   "exitReason": "D1 : PF 0.538 < 1.15",
+   "status": "D1_OUT",
+   "lastSeenAt": "2026-11-28T13:29:35.603Z",
+   "src": "arxiv",
+   "excerpt": null,
+   "fingerprint": null
+  },
+  {
+   "id": "bp-arxiv:2611.17170v1",
+   "history": [
+    {
+     "at": "2026-11-28T01:29:43.063Z",
+     "status": "D1_OUT",
+     "note": "D1 : PF 0.741 < 1.25, DD 16.1 % > 12 %, survie au stress 20 % < 80 %"
+    }
+   ],
+   "dates": {
+    "createdAt": "2026-11-28T01:29:43.063Z",
+    "evaluatedD1At": "2026-11-28T01:29:43.063Z",
+    "closedAt": "2026-11-28T01:29:43.063Z"
+   },
+   "name": "BESS Intraday Forecast Trading",
+   "family": "trend_breakout",
+   "generation": "Gen-1",
+   "source": "arXiv",
+   "author": "Simon Hirsch et al.",
+   "url": "https://arxiv.org/abs/2611.17170v1",
+   "parents": [],
+   "blueprint": {
+    "name": "BESS Intraday Forecast Trading",
+    "thesis": "Utiliser des prévisions de prix intrajournalières pour optimiser les charges et décharges d'une batterie, capturant les opportunités de profit à court terme.",
+    "universe": [
+     "BTC",
+     "ETH"
+    ],
+    "side": "both",
+    "horizon_hours": 6,
+    "blocks": [
+     {
+      "type": "linear_ml_score",
+      "weight": 1,
+      "params": {
+       "intercept": 0,
+       "features": [
+        "momentum",
+        "zscore"
+       ],
+       "coefs": [
+        0.6,
+        0.4
+       ]
+      }
+     }
+    ],
+    "entry": {
+     "score_above": 0.2
+    },
+    "exit": {
+     "stop_atr": 2,
+     "take_profit_atr": 5,
+     "max_hold_hours": 12
+    }
+   },
+   "d1Stats": {
+    "trades": 440,
+    "profitFactor": 0.741,
+    "winRate": 0.38,
+    "maxDrawdown": 0.161,
+    "sharpe": -4.493,
+    "psr": 0.01,
+    "stressSurvivalRate": 0.2,
+    "evaluatedAt": "2026-11-28T01:29:43.063Z"
+   },
+   "exitReason": "D1 : PF 0.741 < 1.15, survie au stress 20 % < 66 %",
+   "status": "D1_OUT",
+   "lastSeenAt": "2026-11-28T13:29:35.603Z",
+   "src": "arxiv",
+   "excerpt": null,
+   "fingerprint": null
+  },
+  {
+   "id": "bp-arxiv:2611.15646v1",
+   "history": [
+    {
+     "at": "2026-11-28T01:10:39.417Z",
+     "status": "D1_OUT",
+     "note": "D1 : PF 0.708 < 1.25, DD 15.4 % > 12 %, survie au stress 40 % < 80 %"
+    }
+   ],
+   "dates": {
+    "createdAt": "2026-11-28T01:10:39.417Z",
+    "evaluatedD1At": "2026-11-28T01:10:39.417Z",
+    "closedAt": "2026-11-28T01:10:39.417Z"
+   },
+   "name": "TSM Momentum",
+   "family": "trend_breakout",
+   "generation": "Gen-1",
+   "source": "arXiv",
+   "author": "Andrew Butler et al.",
+   "url": "https://arxiv.org/abs/2611.15646v1",
+   "parents": [],
+   "blueprint": {
+    "name": "TSM Momentum",
+    "thesis": "Le momentum temporel montre que les rendements récents prédisent les futurs, on prend position longue ou courte selon la direction du signal.",
+    "universe": [
+     "BTC",
+     "ETH"
+    ],
+    "side": "both",
+    "horizon_hours": 24,
+    "blocks": [
+     {
+      "type": "momentum",
+      "weight": 0.7,
+      "params": {
+       "lookback": 20
+      }
+     }
+    ],
+    "entry": {
+     "score_above": 0.2
+    },
+    "exit": {
+     "stop_atr": 2,
+     "take_profit_atr": 4,
+     "max_hold_hours": 48
+    }
+   },
+   "d1Stats": {
+    "trades": 312,
+    "profitFactor": 0.708,
+    "winRate": 0.285,
+    "maxDrawdown": 0.154,
+    "sharpe": -4.607,
+    "psr": 0.012,
+    "stressSurvivalRate": 0.4,
+    "evaluatedAt": "2026-11-28T01:10:39.417Z"
+   },
+   "exitReason": "D1 : PF 0.708 < 1.15, survie au stress 40 % < 66 %",
+   "status": "D1_OUT",
+   "lastSeenAt": "2026-11-28T13:29:35.603Z",
+   "src": "arxiv",
+   "excerpt": null,
+   "fingerprint": null
+  },
+  {
+   "id": "bp-arxiv:2611.15657v1",
+   "history": [
+    {
+     "at": "2026-11-28T01:10:39.417Z",
+     "status": "D1_OUT",
+     "note": "D1 : PF 0.808 < 1.25, DD 13.0 % > 12 %, survie au stress 40 % < 80 %"
+    }
+   ],
+   "dates": {
+    "createdAt": "2026-11-28T01:10:39.417Z",
+    "evaluatedD1At": "2026-11-28T01:10:39.417Z",
+    "closedAt": "2026-11-28T01:10:39.417Z"
+   },
+   "name": "SeasonalityFactor",
+   "family": "trend_breakout",
+   "generation": "Gen-1",
+   "source": "arXiv",
+   "author": "Andrew Butler et al.",
+   "url": "https://arxiv.org/abs/2611.15657v1",
+   "parents": [],
+   "blueprint": {
+    "name": "SeasonalityFactor",
+    "thesis": "Les modèles saisonniers capturent des anomalies récurrentes (jour de la semaine, jour du mois, jour du trimestre) qui génèrent des rendements excédentaires sur BTC et ETH.",
+    "universe": [
+     "BTC",
+     "ETH"
+    ],
+    "side": "both",
+    "horizon_hours": 24,
+    "blocks": [
+     {
+      "type": "momentum",
+      "weight": 0.7,
+      "params": {
+       "lookback": 5
+      }
+     },
+     {
+      "type": "volatility_regime",
+      "weight": 0.3,
+      "params": {
+       "lookback": 30,
+       "max_atr_pct": 0.1
+      }
+     }
+    ],
+    "entry": {
+     "score_above": 0.2
+    },
+    "exit": {
+     "stop_atr": 2,
+     "take_profit_atr": 5,
+     "max_hold_hours": 72
+    }
+   },
+   "d1Stats": {
+    "trades": 576,
+    "profitFactor": 0.808,
+    "winRate": 0.33,
+    "maxDrawdown": 0.13,
+    "sharpe": -3.403,
+    "psr": 0.048,
+    "stressSurvivalRate": 0.4,
+    "evaluatedAt": "2026-11-28T01:10:39.417Z"
+   },
+   "exitReason": "D1 : PF 0.808 < 1.15, survie au stress 40 % < 66 %",
+   "status": "D1_OUT",
+   "lastSeenAt": "2026-11-28T13:29:35.603Z",
+   "src": "arxiv",
+   "excerpt": null,
+   "fingerprint": null
+  },
+  {
+   "id": "bp-arxiv:2611.19937v1",
+   "history": [
+    {
+     "at": "2026-11-28T01:10:39.417Z",
+     "status": "D1_OUT",
+     "note": "D1 : PF 0.877 < 1.25, DD 15.9 % > 12 %, survie au stress 40 % < 80 %"
+    }
+   ],
+   "dates": {
+    "createdAt": "2026-11-28T01:10:39.417Z",
+    "evaluatedD1At": "2026-11-28T01:10:39.417Z",
+    "closedAt": "2026-11-28T01:10:39.417Z"
+   },
+   "name": "AllocFlow Crypto Momentum",
+   "family": "trend_breakout",
+   "generation": "Gen-1",
+   "source": "arXiv",
+   "author": "Annan Wang et al.",
+   "url": "https://arxiv.org/abs/2611.19937v1",
+   "parents": [],
+   "blueprint": {
+    "name": "AllocFlow Crypto Momentum",
+    "thesis": "Stratégie de momentum multi-actifs sur les futures perpétuels crypto, visant à capturer les tendances de prix via un score linéaire combinant la dynamique récente et la volatilité.",
+    "universe": [
+     "BTC",
+     "ETH",
+     "SOL"
+    ],
+    "side": "both",
+    "horizon_hours": 24,
+    "blocks": [
+     {
+      "type": "linear_ml_score",
+      "weight": 1,
+      "params": {
+       "intercept": 0,
+       "features": [
+        "momentum",
+        "zscore",
+        "atr_pct"
+       ],
+       "coefs": [
+        2,
+        -1,
+        -0.5
+       ]
+      }
+     }
+    ],
+    "entry": {
+     "score_above": 0.3
+    },
+    "exit": {
+     "stop_atr": 2,
+     "take_profit_atr": 4,
+     "max_hold_hours": 48
+    }
+   },
+   "d1Stats": {
+    "trades": 480,
+    "profitFactor": 0.877,
+    "winRate": 0.365,
+    "maxDrawdown": 0.159,
+    "sharpe": -1.852,
+    "psr": 0.143,
+    "stressSurvivalRate": 0.4,
+    "evaluatedAt": "2026-11-28T01:10:39.417Z"
+   },
+   "exitReason": "D1 : PF 0.877 < 1.15, survie au stress 40 % < 66 %",
+   "status": "D1_OUT",
+   "lastSeenAt": "2026-11-28T13:29:35.603Z",
+   "src": "arxiv",
+   "excerpt": null,
+   "fingerprint": null
+  },
+  {
+   "id": "bp-arxiv:2611.23126v1",
+   "history": [
+    {
+     "at": "2026-11-28T00:22:54.063Z",
+     "status": "D1_OUT",
+     "note": "D1 : PF 0.652 < 1.25"
+    }
+   ],
+   "dates": {
+    "createdAt": "2026-11-28T00:22:54.063Z",
+    "evaluatedD1At": "2026-11-28T00:22:54.063Z",
+    "closedAt": "2026-11-28T00:22:54.063Z"
+   },
+   "name": "EquityTransformerShortTerm",
+   "family": "trend_breakout",
+   "generation": "Gen-1",
+   "source": "arXiv",
+   "author": "Chariton Chalvatzis",
+   "url": "https://arxiv.org/abs/2611.23126v1",
+   "parents": [],
+   "blueprint": {
+    "name": "EquityTransformerShortTerm",
+    "thesis": "Modèle ML prédit les rendements intrajournaliers des actions, exploitable sur de courts horizons (5‑120 min).",
+    "universe": [
+     "NVDA"
+    ],
+    "side": "both",
+    "horizon_hours": 2,
+    "blocks": [
+     {
+      "type": "linear_ml_score",
+      "weight": 1,
+      "params": {
+       "intercept": 0,
+       "features": [
+        "momentum",
+        "rsi",
+        "zscore",
+        "atr_pct"
+       ],
+       "coefs": [
+        0.4,
+        0.3,
+        0.2,
+        0.1
+       ]
+      }
+     }
+    ],
+    "entry": {
+     "score_above": 0.2
+    },
+    "exit": {
+     "stop_atr": 2,
+     "take_profit_atr": 4,
+     "max_hold_hours": 4
+    }
+   },
+   "d1Stats": {
+    "trades": 398,
+    "profitFactor": 0.652,
+    "winRate": 0.43,
+    "maxDrawdown": 0.103,
+    "sharpe": -6.608,
+    "psr": 0.001,
+    "stressSurvivalRate": 0.8,
+    "evaluatedAt": "2026-11-28T00:22:54.063Z"
+   },
+   "exitReason": "D1 : PF 0.652 < 1.15",
+   "status": "D1_OUT",
+   "lastSeenAt": "2026-11-28T13:29:35.603Z",
+   "src": "arxiv",
+   "excerpt": null,
+   "fingerprint": null
+  },
+  {
+   "id": "bp-arxiv:2611.24028v1",
+   "history": [
+    {
+     "at": "2026-11-28T00:22:54.063Z",
+     "status": "D1_OUT",
+     "note": "D1 : PF 0.893 < 1.25, DD 13.3 % > 12 %"
+    }
+   ],
+   "dates": {
+    "createdAt": "2026-11-28T00:22:54.063Z",
+    "evaluatedD1At": "2026-11-28T00:22:54.063Z",
+    "closedAt": "2026-11-28T00:22:54.063Z"
+   },
+   "name": "RoughVolatilitySignal",
+   "family": "volatility_squeeze",
+   "generation": "Gen-1",
+   "source": "arXiv",
+   "author": "Sai Niranjan Ramachandran",
+   "url": "https://arxiv.org/abs/2611.24028v1",
+   "parents": [],
+   "blueprint": {
+    "name": "RoughVolatilitySignal",
+    "thesis": "Les modèles de market making algorithmique créent une volatilité rugueuse via la mémoire du flux d'ordres, offrant une opportunité de capturer des régimes de volatilité extrême.",
+    "universe": [
+     "BTC",
+     "ETH"
+    ],
+    "side": "both",
+    "horizon_hours": 24,
+    "blocks": [
+     {
+      "type": "volatility_regime",
+      "weight": 0.6,
+      "params": {
+       "lookback": 60,
+       "max_atr_pct": 0.04
+      }
+     },
+     {
+      "type": "atr_breakout",
+      "weight": 0.3,
+      "params": {
+       "period": 20,
+       "mult": 2
+      }
+     },
+     {
+      "type": "momentum",
+      "weight": 0.2,
+      "params": {
+       "lookback": 5
+      }
+     }
+    ],
+    "entry": {
+     "score_above": 0.25
+    },
+    "exit": {
+     "stop_atr": 2,
+     "take_profit_atr": 4,
+     "max_hold_hours": 48
+    }
+   },
+   "d1Stats": {
+    "trades": 315,
+    "profitFactor": 0.893,
+    "winRate": 0.308,
+    "maxDrawdown": 0.133,
+    "sharpe": -1.453,
+    "psr": 0.214,
+    "stressSurvivalRate": 0.8,
+    "evaluatedAt": "2026-11-28T00:22:54.063Z"
+   },
+   "exitReason": "D1 : PF 0.893 < 1.15",
+   "status": "D1_OUT",
+   "lastSeenAt": "2026-11-28T13:29:35.603Z",
+   "src": "arxiv",
+   "excerpt": null,
+   "fingerprint": null
+  },
+  {
+   "id": "bp-arxiv:2611.30584v1",
+   "history": [
+    {
+     "at": "2026-11-28T00:22:54.063Z",
+     "status": "D1_OUT",
+     "note": "D1 : PF 0.698 < 1.25, DD 14.7 % > 12 %, survie au stress 60 % < 80 %"
+    }
+   ],
+   "dates": {
+    "createdAt": "2026-11-28T00:22:54.063Z",
+    "evaluatedD1At": "2026-11-28T00:22:54.063Z",
+    "closedAt": "2026-11-28T00:22:54.063Z"
+   },
+   "name": "TechIndicatorsValue",
+   "family": "trend_breakout",
+   "generation": "Gen-1",
+   "source": "arXiv",
+   "author": "Peng Liu et al.",
+   "url": "https://arxiv.org/abs/2611.30584v1",
+   "parents": [],
+   "blueprint": {
+    "name": "TechIndicatorsValue",
+    "thesis": "Les indicateurs techniques montrent une capacité prédictive positive sur les rendements, même si leur ajout aux graphiques OHLC n'améliore pas systématiquement la performance.",
+    "universe": [
+     "BTC",
+     "ETH"
+    ],
+    "side": "both",
+    "horizon_hours": 24,
+    "blocks": [
+     {
+      "type": "linear_ml_score",
+      "weight": 0.8,
+      "params": {
+       "intercept": 0,
+       "features": [
+        "momentum",
+        "rsi"
+       ],
+       "coefs": [
+        0.5,
+        0.5
+       ]
+      }
+     }
+    ],
+    "entry": {
+     "score_above": 0.2
+    },
+    "exit": {
+     "stop_atr": 2,
+     "take_profit_atr": 4,
+     "max_hold_hours": 48
+    }
+   },
+   "d1Stats": {
+    "trades": 271,
+    "profitFactor": 0.698,
+    "winRate": 0.277,
+    "maxDrawdown": 0.147,
+    "sharpe": -4.667,
+    "psr": 0.011,
+    "stressSurvivalRate": 0.6,
+    "evaluatedAt": "2026-11-28T00:22:54.063Z"
+   },
+   "exitReason": "D1 : PF 0.698 < 1.15, survie au stress 60 % < 66 %",
+   "status": "D1_OUT",
+   "lastSeenAt": "2026-11-28T13:29:35.603Z",
+   "src": "arxiv",
+   "excerpt": null,
+   "fingerprint": null
+  },
+  {
+   "id": "bp-arxiv:2611.30843v3",
+   "history": [
+    {
+     "at": "2026-11-28T00:22:54.063Z",
+     "status": "D1_OUT",
+     "note": "D1 : PF 0.68 < 1.25, DD 13.4 % > 12 %, survie au stress 60 % < 80 %"
+    }
+   ],
+   "dates": {
+    "createdAt": "2026-11-28T00:22:54.063Z",
+    "evaluatedD1At": "2026-11-28T00:22:54.063Z",
+    "closedAt": "2026-11-28T00:22:54.063Z"
+   },
+   "name": "MaxVar Factor Model",
+   "family": "trend_breakout",
+   "generation": "Gen-1",
+   "source": "arXiv",
+   "author": "Sébastien Valeyre",
+   "url": "https://arxiv.org/abs/2611.30843v3",
+   "parents": [],
+   "blueprint": {
+    "name": "MaxVar Factor Model",
+    "thesis": "Utilise l'estimateur MaxVar pour améliorer la sélection d'actifs via un modèle linéaire combinant momentum, z‑score et volatilité, ciblant BTC et ETH.",
+    "universe": [
+     "BTC",
+     "ETH"
+    ],
+    "side": "both",
+    "horizon_hours": 24,
+    "blocks": [
+     {
+      "type": "linear_ml_score",
+      "weight": 1,
+      "params": {
+       "intercept": 0,
+       "features": [
+        "momentum",
+        "zscore",
+        "atr_pct"
+       ],
+       "coefs": [
+        0.4,
+        0.3,
+        0.3
+       ]
+      }
+     }
+    ],
+    "entry": {
+     "score_above": 0.2
+    },
+    "exit": {
+     "stop_atr": 2,
+     "take_profit_atr": 4,
+     "max_hold_hours": 48
+    }
+   },
+   "d1Stats": {
+    "trades": 263,
+    "profitFactor": 0.68,
+    "winRate": 0.289,
+    "maxDrawdown": 0.134,
+    "sharpe": -4.7,
+    "psr": 0.009,
+    "stressSurvivalRate": 0.6,
+    "evaluatedAt": "2026-11-28T00:22:54.063Z"
+   },
+   "exitReason": "D1 : PF 0.68 < 1.15, survie au stress 60 % < 66 %",
+   "status": "D1_OUT",
+   "lastSeenAt": "2026-11-28T13:29:35.603Z",
+   "src": "arxiv",
+   "excerpt": null,
+   "fingerprint": null
+  },
+  {
+   "id": "bp-arxiv:2611.34209v1",
+   "history": [
+    {
+     "at": "2026-11-28T01:29:43.063Z",
+     "status": "D2_ACTIVE"
+    }
+   ],
+   "dates": {
+    "createdAt": "2026-11-28T00:22:54.063Z",
+    "evaluatedD1At": "2026-11-28T00:22:54.063Z",
+    "promotedD2At": "2026-11-28T00:22:54.063Z"
+   },
+   "name": "GraphFactorStatArb",
+   "family": "stat_arb_leadlag",
+   "generation": "Gen-1",
+   "source": "arXiv",
+   "author": "Evelyn Zhu et al.",
+   "url": "https://arxiv.org/abs/2611.34209v1",
+   "parents": [],
+   "blueprint": {
+    "name": "GraphFactorStatArb",
+    "thesis": "Le modèle GIDF identifie des résidus mean‑reverting pour exploiter les désalignements de prix entre actifs similaires.",
+    "universe": [
+     "BTC",
+     "ETH",
+     "HL_CRYPTO"
+    ],
+    "side": "both",
+    "horizon_hours": 24,
+    "blocks": [
+     {
+      "type": "bollinger_zscore",
+      "weight": 0.6,
+      "params": {
+       "period": 20,
+       "z": 2
+      }
+     },
+     {
+      "type": "momentum",
+      "weight": 0.4,
+      "params": {
+       "lookback": 10
+      }
+     },
+     {
+      "type": "linear_ml_score",
+      "weight": 0.2,
+      "params": {
+       "intercept": 0,
+       "features": [
+        "momentum",
+        "zscore"
+       ],
+       "coefs": [
+        0.5,
+        0.5
+       ]
+      }
+     }
+    ],
+    "entry": {
+     "score_above": 0.2
+    },
+    "exit": {
+     "stop_atr": 2,
+     "take_profit_atr": 4,
+     "max_hold_hours": 48
+    }
+   },
+   "d1Stats": {
+    "trades": 159,
+    "profitFactor": 1.307,
+    "winRate": 0.616,
+    "maxDrawdown": 0.049,
+    "sharpe": 2.655,
+    "psr": 0.933,
+    "stressSurvivalRate": 1,
+    "evaluatedAt": "2026-11-28T00:22:54.063Z"
+   },
+   "d2Stats": {
+    "trades": 8,
+    "winRate": 0.25,
+    "profitFactor": 0.035,
+    "psr": 0.006,
+    "sharpe": -37.891,
+    "maxDrawdown": 0.022,
+    "equity": 9815.192,
+    "totalReturn": -0.018,
+    "progress": 0.008,
+    "since": "2026-11-28T00:22:54.063Z",
+    "asOf": "2026-11-28T13:29:35.603Z",
+    "final": false
+   },
+   "status": "D2_ACTIVE",
+   "lastSeenAt": "2026-11-28T13:29:35.603Z",
+   "src": "arxiv",
+   "excerpt": null,
+   "fingerprint": null
+  },
+  {
+   "id": "bp-arxiv:2611.19903v1",
+   "history": [
+    {
+     "at": "2026-11-28T00:22:54.063Z",
+     "status": "D1_OUT",
+     "note": "D1 : PF 0.582 < 1.25, DD 13.8 % > 12 %, survie au stress 40 % < 80 %"
+    }
+   ],
+   "dates": {
+    "createdAt": "2026-11-28T00:22:54.063Z",
+    "evaluatedD1At": "2026-11-28T00:22:54.063Z",
+    "closedAt": "2026-11-28T00:22:54.063Z"
+   },
+   "name": "ST-GAT-NCO Tactical Allocation",
+   "family": "trend_breakout",
+   "generation": "Gen-1",
+   "source": "arXiv",
+   "author": "Supriadi",
+   "url": "https://arxiv.org/abs/2611.19903v1",
+   "parents": [],
+   "blueprint": {
+    "name": "ST-GAT-NCO Tactical Allocation",
+    "thesis": "Allocation tactique multi-actifs basée sur l'extraction de la dynamique de momentum temporel et du risque de baisse via un réseau d'attention graphique spatio-temporel dynamique, optimisé pour la préservation du capital.",
+    "universe": [
+     "BTC",
+     "ETH",
+     "NVDA",
+     "SOXL",
+     "BRENTOIL"
+    ],
+    "side": "long",
+    "horizon_hours": 720,
+    "blocks": [
+     {
+      "type": "momentum",
+      "weight": 0.6,
+      "params": {
+       "lookback": 20
+      }
+     },
+     {
+      "type": "volatility_regime",
+      "weight": 0.4,
+      "params": {
+       "lookback": 50,
+       "max_atr_pct": 0.05
+      }
+     },
+     {
+      "type": "bollinger_zscore",
+      "weight": 0.2,
+      "params": {
+       "period": 20,
+       "z": 1.5
+      }
+     }
+    ],
+    "entry": {
+     "score_above": 0.2
+    },
+    "exit": {
+     "stop_atr": 3,
+     "take_profit_atr": 6,
+     "max_hold_hours": 720
+    }
+   },
+   "d1Stats": {
+    "trades": 288,
+    "profitFactor": 0.582,
+    "winRate": 0.323,
+    "maxDrawdown": 0.138,
+    "sharpe": -6.321,
+    "psr": 0.001,
+    "stressSurvivalRate": 0.4,
+    "evaluatedAt": "2026-11-28T00:22:54.063Z"
+   },
+   "exitReason": "D1 : PF 0.582 < 1.15, survie au stress 40 % < 66 %",
+   "status": "D1_OUT",
+   "lastSeenAt": "2026-11-28T13:29:35.603Z",
+   "src": "arxiv",
+   "excerpt": null,
+   "fingerprint": null
+  }
+ ],
+ "counts": {
+  "D1_PENDING": 0,
+  "D1_QUALIFIED": 0,
+  "D1_OUT": 12,
+  "D2_ACTIVE": 1,
+  "D2_OUT": 0,
+  "D3_CHAMPION": 0,
+  "D3_RELEGATED": 0
+ }
+}

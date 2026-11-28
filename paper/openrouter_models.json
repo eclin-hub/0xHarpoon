@@ -1,0 +1,20 @@
+{
+ "at": "2026-11-28T12:10:37.514Z",
+ "models": [
+  {
+   "id": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+   "family": "or:nvidia/nemotron",
+   "name": "NVIDIA: Nemotron 3 Nano Omni (free)",
+   "params": 30,
+   "created": 1777393095,
+   "json": false
+  }
+ ],
+ "routing": [
+  "particle-ai/particle-1:free",
+  "recursive/flint-v1.0:free",
+  "nvidia/nemotron-3.5-super-vl:free"
+ ],
+ "catalogSize": 476,
+ "free": 13
+}

@@ -1,0 +1,1800 @@
+{
+ "open": [
+  {
+   "model": "gemma-4-26b-a4b-it",
+   "family": "gemma",
+   "candidateId": "hl|xyz:SKHX|short",
+   "conviction": 75,
+   "openedAt": "2026-11-25T19:10:25.574Z",
+   "endsAt": "2026-12-02T19:10:25.574Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:SKHX",
+     "sign": -1,
+     "p0": 772.95,
+     "d": 0.15
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0x023d1f30e5366832d575d9a926e4e4e4f578eead14f0acbb8a8401a87c62af5c|Yes",
+   "conviction": 70,
+   "openedAt": "2026-11-26T01:10:25.056Z",
+   "endsAt": "2026-12-03T01:10:25.056Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "ETH",
+     "sign": 1,
+     "p0": 1693.4,
+     "d": 0.12200000000000001
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0x199d6ad1c70c41312abd559fc8e9f85b90f6db4ea66fd8e299a11eaaaa860b7d|Yes",
+   "conviction": 80,
+   "openedAt": "2026-11-26T01:10:25.056Z",
+   "endsAt": "2026-12-03T01:10:25.056Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "ETH",
+     "sign": 1,
+     "p0": 1693.4,
+     "d": 0.12200000000000001
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0x56fda50857de4a67dd8265a9659917e2dc28275441526651f122b1da5dab2b06|Up",
+   "conviction": 85,
+   "openedAt": "2026-11-26T01:10:25.056Z",
+   "endsAt": "2026-12-03T01:10:25.056Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "DOGE",
+     "sign": 1,
+     "p0": 0.0562,
+     "d": 0.1274
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0xccd8213f7deee80d86fdc3d0abb15e20ab4e953c2bf0e2b17148b9a76810589a|No",
+   "conviction": 65,
+   "openedAt": "2026-11-26T08:10:27.111Z",
+   "endsAt": "2026-12-26T08:10:27.111Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:NVDA",
+     "sign": -1,
+     "p0": 150.42,
+     "d": 0.15
+    }
+   ]
+  },
+  {
+   "model": "baidu/ernie-5.5-flash-preview:free",
+   "family": "ernie",
+   "candidateId": "pm|0x18b1c135d0a40c5894da9412e77311827d9caf16cf4cd6591b247a34730af919|Yes",
+   "conviction": 64,
+   "openedAt": "2026-11-26T09:10:28.444Z",
+   "endsAt": "2026-12-26T09:10:28.444Z",
+   "venue": "pm",
+   "token": "40081275558852222228080198821361202017557872256707631666334039001378518619916",
+   "cid": "0x18b1c135d0a40c5894da9412e77311827d9caf16cf4cd6591b247a34730af919",
+   "outcome": "Yes",
+   "p0": 0.3315
+  },
+  {
+   "model": "gemini-3.5-flash-lite",
+   "family": "gemini",
+   "candidateId": "leadlag|0xc82ecd06c0bf3e4b73a0f8cebd7b46523378605f0bd73052c21b8225348c8e80|Yes",
+   "conviction": 65,
+   "openedAt": "2026-11-26T12:10:35.815Z",
+   "endsAt": "2026-11-29T00:10:35.815Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:TSLA",
+     "sign": 1,
+     "p0": 382.89,
+     "d": 0.0878
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "hl|ZEC|short",
+   "conviction": 84,
+   "openedAt": "2026-11-26T18:10:28.000Z",
+   "endsAt": "2026-11-28T18:10:28.000Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "ZEC",
+     "sign": -1,
+     "p0": 705.84,
+     "d": 0.15
+    }
+   ]
+  },
+  {
+   "model": "qwen/qwen3.8-27b",
+   "family": "qwen3.8",
+   "candidateId": "hl|ZEC|short",
+   "conviction": 72,
+   "openedAt": "2026-11-26T18:10:28.000Z",
+   "endsAt": "2026-11-28T18:10:28.000Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "ZEC",
+     "sign": -1,
+     "p0": 705.84,
+     "d": 0.15
+    }
+   ]
+  },
+  {
+   "model": "gemini-3.5-flash-lite",
+   "family": "gemini",
+   "candidateId": "hl|ZEC|short",
+   "conviction": 84,
+   "openedAt": "2026-11-26T18:10:28.000Z",
+   "endsAt": "2026-12-03T18:10:28.000Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "ZEC",
+     "sign": -1,
+     "p0": 705.84,
+     "d": 0.15
+    }
+   ]
+  },
+  {
+   "model": "gemini-3.5-flash-lite",
+   "family": "gemini",
+   "candidateId": "hl|xyz:ANT|long",
+   "conviction": 75,
+   "openedAt": "2026-11-26T19:10:26.090Z",
+   "endsAt": "2026-11-28T19:10:26.090Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:ANT",
+     "sign": 1,
+     "p0": 84.397,
+     "d": 0.15
+    }
+   ]
+  },
+  {
+   "model": "gemini-3.8-flash",
+   "family": "gemini",
+   "candidateId": "hl|HYPE|short",
+   "conviction": 72,
+   "openedAt": "2026-11-26T23:10:26.704Z",
+   "endsAt": "2026-11-28T23:10:26.704Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "HYPE",
+     "sign": -1,
+     "p0": 62.033,
+     "d": 0.15
+    }
+   ]
+  },
+  {
+   "model": "gemini-3.5-flash-lite",
+   "family": "gemini",
+   "candidateId": "hl|xyz:SP500|short",
+   "conviction": 65,
+   "openedAt": "2026-11-27T07:10:32.167Z",
+   "endsAt": "2026-11-29T07:10:32.167Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:SP500",
+     "sign": -1,
+     "p0": 7301.2,
+     "d": 0.037992932668602424
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "hl|SOL|short",
+   "conviction": 73,
+   "openedAt": "2026-11-27T13:10:24.954Z",
+   "endsAt": "2026-11-29T13:10:24.954Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "SOL",
+     "sign": -1,
+     "p0": 73.116,
+     "d": 0.12378685923737623
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "pair|XRP|SOL",
+   "conviction": 68,
+   "openedAt": "2026-11-27T13:10:24.954Z",
+   "endsAt": "2026-11-30T13:10:24.954Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "XRP",
+     "sign": 1,
+     "p0": 0.9718,
+     "d": 0.11916032105371475
+    },
+    {
+     "coin": "SOL",
+     "sign": -1,
+     "p0": 73.116,
+     "d": 0.12378685923737623
+    }
+   ]
+  },
+  {
+   "model": "qwen/qwen3.8-27b",
+   "family": "qwen3.8",
+   "candidateId": "hl|SOL|short",
+   "conviction": 75,
+   "openedAt": "2026-11-27T13:10:24.954Z",
+   "endsAt": "2026-11-29T13:10:24.954Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "SOL",
+     "sign": -1,
+     "p0": 73.116,
+     "d": 0.12378685923737623
+    }
+   ]
+  },
+  {
+   "model": "gemini-3.6-flash",
+   "family": "gemini",
+   "candidateId": "hl|SOL|short",
+   "conviction": 78,
+   "openedAt": "2026-11-27T13:10:24.954Z",
+   "endsAt": "2026-11-29T13:10:24.954Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "SOL",
+     "sign": -1,
+     "p0": 73.116,
+     "d": 0.12378685923737623
+    }
+   ]
+  },
+  {
+   "model": "gemini-3.6-flash",
+   "family": "gemini",
+   "candidateId": "pair|XRP|SOL",
+   "conviction": 72,
+   "openedAt": "2026-11-27T13:10:24.954Z",
+   "endsAt": "2026-11-30T13:10:24.954Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "XRP",
+     "sign": 1,
+     "p0": 0.9718,
+     "d": 0.11916032105371475
+    },
+    {
+     "coin": "SOL",
+     "sign": -1,
+     "p0": 73.116,
+     "d": 0.12378685923737623
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0x6916f272b22f98cfd265b81cccb29d1e0ce9137aa1a4617339d2a4bc93af8beb|No",
+   "conviction": 68,
+   "openedAt": "2026-11-27T14:10:25.734Z",
+   "endsAt": "2026-11-29T14:10:25.734Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 61407,
+     "d": 0.0942
+    }
+   ]
+  },
+  {
+   "model": "gemini-3.6-flash",
+   "family": "gemini",
+   "candidateId": "leadlag|0x6916f272b22f98cfd265b81cccb29d1e0ce9137aa1a4617339d2a4bc93af8beb|No",
+   "conviction": 68,
+   "openedAt": "2026-11-27T14:10:25.734Z",
+   "endsAt": "2026-11-28T14:10:25.734Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 61407,
+     "d": 0.0942
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0xc82ecd06c0bf3e4b73a0f8cebd7b46523378605f0bd73052c21b8225348c8e80|Yes",
+   "conviction": 65,
+   "openedAt": "2026-11-27T14:35:06.570Z",
+   "endsAt": "2026-12-04T14:35:06.570Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:TSLA",
+     "sign": 1,
+     "p0": 386.76,
+     "d": 0.0854
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0xcb123b5f454942fd31017b662207a0b30970b21c1667dbd22972e095192eb2bb|Yes",
+   "conviction": 70,
+   "openedAt": "2026-11-27T14:35:06.570Z",
+   "endsAt": "2026-12-04T14:35:06.570Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 60808,
+     "d": 0.0952
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "hl|xyz:SOXL|short",
+   "conviction": 86,
+   "openedAt": "2026-11-27T15:10:26.337Z",
+   "endsAt": "2026-11-30T15:10:26.337Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:SOXL",
+     "sign": -1,
+     "p0": 32.95,
+     "d": 0.15
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0x01497022e50b016813829ab5bfcf1531e9a79acdbe4005e914271d94cc525506|Down",
+   "conviction": 60,
+   "openedAt": "2026-11-27T15:10:26.337Z",
+   "endsAt": "2026-11-30T15:10:26.337Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "ETH",
+     "sign": -1,
+     "p0": 1701.02,
+     "d": 0.1298
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0xc37eaefb55f825531160420a7de22bb4f03457990679a8f35b8da501b608a679|Yes",
+   "conviction": 60,
+   "openedAt": "2026-11-27T15:10:26.337Z",
+   "endsAt": "2026-11-30T15:10:26.337Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "ETH",
+     "sign": -1,
+     "p0": 1701.02,
+     "d": 0.1298
+    }
+   ]
+  },
+  {
+   "model": "qwen/qwen3.8-27b",
+   "family": "qwen3.8",
+   "candidateId": "hl|xyz:SOXL|short",
+   "conviction": 75,
+   "openedAt": "2026-11-27T15:10:26.337Z",
+   "endsAt": "2026-11-28T15:10:26.337Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:SOXL",
+     "sign": -1,
+     "p0": 32.95,
+     "d": 0.15
+    }
+   ]
+  },
+  {
+   "model": "gemini-3.5-flash-lite",
+   "family": "gemini",
+   "candidateId": "hl|xyz:SOXL|short",
+   "conviction": 65,
+   "openedAt": "2026-11-27T15:10:26.337Z",
+   "endsAt": "2026-11-29T15:10:26.337Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:SOXL",
+     "sign": -1,
+     "p0": 32.95,
+     "d": 0.15
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0x748c4b6aa076c01d7071f4b77707ee55e72c7956b682305211209c826989672f|No",
+   "conviction": 60,
+   "openedAt": "2026-11-27T16:10:27.198Z",
+   "endsAt": "2026-11-29T16:10:27.198Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:NVDA",
+     "sign": -1,
+     "p0": 148.25,
+     "d": 0.15
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0x2fd4812e439b196db0ccb1196ded57599d72460e6607edea16dd3583561b7f72|No",
+   "conviction": 60,
+   "openedAt": "2026-11-27T16:10:27.198Z",
+   "endsAt": "2026-11-29T16:10:27.198Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:NVDA",
+     "sign": -1,
+     "p0": 148.25,
+     "d": 0.15
+    }
+   ]
+  },
+  {
+   "model": "qwen/qwen3.8-27b",
+   "family": "qwen3.8",
+   "candidateId": "hl|xyz:SP500|short",
+   "conviction": 65,
+   "openedAt": "2026-11-27T16:10:27.198Z",
+   "endsAt": "2026-11-28T16:10:27.198Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:SP500",
+     "sign": -1,
+     "p0": 7262.6,
+     "d": 0.038718089940241784
+    }
+   ]
+  },
+  {
+   "model": "gemini-3.5-flash-lite",
+   "family": "gemini",
+   "candidateId": "pair|xyz:TSLA|xyz:SP500",
+   "conviction": 62,
+   "openedAt": "2026-11-27T16:10:27.198Z",
+   "endsAt": "2026-11-30T16:10:27.198Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:TSLA",
+     "sign": 1,
+     "p0": 398.43,
+     "d": 0.08509399392616018
+    },
+    {
+     "coin": "xyz:SP500",
+     "sign": -1,
+     "p0": 7262.6,
+     "d": 0.038718089940241784
+    }
+   ]
+  },
+  {
+   "model": "gemini-3.6-flash",
+   "family": "gemini",
+   "candidateId": "hl|xyz:BRENTOIL|long",
+   "conviction": 75,
+   "openedAt": "2026-11-27T20:10:30.710Z",
+   "endsAt": "2026-11-29T20:10:30.710Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:BRENTOIL",
+     "sign": 1,
+     "p0": 90.694,
+     "d": 0.07006417183055108
+    }
+   ]
+  },
+  {
+   "model": "gemini-3.6-flash",
+   "family": "gemini",
+   "candidateId": "leadlag|0x1ba4dbdac68b10bba3218bbd09b0c566ff71666d27917e5ca9b4d88db88d683c|Up",
+   "conviction": 70,
+   "openedAt": "2026-11-27T23:00:35.938Z",
+   "endsAt": "2026-11-28T23:00:35.938Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "DOGE",
+     "sign": -1,
+     "p0": 0.0576,
+     "d": 0.1236
+    }
+   ]
+  },
+  {
+   "model": "gemini-3.6-flash",
+   "family": "gemini",
+   "candidateId": "leadlag|0xecf5b7fbb13965cfaecee89c7738295554efa8e4b07f468ee96270d2d2f06bf8|Down",
+   "conviction": 75,
+   "openedAt": "2026-11-27T23:00:35.938Z",
+   "endsAt": "2026-11-28T23:00:35.938Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": 1,
+     "p0": 59761.4,
+     "d": 0.1008
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0xd5fd472d1ab12cbe436d1b9b1c4cfb7999ab003f62fecd171aad858280ee702b|Up",
+   "conviction": 75,
+   "openedAt": "2026-11-27T23:05:27.405Z",
+   "endsAt": "2026-11-29T23:05:27.405Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "DOGE",
+     "sign": 1,
+     "p0": 0.0575,
+     "d": 0.1236
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0x55f33b784237e0b5ce47babcdcc23d8873a00ed593f87733f3c24242493cb673|Up",
+   "conviction": 75,
+   "openedAt": "2026-11-27T23:24:31.645Z",
+   "endsAt": "2026-11-29T23:24:31.645Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": 1,
+     "p0": 59814,
+     "d": 0.1008
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0x425b9680d03c65768cfddfe0b467c889b3d88f085e26e9b2e10d7dc593b3f544|Up",
+   "conviction": 70,
+   "openedAt": "2026-11-28T02:10:47.146Z",
+   "endsAt": "2026-11-30T02:10:47.146Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": 1,
+     "p0": 60091.1,
+     "d": 0.0942
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0x1ba4dbdac68b10bba3218bbd09b0c566ff71666d27917e5ca9b4d88db88d683c|Up",
+   "conviction": 65,
+   "openedAt": "2026-11-28T02:10:47.146Z",
+   "endsAt": "2026-11-30T02:10:47.146Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "DOGE",
+     "sign": 1,
+     "p0": 0.058,
+     "d": 0.1152
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0xfcdc72b56d0e46439ce535551b8375737589ccf17c9700ca287e8a45e16f3ae3|Up",
+   "conviction": 80,
+   "openedAt": "2026-11-28T02:10:47.146Z",
+   "endsAt": "2026-11-30T02:10:47.146Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "DOGE",
+     "sign": 1,
+     "p0": 0.058,
+     "d": 0.1152
+    }
+   ]
+  },
+  {
+   "model": "deepseek-flash",
+   "family": "deepseek-flash",
+   "candidateId": "leadlag|0xfcdc72b56d0e46439ce535551b8375737589ccf17c9700ca287e8a45e16f3ae3|Up",
+   "conviction": 62,
+   "openedAt": "2026-11-28T02:24:27.091Z",
+   "endsAt": "2026-11-28T14:24:27.091Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "DOGE",
+     "sign": 1,
+     "p0": 0.058,
+     "d": 0.1152
+    }
+   ]
+  },
+  {
+   "model": "deepseek-v4-pro",
+   "family": "deepseek-v4-pro",
+   "candidateId": "leadlag|0xfcdc72b56d0e46439ce535551b8375737589ccf17c9700ca287e8a45e16f3ae3|Up",
+   "conviction": 70,
+   "openedAt": "2026-11-28T02:24:27.091Z",
+   "endsAt": "2026-11-30T02:24:27.091Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "DOGE",
+     "sign": 1,
+     "p0": 0.058,
+     "d": 0.1152
+    }
+   ]
+  },
+  {
+   "model": "openrouter/free",
+   "family": "openrouter-auto",
+   "candidateId": "leadlag|0xb6b73782138ae120edaf633f97f65bf3975ddd51c809ede740a3f693b30cfb06|Up",
+   "conviction": 63,
+   "openedAt": "2026-11-28T06:10:32.318Z",
+   "endsAt": "2026-11-29T06:10:32.318Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "SOL",
+     "sign": -1,
+     "p0": 71.221,
+     "d": 0.12240000000000001
+    }
+   ]
+  },
+  {
+   "model": "openrouter/free",
+   "family": "openrouter-auto",
+   "candidateId": "leadlag|0xcbd4306c24a4349159a1ea07a75db898c659342bdee45743555189550588d016|Yes",
+   "conviction": 61,
+   "openedAt": "2026-11-28T06:10:32.318Z",
+   "endsAt": "2026-11-29T06:10:32.318Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:TSLA",
+     "sign": -1,
+     "p0": 398.56,
+     "d": 0.0796
+    }
+   ]
+  },
+  {
+   "model": "openrouter/free",
+   "family": "openrouter-auto",
+   "candidateId": "leadlag|0x4809910f845021ae201406eac6aecb3d1ee820810b6a5a840fb201e81e5993ba|Yes",
+   "conviction": 65,
+   "openedAt": "2026-11-28T06:10:32.318Z",
+   "endsAt": "2026-11-29T06:10:32.318Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 59686,
+     "d": 0.0954
+    }
+   ]
+  },
+  {
+   "model": "deepseek-v4-pro",
+   "family": "deepseek-v4-pro",
+   "candidateId": "leadlag|0x4809910f845021ae201406eac6aecb3d1ee820810b6a5a840fb201e81e5993ba|Yes",
+   "conviction": 62,
+   "openedAt": "2026-11-28T07:10:35.607Z",
+   "endsAt": "2026-11-29T07:10:35.607Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 59476,
+     "d": 0.0968
+    }
+   ]
+  },
+  {
+   "model": "deepseek-flash",
+   "family": "deepseek-flash",
+   "candidateId": "leadlag|0x4809910f845021ae201406eac6aecb3d1ee820810b6a5a840fb201e81e5993ba|Yes",
+   "conviction": 61,
+   "openedAt": "2026-11-28T07:10:35.607Z",
+   "endsAt": "2026-11-29T07:10:35.607Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 59476,
+     "d": 0.0968
+    }
+   ]
+  },
+  {
+   "model": "deepseek-flash",
+   "family": "deepseek-flash",
+   "candidateId": "leadlag|0x79174889bc1b03940ee33613e80d9a8021c4c5afabcc0f7a95e0db027b6626a7|Yes",
+   "conviction": 62,
+   "openedAt": "2026-11-28T09:10:35.903Z",
+   "endsAt": "2026-11-28T17:10:35.903Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 59615,
+     "d": 0.0966
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0xa6baebc146628fdfc58adac1e291633baa86c5818e204c753e1eacc87ad7be96|Yes",
+   "conviction": 70,
+   "openedAt": "2026-11-28T10:55:33.952Z",
+   "endsAt": "2026-12-02T19:55:33.952Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 59190,
+     "d": 0.0978
+    }
+   ]
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0x18c74c5f8c9eb6ed04f45d4675272e680669a6c9e17c81150f90351a82383d1f|No",
+   "conviction": 70,
+   "openedAt": "2026-11-28T10:55:33.952Z",
+   "endsAt": "2026-12-02T19:55:33.952Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 59190,
+     "d": 0.0978
+    }
+   ]
+  },
+  {
+   "model": "deepseek-flash",
+   "family": "deepseek-flash",
+   "candidateId": "leadlag|0x18c74c5f8c9eb6ed04f45d4675272e680669a6c9e17c81150f90351a82383d1f|No",
+   "conviction": 64,
+   "openedAt": "2026-11-28T10:55:33.952Z",
+   "endsAt": "2026-11-28T20:55:33.952Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 59190,
+     "d": 0.0978
+    }
+   ]
+  },
+  {
+   "model": "deepseek-flash",
+   "family": "deepseek-flash",
+   "candidateId": "leadlag|0xa2c72f9cd9b03702ff8f10c1c85f6a28b3046851908a24c60c6df1d5a89b0349|Yes",
+   "conviction": 62,
+   "openedAt": "2026-11-28T10:55:33.952Z",
+   "endsAt": "2026-11-28T16:55:33.952Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 59190,
+     "d": 0.0978
+    }
+   ]
+  },
+  {
+   "model": "deepseek-flash",
+   "family": "deepseek-flash",
+   "candidateId": "leadlag|0xa6baebc146628fdfc58adac1e291633baa86c5818e204c753e1eacc87ad7be96|Yes",
+   "conviction": 61,
+   "openedAt": "2026-11-28T11:10:34.117Z",
+   "endsAt": "2026-11-28T23:10:34.117Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 59174,
+     "d": 0.0978
+    }
+   ]
+  },
+  {
+   "model": "deepseek-flash",
+   "family": "deepseek-flash",
+   "candidateId": "leadlag|0x68f425a37a2bf693d43de418335b00841af699ef37cc5cb6634c83432c6541cd|Yes",
+   "conviction": 63,
+   "openedAt": "2026-11-28T11:10:34.117Z",
+   "endsAt": "2026-11-28T23:10:34.117Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 59174,
+     "d": 0.0978
+    }
+   ]
+  },
+  {
+   "model": "openrouter/free",
+   "family": "openrouter-auto",
+   "candidateId": "leadlag|0x18c74c5f8c9eb6ed04f45d4675272e680669a6c9e17c81150f90351a82383d1f|No",
+   "conviction": 65,
+   "openedAt": "2026-11-28T11:48:43.362Z",
+   "endsAt": "2026-11-30T11:48:43.362Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 59197,
+     "d": 0.0978
+    }
+   ]
+  },
+  {
+   "model": "deepseek-v4-pro",
+   "family": "deepseek-v4-pro",
+   "candidateId": "leadlag|0x79174889bc1b03940ee33613e80d9a8021c4c5afabcc0f7a95e0db027b6626a7|Yes",
+   "conviction": 65,
+   "openedAt": "2026-11-28T12:10:37.514Z",
+   "endsAt": "2026-11-28T18:10:37.514Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 59259,
+     "d": 0.0976
+    }
+   ]
+  },
+  {
+   "model": "deepseek-v4-pro",
+   "family": "deepseek-v4-pro",
+   "candidateId": "leadlag|0x44f20c7bf7fd09d3630be9b9a74804a8c28cafd02dd443b89e81bb450b03b09a|Down",
+   "conviction": 75,
+   "openedAt": "2026-11-28T12:10:37.514Z",
+   "endsAt": "2026-11-28T14:10:37.514Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 59190,
+     "d": 0.0976
+    }
+   ]
+  },
+  {
+   "model": "deepseek-v4-pro",
+   "family": "deepseek-v4-pro",
+   "candidateId": "leadlag|0x94f826d46f1b82790cabe8d5e5d0130084e9b8feab391402cbcf9060f7f7f276|Up",
+   "conviction": 62,
+   "openedAt": "2026-11-28T12:10:37.514Z",
+   "endsAt": "2026-11-28T14:10:37.514Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 59197,
+     "d": 0.09760000000000002
+    }
+   ]
+  },
+  {
+   "model": "deepseek-flash",
+   "family": "deepseek-flash",
+   "candidateId": "hl|BTC|long",
+   "conviction": 63,
+   "openedAt": "2026-11-28T13:10:30.072Z",
+   "endsAt": "2026-11-30T13:10:30.072Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": 1,
+     "p0": 59202,
+     "d": 0.09769037870342218
+    }
+   ]
+  },
+  {
+   "model": "deepseek-v4-pro",
+   "family": "deepseek-v4-pro",
+   "candidateId": "hl|BTC|long",
+   "conviction": 64,
+   "openedAt": "2026-11-28T13:10:30.072Z",
+   "endsAt": "2026-12-01T13:10:30.072Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": 1,
+     "p0": 59202,
+     "d": 0.09769037870342218
+    }
+   ]
+  },
+  {
+   "model": "openrouter/free",
+   "family": "openrouter-auto",
+   "candidateId": "hl|BTC|long",
+   "conviction": 66,
+   "openedAt": "2026-11-28T13:10:30.072Z",
+   "endsAt": "2026-11-30T13:10:30.072Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": 1,
+     "p0": 59202,
+     "d": 0.09769037870342218
+    }
+   ]
+  }
+ ],
+ "closed": [
+  {
+   "model": "qwen/qwen3.8-27b",
+   "family": "qwen3.8",
+   "candidateId": "hl|xyz:NVDA|short",
+   "conviction": 65,
+   "openedAt": "2026-11-24T14:48:21.468Z",
+   "endsAt": "2026-11-25T14:48:21.468Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:NVDA",
+     "sign": -1,
+     "p0": 155.75,
+     "d": 0.15
+    }
+   ],
+   "closedAt": "2026-11-25T15:10:30.207Z",
+   "R": 0.5175,
+   "exit": "horizon"
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0xc82ecd06c0bf3e4b73a0f8cebd7b46523378605f0bd73052c21b8225348c8e80|Yes",
+   "conviction": 75,
+   "openedAt": "2026-11-26T12:10:35.815Z",
+   "endsAt": "2026-11-26T13:10:35.815Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:TSLA",
+     "sign": 1,
+     "p0": 382.89,
+     "d": 0.0878
+    }
+   ],
+   "closedAt": "2026-11-26T14:10:27.214Z",
+   "R": -0.0149,
+   "exit": "horizon"
+  },
+  {
+   "model": "qwen/qwen3.8-27b",
+   "family": "qwen3.8",
+   "candidateId": "hl|HYPE|short",
+   "conviction": 75,
+   "openedAt": "2026-11-25T15:10:30.207Z",
+   "endsAt": "2026-11-26T15:10:30.207Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "HYPE",
+     "sign": -1,
+     "p0": 56.918,
+     "d": 0.15
+    }
+   ],
+   "closedAt": "2026-11-26T16:10:29.826Z",
+   "R": -0.4489,
+   "exit": "horizon"
+  },
+  {
+   "model": "gemini-3.8-flash",
+   "family": "gemini",
+   "candidateId": "leadlag|0x988e80bf6747d9230ea49f792bfd910ce1bf52fcbc794ae2609a72078f9882ae|Up",
+   "conviction": 74,
+   "openedAt": "2026-11-26T04:10:28.187Z",
+   "endsAt": "2026-11-26T16:10:28.187Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "DOGE",
+     "sign": 1,
+     "p0": 0.0568,
+     "d": 0.1266
+    }
+   ],
+   "closedAt": "2026-11-26T16:10:29.826Z",
+   "R": -0.0186,
+   "exit": "horizon"
+  },
+  {
+   "model": "gemma-4-26b-a4b-it",
+   "family": "gemma",
+   "candidateId": "hl|xyz:AAPL|long",
+   "conviction": 75,
+   "openedAt": "2026-11-25T17:10:29.028Z",
+   "endsAt": "2026-11-26T17:10:29.028Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:AAPL",
+     "sign": 1,
+     "p0": 350.96,
+     "d": 0.0450450193754274
+    }
+   ],
+   "closedAt": "2026-11-26T18:10:28.000Z",
+   "R": 0.3201,
+   "exit": "horizon"
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "hl|xyz:NVDA|short",
+   "conviction": 68,
+   "openedAt": "2026-11-24T18:13:51.414Z",
+   "endsAt": "2026-11-26T18:13:51.414Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:NVDA",
+     "sign": -1,
+     "p0": 152.91,
+     "d": 0.15
+    }
+   ],
+   "closedAt": "2026-11-26T19:10:26.090Z",
+   "R": 0.1016,
+   "exit": "horizon"
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0x7cfd775dc4f2bedbc43fe70493e88a340fcdb0986727c15f4963237231bb806d|No",
+   "conviction": 70,
+   "openedAt": "2026-11-25T18:10:36.436Z",
+   "endsAt": "2026-11-26T18:10:36.436Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": 1,
+     "p0": 59819,
+     "d": 0.10079999999999999
+    }
+   ],
+   "closedAt": "2026-11-26T19:10:26.090Z",
+   "R": 0.1116,
+   "exit": "horizon"
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0x51cb05f3d4af8985141a29b81dcfdeec5081c4edc36640579823118ae91e516d|No",
+   "conviction": 70,
+   "openedAt": "2026-11-25T18:10:36.436Z",
+   "endsAt": "2026-11-26T18:10:36.436Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "ETH",
+     "sign": 1,
+     "p0": 1682.2,
+     "d": 0.1282
+    }
+   ],
+   "closedAt": "2026-11-26T19:10:26.090Z",
+   "R": 0.0844,
+   "exit": "horizon"
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0xa2fdb75238670fd4bd0576c3dc34fa873bee3a0e23b1ce72441f1485f3608dc1|No",
+   "conviction": 70,
+   "openedAt": "2026-11-25T18:10:36.436Z",
+   "endsAt": "2026-11-26T18:10:36.436Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "ETH",
+     "sign": 1,
+     "p0": 1682.2,
+     "d": 0.1282
+    }
+   ],
+   "closedAt": "2026-11-26T19:10:26.090Z",
+   "R": 0.0844,
+   "exit": "horizon"
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0xe9fe6f191702f83bfe5273a9418e5213e5d9485d368dab1f536a1c0061b5cdb8|No",
+   "conviction": 65,
+   "openedAt": "2026-11-25T23:10:27.352Z",
+   "endsAt": "2026-11-26T23:10:27.352Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:TSLA",
+     "sign": 1,
+     "p0": 380.35,
+     "d": 0.09280000000000001
+    }
+   ],
+   "closedAt": "2026-11-27T00:10:26.278Z",
+   "R": 0.0606,
+   "exit": "horizon"
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0xecb99c5cbaddbf592c95add1413ed6dc56fa9d0893b4e080c3dc4e0779a64158|Yes",
+   "conviction": 70,
+   "openedAt": "2026-11-26T00:10:32.653Z",
+   "endsAt": "2026-11-27T00:10:32.653Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": 1,
+     "p0": 60555,
+     "d": 0.0946
+    }
+   ],
+   "closedAt": "2026-11-27T01:10:32.222Z",
+   "R": 0.04,
+   "exit": "horizon"
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0x3c7951f8534f2623d1ba2e0df14e96dc11699b7ddf369a15f239167e3ff476ae|Yes",
+   "conviction": 65,
+   "openedAt": "2026-11-26T00:10:32.653Z",
+   "endsAt": "2026-11-27T00:10:32.653Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": 1,
+     "p0": 60555,
+     "d": 0.0946
+    }
+   ],
+   "closedAt": "2026-11-27T01:10:32.222Z",
+   "R": 0.04,
+   "exit": "horizon"
+  },
+  {
+   "model": "gemini-3.5-flash-lite",
+   "family": "gemini",
+   "candidateId": "hl|HYPE|short",
+   "conviction": 65,
+   "openedAt": "2026-11-25T15:10:30.207Z",
+   "endsAt": "2026-11-28T15:10:30.207Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "HYPE",
+     "sign": -1,
+     "p0": 56.918,
+     "d": 0.15
+    }
+   ],
+   "closedAt": "2026-11-27T03:10:25.807Z",
+   "R": -1,
+   "exit": "stop"
+  },
+  {
+   "model": "gemini-3.8-flash",
+   "family": "gemini",
+   "candidateId": "leadlag|0xccd8213f7deee80d86fdc3d0abb15e20ab4e953c2bf0e2b17148b9a76810589a|No",
+   "conviction": 68,
+   "openedAt": "2026-11-26T04:10:28.187Z",
+   "endsAt": "2026-11-27T04:10:28.187Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:NVDA",
+     "sign": 1,
+     "p0": 153.04,
+     "d": 0.15
+    }
+   ],
+   "closedAt": "2026-11-27T05:10:25.590Z",
+   "R": 0.1198,
+   "exit": "horizon"
+  },
+  {
+   "model": "gemini-3.6-flash",
+   "family": "gemini",
+   "candidateId": "leadlag|0xccd8213f7deee80d86fdc3d0abb15e20ab4e953c2bf0e2b17148b9a76810589a|No",
+   "conviction": 72,
+   "openedAt": "2026-11-26T08:10:27.111Z",
+   "endsAt": "2026-11-27T08:10:27.111Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:NVDA",
+     "sign": -1,
+     "p0": 150.42,
+     "d": 0.15
+    }
+   ],
+   "closedAt": "2026-11-27T08:10:29.263Z",
+   "R": -0.2424,
+   "exit": "horizon"
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "hl|xyz:SPCX|short",
+   "conviction": 68,
+   "openedAt": "2026-11-25T12:10:28.400Z",
+   "endsAt": "2026-11-27T12:10:28.400Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:SPCX",
+     "sign": -1,
+     "p0": 122.44,
+     "d": 0.11872917347272134
+    }
+   ],
+   "closedAt": "2026-11-27T12:10:28.832Z",
+   "R": -0.5593,
+   "exit": "horizon"
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "hl|xyz:SKHX|long",
+   "conviction": 70,
+   "openedAt": "2026-11-26T11:10:26.533Z",
+   "endsAt": "2026-11-27T11:10:26.533Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:SKHX",
+     "sign": 1,
+     "p0": 775.46,
+     "d": 0.15
+    }
+   ],
+   "closedAt": "2026-11-27T12:10:28.832Z",
+   "R": 0.4073,
+   "exit": "horizon"
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "hl|ETH|long",
+   "conviction": 62,
+   "openedAt": "2026-11-24T14:48:21.468Z",
+   "endsAt": "2026-11-27T14:48:21.468Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "ETH",
+     "sign": 1,
+     "p0": 1693.51,
+     "d": 0.1297553601691162
+    }
+   ],
+   "closedAt": "2026-11-27T15:10:26.337Z",
+   "R": -0.2158,
+   "exit": "horizon"
+  },
+  {
+   "model": "gemini-3.6-flash",
+   "family": "gemini",
+   "candidateId": "hl|HYPE|short",
+   "conviction": 74,
+   "openedAt": "2026-11-25T20:10:26.238Z",
+   "endsAt": "2026-11-27T20:10:26.238Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "HYPE",
+     "sign": -1,
+     "p0": 61.375,
+     "d": 0.15
+    }
+   ],
+   "closedAt": "2026-11-27T20:10:30.710Z",
+   "R": -0.264,
+   "exit": "horizon"
+  },
+  {
+   "model": "gemini-3.5-flash-lite",
+   "family": "gemini",
+   "candidateId": "hl|xyz:NVDA|short",
+   "conviction": 65,
+   "openedAt": "2026-11-25T21:10:29.875Z",
+   "endsAt": "2026-11-27T21:10:29.875Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:NVDA",
+     "sign": -1,
+     "p0": 148.97,
+     "d": 0.15
+    }
+   ],
+   "closedAt": "2026-11-27T22:10:31.819Z",
+   "R": -0.026,
+   "exit": "horizon"
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0x541fe26331737937cf44ba059b96b180912a5dbd600154f101c2554c489e1a32|Up",
+   "conviction": 60,
+   "openedAt": "2026-11-27T20:10:30.710Z",
+   "endsAt": "2026-11-27T21:10:30.710Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 59781,
+     "d": 0.1008
+    }
+   ],
+   "closedAt": "2026-11-27T22:10:31.819Z",
+   "R": 0.0113,
+   "exit": "horizon"
+  },
+  {
+   "model": "gemini-3.5-flash-lite",
+   "family": "gemini",
+   "candidateId": "leadlag|0x5d95aa50be92d3980227e31c3cc9a90efe8d7b79872900c807447859fcc5233b|Down",
+   "conviction": 65,
+   "openedAt": "2026-11-27T00:10:26.278Z",
+   "endsAt": "2026-11-28T00:10:26.278Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "DOGE",
+     "sign": -1,
+     "p0": 0.0564,
+     "d": 0.1194
+    }
+   ],
+   "closedAt": "2026-11-28T00:10:31.743Z",
+   "R": -0.2113,
+   "exit": "horizon"
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0xf6584c269881d166f31fe204f776cb30160db6e561799abe81a381d76a63241c|Down",
+   "conviction": 70,
+   "openedAt": "2026-11-28T00:10:31.743Z",
+   "endsAt": "2026-11-28T01:10:31.743Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 59789,
+     "d": 0.0938
+    }
+   ],
+   "closedAt": "2026-11-28T01:10:39.417Z",
+   "R": -0.0474,
+   "exit": "horizon"
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0x1ba4dbdac68b10bba3218bbd09b0c566ff71666d27917e5ca9b4d88db88d683c|Up",
+   "conviction": 75,
+   "openedAt": "2026-11-28T00:10:31.743Z",
+   "endsAt": "2026-11-28T02:10:31.743Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "DOGE",
+     "sign": 1,
+     "p0": 0.0578,
+     "d": 0.115
+    }
+   ],
+   "closedAt": "2026-11-28T02:10:47.146Z",
+   "R": 0.0348,
+   "exit": "horizon"
+  },
+  {
+   "model": "openrouter/free",
+   "family": "openrouter-auto",
+   "candidateId": "leadlag|0xd5fd472d1ab12cbe436d1b9b1c4cfb7999ab003f62fecd171aad858280ee702b|Up",
+   "conviction": 68,
+   "openedAt": "2026-11-28T01:10:39.417Z",
+   "endsAt": "2026-11-28T02:10:39.417Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "DOGE",
+     "sign": 1,
+     "p0": 0.0578,
+     "d": 0.1152
+    }
+   ],
+   "closedAt": "2026-11-28T02:10:47.146Z",
+   "R": 0.0347,
+   "exit": "horizon"
+  },
+  {
+   "model": "openrouter/free",
+   "family": "openrouter-auto",
+   "candidateId": "leadlag|0x1ba4dbdac68b10bba3218bbd09b0c566ff71666d27917e5ca9b4d88db88d683c|Up",
+   "conviction": 62,
+   "openedAt": "2026-11-28T01:10:39.417Z",
+   "endsAt": "2026-11-28T03:10:39.417Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "DOGE",
+     "sign": 1,
+     "p0": 0.0578,
+     "d": 0.1152
+    }
+   ],
+   "closedAt": "2026-11-28T04:10:34.857Z",
+   "R": -0.0215,
+   "exit": "horizon"
+  },
+  {
+   "model": "particle-ai/particle-1:free",
+   "family": "or:particle-ai/particle",
+   "candidateId": "leadlag|0x425b9680d03c65768cfddfe0b467c889b3d88f085e26e9b2e10d7dc593b3f544|Up",
+   "conviction": 62,
+   "openedAt": "2026-11-28T02:10:47.146Z",
+   "endsAt": "2026-11-28T04:10:47.146Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": 1,
+     "p0": 60091.1,
+     "d": 0.0942
+    }
+   ],
+   "closedAt": "2026-11-28T05:10:38.681Z",
+   "R": -0.0677,
+   "exit": "horizon"
+  },
+  {
+   "model": "deepseek-flash",
+   "family": "deepseek-flash",
+   "candidateId": "leadlag|0x345aa444fb701a312917e5f6f7b9c5293d69614d1ada897f0567021d1315d536|Down",
+   "conviction": 64,
+   "openedAt": "2026-11-28T03:10:33.346Z",
+   "endsAt": "2026-11-28T05:10:33.346Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 59983,
+     "d": 0.0944
+    }
+   ],
+   "closedAt": "2026-11-28T05:10:38.681Z",
+   "R": 0.0486,
+   "exit": "horizon"
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0xa6baebc146628fdfc58adac1e291633baa86c5818e204c753e1eacc87ad7be96|Yes",
+   "conviction": 68,
+   "openedAt": "2026-11-28T06:10:32.318Z",
+   "endsAt": "2026-11-28T08:10:32.318Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 59686,
+     "d": 0.0954
+    }
+   ],
+   "closedAt": "2026-11-28T09:10:35.903Z",
+   "R": 0.0125,
+   "exit": "horizon"
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0xb6b73782138ae120edaf633f97f65bf3975ddd51c809ede740a3f693b30cfb06|Up",
+   "conviction": 66,
+   "openedAt": "2026-11-28T06:10:32.318Z",
+   "endsAt": "2026-11-28T08:10:32.318Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "SOL",
+     "sign": -1,
+     "p0": 71.221,
+     "d": 0.12240000000000001
+    }
+   ],
+   "closedAt": "2026-11-28T09:10:35.903Z",
+   "R": 0.0205,
+   "exit": "horizon"
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0xcbd4306c24a4349159a1ea07a75db898c659342bdee45743555189550588d016|Yes",
+   "conviction": 65,
+   "openedAt": "2026-11-28T06:10:32.318Z",
+   "endsAt": "2026-11-28T08:10:32.318Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:TSLA",
+     "sign": -1,
+     "p0": 398.56,
+     "d": 0.0796
+    }
+   ],
+   "closedAt": "2026-11-28T09:10:35.903Z",
+   "R": -0.0009,
+   "exit": "horizon"
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "candidateId": "leadlag|0x4809910f845021ae201406eac6aecb3d1ee820810b6a5a840fb201e81e5993ba|Yes",
+   "conviction": 68,
+   "openedAt": "2026-11-28T06:10:32.318Z",
+   "endsAt": "2026-11-28T08:10:32.318Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": -1,
+     "p0": 59686,
+     "d": 0.0954
+    }
+   ],
+   "closedAt": "2026-11-28T09:10:35.903Z",
+   "R": 0.0125,
+   "exit": "horizon"
+  },
+  {
+   "model": "gemini-3.5-flash-lite",
+   "family": "gemini",
+   "candidateId": "hl|xyz:SKHX|long",
+   "conviction": 65,
+   "openedAt": "2026-11-26T10:10:32.014Z",
+   "endsAt": "2026-11-28T10:10:32.014Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:SKHX",
+     "sign": 1,
+     "p0": 776.38,
+     "d": 0.15
+    }
+   ],
+   "closedAt": "2026-11-28T10:10:47.161Z",
+   "R": 0.5018,
+   "exit": "horizon"
+  },
+  {
+   "model": "gemini-3.5-flash-lite",
+   "family": "gemini",
+   "candidateId": "leadlag|0xecb99c5cbaddbf592c95add1413ed6dc56fa9d0893b4e080c3dc4e0779a64158|Yes",
+   "conviction": 65,
+   "openedAt": "2026-11-26T00:10:32.653Z",
+   "endsAt": "2026-11-28T12:10:32.653Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": 1,
+     "p0": 60555,
+     "d": 0.0946
+    }
+   ],
+   "closedAt": "2026-11-28T12:10:37.514Z",
+   "R": -0.2262,
+   "exit": "horizon"
+  },
+  {
+   "model": "gemini-3.5-flash-lite",
+   "family": "gemini",
+   "candidateId": "leadlag|0x3c7951f8534f2623d1ba2e0df14e96dc11699b7ddf369a15f239167e3ff476ae|Yes",
+   "conviction": 65,
+   "openedAt": "2026-11-26T00:10:32.653Z",
+   "endsAt": "2026-11-28T12:10:32.653Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": 1,
+     "p0": 60555,
+     "d": 0.0946
+    }
+   ],
+   "closedAt": "2026-11-28T12:10:37.514Z",
+   "R": -0.2262,
+   "exit": "horizon"
+  },
+  {
+   "model": "gemini-3.5-flash-lite",
+   "family": "gemini",
+   "candidateId": "leadlag|0xccd8213f7deee80d86fdc3d0abb15e20ab4e953c2bf0e2b17148b9a76810589a|No",
+   "conviction": 70,
+   "openedAt": "2026-11-26T00:10:32.653Z",
+   "endsAt": "2026-11-28T12:10:32.653Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "xyz:NVDA",
+     "sign": 1,
+     "p0": 151.05,
+     "d": 0.15
+    }
+   ],
+   "closedAt": "2026-11-28T12:10:37.514Z",
+   "R": -0.1598,
+   "exit": "horizon"
+  },
+  {
+   "model": "gemini-3.5-flash-lite",
+   "family": "gemini",
+   "candidateId": "leadlag|0xd753fee3f7ebf442caff98cfcedb2587fefd21e33c5c723eed4c3010fe2e82ea|No",
+   "conviction": 65,
+   "openedAt": "2026-11-26T00:10:32.653Z",
+   "endsAt": "2026-11-28T12:10:32.653Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": 1,
+     "p0": 60555,
+     "d": 0.0946
+    }
+   ],
+   "closedAt": "2026-11-28T12:10:37.514Z",
+   "R": -0.2262,
+   "exit": "horizon"
+  },
+  {
+   "model": "gemini-3.5-flash-lite",
+   "family": "gemini",
+   "candidateId": "leadlag|0x5db6b438dbd30b0e7817700893751b76870573f6f7aebda142b6bd56b953deb7|No",
+   "conviction": 65,
+   "openedAt": "2026-11-26T00:10:32.653Z",
+   "endsAt": "2026-11-28T12:10:32.653Z",
+   "venue": "hl",
+   "legs": [
+    {
+     "coin": "BTC",
+     "sign": 1,
+     "p0": 60555,
+     "d": 0.0946
+    }
+   ],
+   "closedAt": "2026-11-28T12:10:37.514Z",
+   "R": -0.2262,
+   "exit": "horizon"
+  }
+ ]
+}

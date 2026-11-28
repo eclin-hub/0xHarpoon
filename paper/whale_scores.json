@@ -1,0 +1,2581 @@
+{
+ "version": 1,
+ "createdAt": "2026-11-24T14:14:39.266Z",
+ "warmupEndsAt": "2026-12-24T14:14:39.266Z",
+ "cursor": 1795872399961,
+ "whales": {
+  "hl:0x87f9cd15f5050a9283b8896300f7c8cf69ece2cf": {
+   "venue": "hl",
+   "addr": "0x87f9cd15f5050a9283b8896300f7c8cf69ece2cf",
+   "prior": {
+    "macro": 1.1613892723500001,
+    "geopolitics": 1.1613892723500001,
+    "crypto": 1.1613892723500001,
+    "commodities": 1.1613892723500001
+   },
+   "cats": {}
+  },
+  "hl:0xecb63caa47c7c4e77f60f1ce858cf28dc2b82b00": {
+   "venue": "hl",
+   "addr": "0xecb63caa47c7c4e77f60f1ce858cf28dc2b82b00",
+   "prior": {
+    "macro": 1.2483159153,
+    "geopolitics": 1.2483159153,
+    "crypto": 1.2483159153,
+    "commodities": 1.2483159153
+   },
+   "cats": {
+    "commodities": {
+     "n": 20,
+     "w": 0.9021742528996792,
+     "cum": -0.8920449545040491,
+     "peak": 0.1189395532121153,
+     "maxDD": 1.0991074639625447,
+     "lastAt": "2026-11-27T15:49:47.697Z"
+    },
+    "crypto": {
+     "n": 12,
+     "w": 1.082441916424723,
+     "cum": 0.8072608807913181,
+     "peak": 0.8140432551998882,
+     "maxDD": 0.18689681169550695,
+     "lastAt": "2026-11-28T10:46:39.869Z"
+    }
+   }
+  },
+  "hl:0xfc667adba8d4837586078f4fdcdc29804337ca06": {
+   "venue": "hl",
+   "addr": "0xfc667adba8d4837586078f4fdcdc29804337ca06",
+   "prior": {
+    "macro": 1.06200966115,
+    "geopolitics": 1.06200966115,
+    "crypto": 1.06200966115,
+    "commodities": 1.06200966115
+   },
+   "cats": {
+    "commodities": {
+     "n": 11,
+     "w": 0.7556376073857648,
+     "cum": -2.649124358448798,
+     "peak": 0.5170735494536706,
+     "maxDD": 3.1661979079024682,
+     "lastAt": "2026-11-27T17:00:56.950Z"
+    },
+    "crypto": {
+     "n": 6,
+     "w": 1.155908580359661,
+     "cum": 1.053872484925488,
+     "peak": 1.053872484925488,
+     "maxDD": 0.9750956211409199,
+     "lastAt": "2026-11-27T05:00:59.440Z"
+    }
+   }
+  },
+  "hl:0xfc27136e42af1732ddc9ce2605ea9bff1b959d9d": {
+   "venue": "hl",
+   "addr": "0xfc27136e42af1732ddc9ce2605ea9bff1b959d9d",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "commodities": {
+     "n": 11,
+     "w": 1.136657757598798,
+     "cum": 3.061184132013432,
+     "peak": 3.915213078865153,
+     "maxDD": 0.854028946851721,
+     "lastAt": "2026-11-27T20:00:55.926Z"
+    }
+   }
+  },
+  "hl:0x023a3d058020fb76cca98f01b3c48c8938a22355": {
+   "venue": "hl",
+   "addr": "0x023a3d058020fb76cca98f01b3c48c8938a22355",
+   "prior": {
+    "macro": 1.13316461885,
+    "geopolitics": 1.13316461885,
+    "crypto": 1.13316461885,
+    "commodities": 1.13316461885
+   },
+   "cats": {
+    "crypto": {
+     "n": 1,
+     "w": 1.2649713405107732,
+     "cum": 0.7459196429538656,
+     "peak": 0.7459196429538656,
+     "maxDD": 0,
+     "lastAt": "2026-11-24T11:06:44.183Z"
+    }
+   },
+   "name": "Auros"
+  },
+  "hl:0x7fdafde5cfb5465924316eced2d3715494c517d1": {
+   "venue": "hl",
+   "addr": "0x7fdafde5cfb5465924316eced2d3715494c517d1",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "crypto": {
+     "n": 7,
+     "w": 1.4035935719468928,
+     "cum": 3.7464984049620855,
+     "peak": 3.7464984049620855,
+     "maxDD": 0.010938790134573662,
+     "lastAt": "2026-11-27T04:00:54.491Z"
+    },
+    "commodities": {
+     "n": 2,
+     "w": 1.3565327034305257,
+     "cum": 1.0936392925556737,
+     "peak": 1.0936392925556737,
+     "maxDD": 0,
+     "lastAt": "2026-11-27T07:00:56.896Z"
+    }
+   },
+   "name": "BobbyBigSize"
+  },
+  "hl:0xb07856ebcb6b37967eaf7c4b4e64dcce28c6de15": {
+   "venue": "hl",
+   "addr": "0xb07856ebcb6b37967eaf7c4b4e64dcce28c6de15",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "commodities": {
+     "n": 24,
+     "w": 0.9470015667235442,
+     "cum": -1.2013118076222948,
+     "peak": 0.11769209665005871,
+     "maxDD": 2.1941470954470983,
+     "lastAt": "2026-11-27T17:00:56.950Z"
+    }
+   }
+  },
+  "hl:0x49e96e255ba418d08e66c35b588e2f2f3766e1d0": {
+   "venue": "hl",
+   "addr": "0x49e96e255ba418d08e66c35b588e2f2f3766e1d0",
+   "prior": {
+    "macro": 1.1227585978,
+    "geopolitics": 1.1227585978,
+    "crypto": 1.1227585978,
+    "commodities": 1.1227585978
+   },
+   "cats": {}
+  },
+  "hl:0x024294c53a69c1e6b39810b3fac87385752fffa1": {
+   "venue": "hl",
+   "addr": "0x024294c53a69c1e6b39810b3fac87385752fffa1",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "commodities": {
+     "n": 1,
+     "w": 1.2133889540123344,
+     "cum": 0.06694477006167135,
+     "peak": 0.06694477006167135,
+     "maxDD": 0,
+     "lastAt": "2026-11-27T15:49:47.697Z"
+    }
+   }
+  },
+  "hl:0x0b8aa35c28b7c6ab18f11dc168f437a8a69fd4f8": {
+   "venue": "hl",
+   "addr": "0x0b8aa35c28b7c6ab18f11dc168f437a8a69fd4f8",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xb83de012dba672c76a7dbbbf3e459cb59d7d6e36": {
+   "venue": "hl",
+   "addr": "0xb83de012dba672c76a7dbbbf3e459cb59d7d6e36",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x9321d8117e73b0c79035f0e87debcfd8dbb1d75a": {
+   "venue": "hl",
+   "addr": "0x9321d8117e73b0c79035f0e87debcfd8dbb1d75a",
+   "prior": {
+    "macro": 1.2299698702,
+    "geopolitics": 1.2299698702,
+    "crypto": 1.2299698702,
+    "commodities": 1.2299698702
+   },
+   "cats": {}
+  },
+  "hl:0xfe7ce058edc7cfcde9ef8262ba51f8d4796ab7ae": {
+   "venue": "hl",
+   "addr": "0xfe7ce058edc7cfcde9ef8262ba51f8d4796ab7ae",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x936cf4fb95c30ce83f658b5bbb247e4bb381bb0f": {
+   "venue": "hl",
+   "addr": "0x936cf4fb95c30ce83f658b5bbb247e4bb381bb0f",
+   "prior": {
+    "macro": 1.0981787637,
+    "geopolitics": 1.0981787637,
+    "crypto": 1.0981787637,
+    "commodities": 1.0981787637
+   },
+   "cats": {}
+  },
+  "hl:0x58b27998b4ff896949d5f57466b259e50ee211f3": {
+   "venue": "hl",
+   "addr": "0x58b27998b4ff896949d5f57466b259e50ee211f3",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xd8c5228c515db3043dfa0c8cd6f22450ee9a99b0": {
+   "venue": "hl",
+   "addr": "0xd8c5228c515db3043dfa0c8cd6f22450ee9a99b0",
+   "prior": {
+    "macro": 1.15230210845,
+    "geopolitics": 1.15230210845,
+    "crypto": 1.15230210845,
+    "commodities": 1.15230210845
+   },
+   "cats": {
+    "commodities": {
+     "n": 1,
+     "w": 1.0611327941472104,
+     "cum": -0.5445299658639482,
+     "peak": 0,
+     "maxDD": 0.5445299658639482,
+     "lastAt": "2026-11-25T19:33:54.858Z"
+    }
+   }
+  },
+  "hl:0xe86b057f5eb764c9738d6b0d38170befd0723664": {
+   "venue": "hl",
+   "addr": "0xe86b057f5eb764c9738d6b0d38170befd0723664",
+   "prior": {
+    "macro": 1.2150551129,
+    "geopolitics": 1.2150551129,
+    "crypto": 1.2150551129,
+    "commodities": 1.2150551129
+   },
+   "cats": {}
+  },
+  "hl:0x92cbb22a9b9fc01da9914c9b39ed904dd61b859c": {
+   "venue": "hl",
+   "addr": "0x92cbb22a9b9fc01da9914c9b39ed904dd61b859c",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "crypto": {
+     "n": 1,
+     "w": 1.0175632703340192,
+     "cum": -0.9121836483299036,
+     "peak": 0,
+     "maxDD": 0.9121836483299036,
+     "lastAt": "2026-11-21T04:04:01.020Z"
+    }
+   }
+  },
+  "hl:0x77eeda199553e33b246e4b4666849b9ad0972902": {
+   "venue": "hl",
+   "addr": "0x77eeda199553e33b246e4b4666849b9ad0972902",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xdf954bbe619273a56e0cfa90dad8382195dc7d72": {
+   "venue": "hl",
+   "addr": "0xdf954bbe619273a56e0cfa90dad8382195dc7d72",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "commodities": {
+     "n": 1,
+     "w": 1.2064605144226275,
+     "cum": 0.0323025721131376,
+     "peak": 0.0323025721131376,
+     "maxDD": 0,
+     "lastAt": "2026-11-24T11:06:44.183Z"
+    }
+   }
+  },
+  "hl:0x27c9fa86c91b84ddfa15de58c482ff662498d65d": {
+   "venue": "hl",
+   "addr": "0x27c9fa86c91b84ddfa15de58c482ff662498d65d",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "crypto": {
+     "n": 1,
+     "w": 1.317719001050719,
+     "cum": 0.588595005253595,
+     "peak": 0.588595005253595,
+     "maxDD": 0,
+     "lastAt": "2026-11-23T22:17:06.099Z"
+    },
+    "commodities": {
+     "n": 1,
+     "w": 1.31111725168063,
+     "cum": 0.5555862584031492,
+     "peak": 0.5555862584031492,
+     "maxDD": 0,
+     "lastAt": "2026-11-25T19:00:59.764Z"
+    }
+   }
+  },
+  "hl:0xdc519874071cca5457fdf8b3c31760ac1ca16ef7": {
+   "venue": "hl",
+   "addr": "0xdc519874071cca5457fdf8b3c31760ac1ca16ef7",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "crypto": {
+     "n": 4,
+     "w": 1.2217692990159368,
+     "cum": 0.9871175318945812,
+     "peak": 1.30484542744866,
+     "maxDD": 0.3177278955540789,
+     "lastAt": "2026-11-26T00:18:41.736Z"
+    }
+   }
+  },
+  "hl:0xebe126adabe1a8f08d3ce53b45e7cc994ca14070": {
+   "venue": "hl",
+   "addr": "0xebe126adabe1a8f08d3ce53b45e7cc994ca14070",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "commodities": {
+     "n": 1,
+     "w": 1.3338700457073998,
+     "cum": 0.6693502285369983,
+     "peak": 0.6693502285369983,
+     "maxDD": 0,
+     "lastAt": "2026-11-24T14:14:05.719Z"
+    }
+   }
+  },
+  "hl:0x2d23b731e5f04996a2dfdbe434c7d922afdb5e00": {
+   "venue": "hl",
+   "addr": "0x2d23b731e5f04996a2dfdbe434c7d922afdb5e00",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xda3768e9299e1fd81708ec030dac5ea37125f7b5": {
+   "venue": "hl",
+   "addr": "0xda3768e9299e1fd81708ec030dac5ea37125f7b5",
+   "prior": {
+    "macro": 1.18933875775,
+    "geopolitics": 1.18933875775,
+    "crypto": 1.18933875775,
+    "commodities": 1.18933875775
+   },
+   "cats": {}
+  },
+  "hl:0xfc98b6ec7f59ea13354bae6171a9120692fb8777": {
+   "venue": "hl",
+   "addr": "0xfc98b6ec7f59ea13354bae6171a9120692fb8777",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "commodities": {
+     "n": 6,
+     "w": 1.0571926046997309,
+     "cum": -0.062123490233709555,
+     "peak": 0.15023648688682162,
+     "maxDD": 0.2818038772820168,
+     "lastAt": "2026-11-28T02:19:43.629Z"
+    },
+    "crypto": {
+     "n": 2,
+     "w": 1.2012408056591442,
+     "cum": 0.13360283843881238,
+     "peak": 0.13360283843881238,
+     "maxDD": 0.3630059492845399,
+     "lastAt": "2026-11-26T16:00:58.962Z"
+    }
+   }
+  },
+  "hl:0x64a4fbb71858f681f3fa10a42b34180a9a48088d": {
+   "venue": "hl",
+   "addr": "0x64a4fbb71858f681f3fa10a42b34180a9a48088d",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xd1dd6d99c5fb5d31ff52eacce5046c7158859e85": {
+   "venue": "hl",
+   "addr": "0xd1dd6d99c5fb5d31ff52eacce5046c7158859e85",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "commodities": {
+     "n": 4,
+     "w": 1.0577242911736002,
+     "cum": -0.3610775017010365,
+     "peak": 0,
+     "maxDD": 0.3967008979398278,
+     "lastAt": "2026-11-26T20:44:29.190Z"
+    }
+   }
+  },
+  "hl:0x77375a8c9d13bf79afb2a87f1b0ac1dfd5f5bf66": {
+   "venue": "hl",
+   "addr": "0x77375a8c9d13bf79afb2a87f1b0ac1dfd5f5bf66",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "commodities": {
+     "n": 2,
+     "w": 1.2011638665383058,
+     "cum": 0.35907024483205735,
+     "peak": 0.766254560702643,
+     "maxDD": 0.4071843158705856,
+     "lastAt": "2026-11-25T21:00:55.595Z"
+    },
+    "crypto": {
+     "n": 6,
+     "w": 0.8221462800082714,
+     "cum": -1.9898723652195103,
+     "peak": 0,
+     "maxDD": 1.9898723652195103,
+     "lastAt": "2026-11-27T04:00:54.491Z"
+    }
+   }
+  },
+  "hl:0xb37f083bad343a76361cd8f39afe7ecd6a0a66ca": {
+   "venue": "hl",
+   "addr": "0xb37f083bad343a76361cd8f39afe7ecd6a0a66ca",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x9aa589355bf745db9784c8ef3c646360f11b58af": {
+   "venue": "hl",
+   "addr": "0x9aa589355bf745db9784c8ef3c646360f11b58af",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "commodities": {
+     "n": 3,
+     "w": 0.9230572459369486,
+     "cum": -1.445172934843691,
+     "peak": 0,
+     "maxDD": 1.445172934843691,
+     "lastAt": "2026-11-27T00:19:15.416Z"
+    }
+   }
+  },
+  "hl:0x15a4f009bb324a3fb9e36137136b201e3fe0dfdb": {
+   "venue": "hl",
+   "addr": "0x15a4f009bb324a3fb9e36137136b201e3fe0dfdb",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xecc846a664e910103c179827dd23fea82cfcd8ce": {
+   "venue": "hl",
+   "addr": "0xecc846a664e910103c179827dd23fea82cfcd8ce",
+   "prior": {
+    "macro": 1.09072483505,
+    "geopolitics": 1.09072483505,
+    "crypto": 1.09072483505,
+    "commodities": 1.09072483505
+   },
+   "cats": {}
+  },
+  "hl:0xd9012a0c82242b04ee09e45e98b24903f982d975": {
+   "venue": "hl",
+   "addr": "0xd9012a0c82242b04ee09e45e98b24903f982d975",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "crypto": {
+     "n": 4,
+     "w": 1.146468622127185,
+     "cum": 0.3256551228316371,
+     "peak": 0.4415713571812434,
+     "maxDD": 0.1159162343496063,
+     "lastAt": "2026-11-27T02:00:55.029Z"
+    },
+    "commodities": {
+     "n": 2,
+     "w": 1.260878725631359,
+     "cum": 0.554556311004335,
+     "peak": 0.554556311004335,
+     "maxDD": 0,
+     "lastAt": "2026-11-27T15:49:47.697Z"
+    }
+   }
+  },
+  "hl:0x880ac484a1743862989a441d6d867238c7aa311c": {
+   "venue": "hl",
+   "addr": "0x880ac484a1743862989a441d6d867238c7aa311c",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xb695651daa495f59dd2725c6fe98322d8b51a92d": {
+   "venue": "hl",
+   "addr": "0xb695651daa495f59dd2725c6fe98322d8b51a92d",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x59629e23c52a0d7c092436870ef2db1dc382ddf8": {
+   "venue": "hl",
+   "addr": "0x59629e23c52a0d7c092436870ef2db1dc382ddf8",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "commodities": {
+     "n": 4,
+     "w": 1.1711289384312338,
+     "cum": 0.4009306685620657,
+     "peak": 0.4009306685620657,
+     "maxDD": 0.21860689184668256,
+     "lastAt": "2026-11-27T20:00:55.926Z"
+    },
+    "crypto": {
+     "n": 5,
+     "w": 0.8107106354018075,
+     "cum": -1.9126688814238895,
+     "peak": 0,
+     "maxDD": 1.9126688814238895,
+     "lastAt": "2026-11-27T15:49:47.697Z"
+    }
+   }
+  },
+  "hl:0xf818fa41af44a1b42ba7433f4ec472be40a2c268": {
+   "venue": "hl",
+   "addr": "0xf818fa41af44a1b42ba7433f4ec472be40a2c268",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x06a745f3ad5a71bd3ad65b4103c0ac210b581c75": {
+   "venue": "hl",
+   "addr": "0x06a745f3ad5a71bd3ad65b4103c0ac210b581c75",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x72774e2fe1992d5da8c6e9cef73fd2ab980c0b98": {
+   "venue": "hl",
+   "addr": "0x72774e2fe1992d5da8c6e9cef73fd2ab980c0b98",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "crypto": {
+     "n": 2,
+     "w": 1.2515915490221423,
+     "cum": 0.5759249511537805,
+     "peak": 0.5898360302153396,
+     "maxDD": 0.013911079061559084,
+     "lastAt": "2026-11-24T11:06:44.183Z"
+    }
+   }
+  },
+  "hl:0xfb941d2344b72ea9101400392b818173772d0ddf": {
+   "venue": "hl",
+   "addr": "0xfb941d2344b72ea9101400392b818173772d0ddf",
+   "prior": {
+    "macro": 1.1921325181,
+    "geopolitics": 1.1921325181,
+    "crypto": 1.1921325181,
+    "commodities": 1.1921325181
+   },
+   "cats": {}
+  },
+  "hl:0x484bc1608211d0604bf70bae72792a56884562f8": {
+   "venue": "hl",
+   "addr": "0x484bc1608211d0604bf70bae72792a56884562f8",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xda26ab2a88881523ce002477fdee2f4ac9eb572a": {
+   "venue": "hl",
+   "addr": "0xda26ab2a88881523ce002477fdee2f4ac9eb572a",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "crypto": {
+     "n": 3,
+     "w": 1.0636825647228711,
+     "cum": -0.08116029091572036,
+     "peak": 0.9999243935008909,
+     "maxDD": 1.0810846844166113,
+     "lastAt": "2026-11-27T15:01:01.802Z"
+    }
+   }
+  },
+  "hl:0x7dacca323e44f168494c779bb5e7483c468ef410": {
+   "venue": "hl",
+   "addr": "0x7dacca323e44f168494c779bb5e7483c468ef410",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x4c78a97cef589b01bb91dbf893fffa14243d2444": {
+   "venue": "hl",
+   "addr": "0x4c78a97cef589b01bb91dbf893fffa14243d2444",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xc5682e404f3d68ea4b461f0a22dfe8d7155de86a": {
+   "venue": "hl",
+   "addr": "0xc5682e404f3d68ea4b461f0a22dfe8d7155de86a",
+   "prior": {
+    "macro": 1.1454968585,
+    "geopolitics": 1.1454968585,
+    "crypto": 1.1454968585,
+    "commodities": 1.1454968585
+   },
+   "cats": {}
+  },
+  "hl:0x37b81ab9e3ab04b9e3738e4891621205aaa31fd5": {
+   "venue": "hl",
+   "addr": "0x37b81ab9e3ab04b9e3738e4891621205aaa31fd5",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x418aa6bf98a2b2bc93779f810330d88cde488888": {
+   "venue": "hl",
+   "addr": "0x418aa6bf98a2b2bc93779f810330d88cde488888",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x4ba3979955f52158c0e4e3378b18985475182ce2": {
+   "venue": "hl",
+   "addr": "0x4ba3979955f52158c0e4e3378b18985475182ce2",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x84abc08c0ea62e687c370154de1f38ea462f4d37": {
+   "venue": "hl",
+   "addr": "0x84abc08c0ea62e687c370154de1f38ea462f4d37",
+   "prior": {
+    "macro": 1.21665975815,
+    "geopolitics": 1.21665975815,
+    "crypto": 1.21665975815,
+    "commodities": 1.21665975815
+   },
+   "cats": {}
+  },
+  "hl:0x668cec05549105e5b05bcc779a43186735d7ea2e": {
+   "venue": "hl",
+   "addr": "0x668cec05549105e5b05bcc779a43186735d7ea2e",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "crypto": {
+     "n": 1,
+     "w": 1.2054078247545243,
+     "cum": 0.027039123772621104,
+     "peak": 0.027039123772621104,
+     "maxDD": 0,
+     "lastAt": "2026-11-26T02:00:57.363Z"
+    }
+   }
+  },
+  "hl:0xc30c7ea910a71ce06ae840868b0c7e47616ba4c9": {
+   "venue": "hl",
+   "addr": "0xc30c7ea910a71ce06ae840868b0c7e47616ba4c9",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x8f3c142fb2126d855ad1ef6c13376c7a687d33a6": {
+   "venue": "hl",
+   "addr": "0x8f3c142fb2126d855ad1ef6c13376c7a687d33a6",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x5647249079e257329ecb6f46ed41821d3c69e7de": {
+   "venue": "hl",
+   "addr": "0x5647249079e257329ecb6f46ed41821d3c69e7de",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "crypto": {
+     "n": 2,
+     "w": 1.4408298291878356,
+     "cum": 1.6041491271230626,
+     "peak": 1.6041491271230626,
+     "maxDD": 0,
+     "lastAt": "2026-11-28T10:00:55.786Z"
+    }
+   }
+  },
+  "hl:0x888e000c78b8f1aada5b3c99f880794907b76d77": {
+   "venue": "hl",
+   "addr": "0x888e000c78b8f1aada5b3c99f880794907b76d77",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "commodities": {
+     "n": 1,
+     "w": 1.3089488254768844,
+     "cum": 0.5447441273844216,
+     "peak": 0.5447441273844216,
+     "maxDD": 0,
+     "lastAt": "2026-11-25T20:00:55.873Z"
+    }
+   }
+  },
+  "hl:0xcac19662ec88d23fa1c81ac0e8570b0cf2ff26b3": {
+   "venue": "hl",
+   "addr": "0xcac19662ec88d23fa1c81ac0e8570b0cf2ff26b3",
+   "prior": {
+    "macro": 1.13972208475,
+    "geopolitics": 1.13972208475,
+    "crypto": 1.13972208475,
+    "commodities": 1.13972208475
+   },
+   "cats": {}
+  },
+  "hl:0xed48b856556a69c7c40229c9c4c829b909257c9b": {
+   "venue": "hl",
+   "addr": "0xed48b856556a69c7c40229c9c4c829b909257c9b",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x0a776abbaae0e2161d0e131f57e605efbea4b99b": {
+   "venue": "hl",
+   "addr": "0x0a776abbaae0e2161d0e131f57e605efbea4b99b",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x6859da14835424957a1e6b397d8026b1d9ff7e1e": {
+   "venue": "hl",
+   "addr": "0x6859da14835424957a1e6b397d8026b1d9ff7e1e",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xca4903c207a0df58bf37d4bc8bbc5210726f53c8": {
+   "venue": "hl",
+   "addr": "0xca4903c207a0df58bf37d4bc8bbc5210726f53c8",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x8e096995c3e4a3f0bc5b3ea1cba94de2aa4d70c9": {
+   "venue": "hl",
+   "addr": "0x8e096995c3e4a3f0bc5b3ea1cba94de2aa4d70c9",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x389bc420bc8d09d463c0afd8674107000dc1a93b": {
+   "venue": "hl",
+   "addr": "0x389bc420bc8d09d463c0afd8674107000dc1a93b",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x71038a3e5fd46ba4ca5edc81339a4d1e9e493104": {
+   "venue": "hl",
+   "addr": "0x71038a3e5fd46ba4ca5edc81339a4d1e9e493104",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x28bbaaa5b431ed61ea6a9b3394f76616e00cfca6": {
+   "venue": "hl",
+   "addr": "0x28bbaaa5b431ed61ea6a9b3394f76616e00cfca6",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x6921352064dc79139dad8b5b7ed2c982ce0fda21": {
+   "venue": "hl",
+   "addr": "0x6921352064dc79139dad8b5b7ed2c982ce0fda21",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x8cc94dc843e1ea7a19805e0cca43001123512b6a": {
+   "venue": "hl",
+   "addr": "0x8cc94dc843e1ea7a19805e0cca43001123512b6a",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xdfd526409007db0d524a62dedaaba7706736d88e": {
+   "venue": "hl",
+   "addr": "0xdfd526409007db0d524a62dedaaba7706736d88e",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xba5d9cc840745aeeeeedac5712e32f13ab8ea352": {
+   "venue": "hl",
+   "addr": "0xba5d9cc840745aeeeeedac5712e32f13ab8ea352",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xceec48581b3145a575508719f45da07dc57fa7ce": {
+   "venue": "hl",
+   "addr": "0xceec48581b3145a575508719f45da07dc57fa7ce",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xe187055ff406f8cdf59fbae53ec20d4ecd9b771d": {
+   "venue": "hl",
+   "addr": "0xe187055ff406f8cdf59fbae53ec20d4ecd9b771d",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x3fc56e944aa7b1594c85861b2d46a07f82a2c0c1": {
+   "venue": "hl",
+   "addr": "0x3fc56e944aa7b1594c85861b2d46a07f82a2c0c1",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "crypto": {
+     "n": 1,
+     "w": 1.3999999999986652,
+     "cum": 0.9999999999933259,
+     "peak": 0.9999999999933259,
+     "maxDD": 0,
+     "lastAt": "2026-11-25T11:53:39.331Z"
+    }
+   }
+  },
+  "hl:0xb4eac34db4f9d1270d078495d367cb2e587cf6e8": {
+   "venue": "hl",
+   "addr": "0xb4eac34db4f9d1270d078495d367cb2e587cf6e8",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xfce053a5e461683454bf37ad66d20344c0e3f4c0": {
+   "venue": "hl",
+   "addr": "0xfce053a5e461683454bf37ad66d20344c0e3f4c0",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x381fe486d87c7f2633c777f1b5be3105a2a51744": {
+   "venue": "hl",
+   "addr": "0x381fe486d87c7f2633c777f1b5be3105a2a51744",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xfb1898bb5955fdd11704e397104c6a0e0725eb17": {
+   "venue": "hl",
+   "addr": "0xfb1898bb5955fdd11704e397104c6a0e0725eb17",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x005844b2ffb2e122cf4244be7dbcb4f84924907c": {
+   "venue": "hl",
+   "addr": "0x005844b2ffb2e122cf4244be7dbcb4f84924907c",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x3440f23a87f1950e7a88cd248fd270e92d1132c5": {
+   "venue": "hl",
+   "addr": "0x3440f23a87f1950e7a88cd248fd270e92d1132c5",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xbfc79c444c41a74516bf31237ebf586a231480b4": {
+   "venue": "hl",
+   "addr": "0xbfc79c444c41a74516bf31237ebf586a231480b4",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x4a96036fb1529561fa3eeeb2781fad2d4f25500e": {
+   "venue": "hl",
+   "addr": "0x4a96036fb1529561fa3eeeb2781fad2d4f25500e",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xf0ae4d359f07fb630a5bcb197ac3beaba4cc2f74": {
+   "venue": "hl",
+   "addr": "0xf0ae4d359f07fb630a5bcb197ac3beaba4cc2f74",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x3dc908374e11623d8eb9f07dfc7a2e5e803a54b0": {
+   "venue": "hl",
+   "addr": "0x3dc908374e11623d8eb9f07dfc7a2e5e803a54b0",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xe5ac6d42ac6e553a3541b09d322f864f6d7abbe3": {
+   "venue": "hl",
+   "addr": "0xe5ac6d42ac6e553a3541b09d322f864f6d7abbe3",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x218a65e21eddeece7a9df38c6bbdd89f692b7da2": {
+   "venue": "hl",
+   "addr": "0x218a65e21eddeece7a9df38c6bbdd89f692b7da2",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x7a6d5fc57f6906f337c48fe2763c3a501304f79c": {
+   "venue": "hl",
+   "addr": "0x7a6d5fc57f6906f337c48fe2763c3a501304f79c",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xacb66d1996501bcc82a0e7819c9e041599f5efbd": {
+   "venue": "hl",
+   "addr": "0xacb66d1996501bcc82a0e7819c9e041599f5efbd",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "crypto": {
+     "n": 1,
+     "w": 1.2098062374308254,
+     "cum": 0.04903118715412699,
+     "peak": 0.04903118715412699,
+     "maxDD": 0,
+     "lastAt": "2026-11-27T15:01:01.802Z"
+    }
+   }
+  },
+  "hl:0x47f5a6397b79deaaca5c456503e7c1a49357b942": {
+   "venue": "hl",
+   "addr": "0x47f5a6397b79deaaca5c456503e7c1a49357b942",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xd47587702a91731dc1089b5db0932cf820151a91": {
+   "venue": "hl",
+   "addr": "0xd47587702a91731dc1089b5db0932cf820151a91",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xb3e475368ed0fa0ad23c04de0423d48a0758806f": {
+   "venue": "hl",
+   "addr": "0xb3e475368ed0fa0ad23c04de0423d48a0758806f",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x03ef8f736498047c3349bb2c18311d1bb4a79054": {
+   "venue": "hl",
+   "addr": "0x03ef8f736498047c3349bb2c18311d1bb4a79054",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xd2b2a8ab7a8c903501f4db4ee45c67522a4511ed": {
+   "venue": "hl",
+   "addr": "0xd2b2a8ab7a8c903501f4db4ee45c67522a4511ed",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "commodities": {
+     "n": 2,
+     "w": 1.3356401214374847,
+     "cum": 1.0781102811114367,
+     "peak": 1.0781102811114367,
+     "maxDD": 0,
+     "lastAt": "2026-11-27T15:01:01.802Z"
+    }
+   }
+  },
+  "hl:0xa20fb0c9e04063eec5be286e9269028d966646fa": {
+   "venue": "hl",
+   "addr": "0xa20fb0c9e04063eec5be286e9269028d966646fa",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x45d26f28196d226497130c4bac709d808fed4029": {
+   "venue": "hl",
+   "addr": "0x45d26f28196d226497130c4bac709d808fed4029",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x4fd04553468610e5a88a2cffa38e057c954312da": {
+   "venue": "hl",
+   "addr": "0x4fd04553468610e5a88a2cffa38e057c954312da",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x28cee4465f95720cb8464d56faea656751119040": {
+   "venue": "hl",
+   "addr": "0x28cee4465f95720cb8464d56faea656751119040",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x88560b720239179d7f3f9e49ca934a4861593d7f": {
+   "venue": "hl",
+   "addr": "0x88560b720239179d7f3f9e49ca934a4861593d7f",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x91a9cadcd7e36cbe8ff604cb634307d7b7643f70": {
+   "venue": "hl",
+   "addr": "0x91a9cadcd7e36cbe8ff604cb634307d7b7643f70",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xcf5343ba750a6e30afbb1dadda08bc78f8c8ee11": {
+   "venue": "hl",
+   "addr": "0xcf5343ba750a6e30afbb1dadda08bc78f8c8ee11",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x404ca2035b37bf2e83505134ebcf8d03babb5f03": {
+   "venue": "hl",
+   "addr": "0x404ca2035b37bf2e83505134ebcf8d03babb5f03",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xc5f033a47dde827133850ced50009c3802c989ba": {
+   "venue": "hl",
+   "addr": "0xc5f033a47dde827133850ced50009c3802c989ba",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x0daf132c5554fd7d5eb422585426af557d8847e0": {
+   "venue": "hl",
+   "addr": "0x0daf132c5554fd7d5eb422585426af557d8847e0",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "pm:0xa2cd4ccda9a1f95949df7a3355c4c2daa0642ba0": {
+   "venue": "pm",
+   "addr": "0xa2cd4ccda9a1f95949df7a3355c4c2daa0642ba0",
+   "prior": {
+    "geopolitics": 1.2295918367346939
+   },
+   "cats": {}
+  },
+  "pm:0x7c75be8139d0e333e7c8c2e17b53575ef0804d1d": {
+   "venue": "pm",
+   "addr": "0x7c75be8139d0e333e7c8c2e17b53575ef0804d1d",
+   "prior": {
+    "geopolitics": 1.239795918367347
+   },
+   "cats": {}
+  },
+  "pm:0x9c9fe391bf7ba8701bc97c9e561a46cbce11e2d2": {
+   "venue": "pm",
+   "addr": "0x9c9fe391bf7ba8701bc97c9e561a46cbce11e2d2",
+   "prior": {
+    "geopolitics": 1.2091836734693877
+   },
+   "cats": {
+    "geopolitics": {
+     "n": 1,
+     "w": 1.2551869387755104,
+     "cum": 0.43920000000000003,
+     "peak": 0.43920000000000003,
+     "maxDD": 0,
+     "lastAt": "2026-11-28T10:01:07.352Z"
+    }
+   },
+   "name": "feeder-or-predator"
+  },
+  "pm:0x87a71804212f1ebbecaa486f269e961c4d408cea": {
+   "venue": "pm",
+   "addr": "0x87a71804212f1ebbecaa486f269e961c4d408cea",
+   "prior": {
+    "geopolitics": 1.1989795918367347
+   },
+   "cats": {}
+  },
+  "pm:0x448861155279dbf833d041b963e3ac854599e319": {
+   "venue": "pm",
+   "addr": "0x448861155279dbf833d041b963e3ac854599e319",
+   "prior": {
+    "geopolitics": 1.1071428571428572
+   },
+   "cats": {
+    "geopolitics": {
+     "n": 3,
+     "w": 1.0682507428571428,
+     "cum": 0.07769999999999999,
+     "peak": 0.07769999999999999,
+     "maxDD": 0,
+     "lastAt": "2026-11-27T04:01:12.755Z"
+    }
+   },
+   "name": "0x448861155279dbf833d041b963e3ac854599e319"
+  },
+  "pm:0xc4d1a863e9cc45d02ba22d3a1ae9ba7822018ce8": {
+   "venue": "pm",
+   "addr": "0xc4d1a863e9cc45d02ba22d3a1ae9ba7822018ce8",
+   "prior": {
+    "geopolitics": 1.1887755102040816
+   },
+   "cats": {}
+  },
+  "pm:0xad5353afe30c2da57709e2704ef3ccdcf67eef24": {
+   "venue": "pm",
+   "addr": "0xad5353afe30c2da57709e2704ef3ccdcf67eef24",
+   "prior": {
+    "geopolitics": 1.239795918367347,
+    "macro": 1.2295918367346939,
+    "commodities": 1.2295918367346939
+   },
+   "cats": {}
+  },
+  "pm:0x4f1d5ae26fc31472966e951af3183308736d8de2": {
+   "venue": "pm",
+   "addr": "0x4f1d5ae26fc31472966e951af3183308736d8de2",
+   "prior": {
+    "geopolitics": 1.1173469387755102,
+    "crypto": 1.086734693877551
+   },
+   "cats": {}
+  },
+  "pm:0x63d43bbb87f85af03b8f2f9e2fad7b54334fa2f1": {
+   "venue": "pm",
+   "addr": "0x63d43bbb87f85af03b8f2f9e2fad7b54334fa2f1",
+   "prior": {
+    "geopolitics": 1.1377551020408163
+   },
+   "cats": {}
+  },
+  "pm:0xdbf16bcffa41bd95faec2640daa2c95ab2bd86b5": {
+   "venue": "pm",
+   "addr": "0xdbf16bcffa41bd95faec2640daa2c95ab2bd86b5",
+   "prior": {
+    "geopolitics": 1.1275510204081634
+   },
+   "cats": {}
+  },
+  "pm:0xc301c1e034e71e1a6ce9684f029c4674a00466aa": {
+   "venue": "pm",
+   "addr": "0xc301c1e034e71e1a6ce9684f029c4674a00466aa",
+   "prior": {
+    "geopolitics": 1.0459183673469388
+   },
+   "cats": {}
+  },
+  "pm:0x3a8aa345d5db7ec5138298c8c4f4540259be7699": {
+   "venue": "pm",
+   "addr": "0x3a8aa345d5db7ec5138298c8c4f4540259be7699",
+   "prior": {
+    "geopolitics": 1.1275510204081634
+   },
+   "cats": {}
+  },
+  "pm:0x23d81ba9371e576015c1e562db09c689f56b0288": {
+   "venue": "pm",
+   "addr": "0x23d81ba9371e576015c1e562db09c689f56b0288",
+   "prior": {
+    "geopolitics": 0.9642857142857143
+   },
+   "cats": {}
+  },
+  "pm:0xd218e474776403a330142299f7796e8ba32eb5c9": {
+   "venue": "pm",
+   "addr": "0xd218e474776403a330142299f7796e8ba32eb5c9",
+   "prior": {
+    "geopolitics": 1.1581632653061225
+   },
+   "cats": {}
+  },
+  "pm:0x94c4fe3b18435aa92024c7c1589537fcda3f43ca": {
+   "venue": "pm",
+   "addr": "0x94c4fe3b18435aa92024c7c1589537fcda3f43ca",
+   "prior": {
+    "geopolitics": 1.056122448979592
+   },
+   "cats": {}
+  },
+  "pm:0x9b129ad05bc0a8df3c73dfcc66fe75252daec2d5": {
+   "venue": "pm",
+   "addr": "0x9b129ad05bc0a8df3c73dfcc66fe75252daec2d5",
+   "prior": {
+    "geopolitics": 1.0153061224489797
+   },
+   "cats": {}
+  },
+  "pm:0xcb8deb73fbdd20b366d51c91e6e2c80365368d08": {
+   "venue": "pm",
+   "addr": "0xcb8deb73fbdd20b366d51c91e6e2c80365368d08",
+   "prior": {
+    "geopolitics": 1.1785714285714286
+   },
+   "cats": {}
+  },
+  "pm:0x1f5f9fa318fbda8350ac143b4df657287df850fa": {
+   "venue": "pm",
+   "addr": "0x1f5f9fa318fbda8350ac143b4df657287df850fa",
+   "prior": {
+    "geopolitics": 1.096938775510204
+   },
+   "cats": {}
+  },
+  "pm:0x6575759174ad221bba9947bc3f18750ec769b198": {
+   "venue": "pm",
+   "addr": "0x6575759174ad221bba9947bc3f18750ec769b198",
+   "prior": {
+    "geopolitics": 0.9132653061224489,
+    "macro": 1.056122448979592,
+    "commodities": 1.056122448979592
+   },
+   "cats": {}
+  },
+  "pm:0xb5d19b53c973be1097119c9ddc48fcb18fff6e35": {
+   "venue": "pm",
+   "addr": "0xb5d19b53c973be1097119c9ddc48fcb18fff6e35",
+   "prior": {
+    "geopolitics": 1.0357142857142858
+   },
+   "cats": {}
+  },
+  "pm:0x629bc4a1e53e1d475beb7ea3d388791e96dd995a": {
+   "venue": "pm",
+   "addr": "0x629bc4a1e53e1d475beb7ea3d388791e96dd995a",
+   "prior": {
+    "geopolitics": 1.0051020408163265
+   },
+   "cats": {}
+  },
+  "pm:0x43372356634781eea88d61bbdd7824cdce958882": {
+   "venue": "pm",
+   "addr": "0x43372356634781eea88d61bbdd7824cdce958882",
+   "prior": {
+    "geopolitics": 1.0051020408163265
+   },
+   "cats": {}
+  },
+  "pm:0x511f9c771449162349795d17becf8b37031acbe1": {
+   "venue": "pm",
+   "addr": "0x511f9c771449162349795d17becf8b37031acbe1",
+   "prior": {
+    "geopolitics": 1.25
+   },
+   "cats": {}
+  },
+  "pm:0xefb70577dc01cee93601053a2d18d419827a0870": {
+   "venue": "pm",
+   "addr": "0xefb70577dc01cee93601053a2d18d419827a0870",
+   "prior": {
+    "geopolitics": 0.9846938775510203
+   },
+   "cats": {}
+  },
+  "pm:0x62d56a93516db0181f7cdea919191ec07fa43d4f": {
+   "venue": "pm",
+   "addr": "0x62d56a93516db0181f7cdea919191ec07fa43d4f",
+   "prior": {
+    "geopolitics": 1.0255102040816326
+   },
+   "cats": {}
+  },
+  "pm:0x7c3db723f1d4d8cb9c550095203b686cb11e5c6b": {
+   "venue": "pm",
+   "addr": "0x7c3db723f1d4d8cb9c550095203b686cb11e5c6b",
+   "prior": {
+    "geopolitics": 0.9540816326530612
+   },
+   "cats": {}
+  },
+  "pm:0xc8b9a30184244d427169cf62485dde6041b2b836": {
+   "venue": "pm",
+   "addr": "0xc8b9a30184244d427169cf62485dde6041b2b836",
+   "prior": {
+    "geopolitics": 0.9642857142857143
+   },
+   "cats": {}
+  },
+  "pm:0xe899b5ea69afb161da7a35597b6fe70398860899": {
+   "venue": "pm",
+   "addr": "0xe899b5ea69afb161da7a35597b6fe70398860899",
+   "prior": {
+    "geopolitics": 0.9438775510204082
+   },
+   "cats": {}
+  },
+  "pm:0xd1c769317bd15de7768a70d0214cf0bbcc531d2b": {
+   "venue": "pm",
+   "addr": "0xd1c769317bd15de7768a70d0214cf0bbcc531d2b",
+   "prior": {
+    "geopolitics": 0.7908163265306123,
+    "crypto": 1.0765306122448979
+   },
+   "cats": {
+    "commodities": {
+     "n": 1,
+     "w": 1.00022,
+     "cum": 0.0010999999999999899,
+     "peak": 0.0010999999999999899,
+     "maxDD": 0,
+     "lastAt": "2026-11-27T01:01:13.639Z"
+    }
+   },
+   "name": "033033033"
+  },
+  "pm:0x111f73e91f85b6fe4de1ddec3de2fe32122e355b": {
+   "venue": "pm",
+   "addr": "0x111f73e91f85b6fe4de1ddec3de2fe32122e355b",
+   "prior": {
+    "crypto": 1.25
+   },
+   "cats": {}
+  },
+  "pm:0x76eca4109d0dfe8649d5e3861dfccac67ae7d630": {
+   "venue": "pm",
+   "addr": "0x76eca4109d0dfe8649d5e3861dfccac67ae7d630",
+   "prior": {
+    "crypto": 1.239795918367347
+   },
+   "cats": {}
+  },
+  "pm:0xa19cbababc312f9df185e49d7004c249ed1ade6b": {
+   "venue": "pm",
+   "addr": "0xa19cbababc312f9df185e49d7004c249ed1ade6b",
+   "prior": {
+    "crypto": 1.239795918367347,
+    "macro": 0.9132653061224489,
+    "commodities": 0.9132653061224489
+   },
+   "cats": {}
+  },
+  "pm:0xf705fa045201391d9632b7f3cde06a5e24453ca7": {
+   "venue": "pm",
+   "addr": "0xf705fa045201391d9632b7f3cde06a5e24453ca7",
+   "prior": {
+    "crypto": 1.2295918367346939
+   },
+   "cats": {}
+  },
+  "pm:0x93fb8127a1b21a112b11af936361225df0563e4a": {
+   "venue": "pm",
+   "addr": "0x93fb8127a1b21a112b11af936361225df0563e4a",
+   "prior": {
+    "crypto": 1.2091836734693877
+   },
+   "cats": {}
+  },
+  "pm:0x252d7bae5ec87553dcafb23e275c202ac0d3c456": {
+   "venue": "pm",
+   "addr": "0x252d7bae5ec87553dcafb23e275c202ac0d3c456",
+   "prior": {
+    "crypto": 1.1887755102040816
+   },
+   "cats": {}
+  },
+  "pm:0xbc0a6581980c9285c8ed1e2bc9c5efd3302135cd": {
+   "venue": "pm",
+   "addr": "0xbc0a6581980c9285c8ed1e2bc9c5efd3302135cd",
+   "prior": {
+    "crypto": 1.1785714285714286
+   },
+   "cats": {}
+  },
+  "pm:0x56ad6bd05999e0f33ea9c05a48ccb1364a46f13e": {
+   "venue": "pm",
+   "addr": "0x56ad6bd05999e0f33ea9c05a48ccb1364a46f13e",
+   "prior": {
+    "crypto": 1.1683673469387754
+   },
+   "cats": {}
+  },
+  "pm:0xc53375ff94e96100f2b30a4b5775db35218d69a9": {
+   "venue": "pm",
+   "addr": "0xc53375ff94e96100f2b30a4b5775db35218d69a9",
+   "prior": {
+    "crypto": 1.066326530612245
+   },
+   "cats": {}
+  },
+  "pm:0xeebde7a0e019a63e6b476eb425505b7b3e6eba30": {
+   "venue": "pm",
+   "addr": "0xeebde7a0e019a63e6b476eb425505b7b3e6eba30",
+   "prior": {
+    "crypto": 1.1581632653061225
+   },
+   "cats": {}
+  },
+  "pm:0x976dcfd80d80e2e8359af7d01cc9250867af8b63": {
+   "venue": "pm",
+   "addr": "0x976dcfd80d80e2e8359af7d01cc9250867af8b63",
+   "prior": {
+    "crypto": 1.1479591836734695
+   },
+   "cats": {}
+  },
+  "pm:0xb392b0234600393289f7a5a0dc32af604ea0fc73": {
+   "venue": "pm",
+   "addr": "0xb392b0234600393289f7a5a0dc32af604ea0fc73",
+   "prior": {
+    "crypto": 1.0357142857142858
+   },
+   "cats": {}
+  },
+  "pm:0xab155a20ff29debee4128e9dd1ea6ab8541c46e5": {
+   "venue": "pm",
+   "addr": "0xab155a20ff29debee4128e9dd1ea6ab8541c46e5",
+   "prior": {
+    "crypto": 0.9948979591836735
+   },
+   "cats": {}
+  },
+  "pm:0x5188fa0e8a77e87bc6a58e6781fdfc4e165cc804": {
+   "venue": "pm",
+   "addr": "0x5188fa0e8a77e87bc6a58e6781fdfc4e165cc804",
+   "prior": {
+    "crypto": 1.0255102040816326
+   },
+   "cats": {}
+  },
+  "pm:0xcc39a528488e411b39dee53befcecc7a94768a77": {
+   "venue": "pm",
+   "addr": "0xcc39a528488e411b39dee53befcecc7a94768a77",
+   "prior": {
+    "crypto": 1.1377551020408163
+   },
+   "cats": {}
+  },
+  "pm:0x32ed2e546b187ca15e2841edc82b22c713cf8ec3": {
+   "venue": "pm",
+   "addr": "0x32ed2e546b187ca15e2841edc82b22c713cf8ec3",
+   "prior": {
+    "crypto": 0.9642857142857143
+   },
+   "cats": {}
+  },
+  "pm:0x5bf678580f15f3bc9c8cbbf6b1bfd271965526a5": {
+   "venue": "pm",
+   "addr": "0x5bf678580f15f3bc9c8cbbf6b1bfd271965526a5",
+   "prior": {
+    "crypto": 1.1275510204081634
+   },
+   "cats": {}
+  },
+  "pm:0xe802a40f09cffad705ae0a2a870a7316eab74ab8": {
+   "venue": "pm",
+   "addr": "0xe802a40f09cffad705ae0a2a870a7316eab74ab8",
+   "prior": {
+    "crypto": 1.1173469387755102
+   },
+   "cats": {}
+  },
+  "pm:0x3725d52f3c252e8374999cc8617292ea2608ad88": {
+   "venue": "pm",
+   "addr": "0x3725d52f3c252e8374999cc8617292ea2608ad88",
+   "prior": {
+    "crypto": 0.9540816326530612
+   },
+   "cats": {}
+  },
+  "pm:0xda4ef96fbd1fccbd0d1f6b658011a3e6ff1d01e2": {
+   "venue": "pm",
+   "addr": "0xda4ef96fbd1fccbd0d1f6b658011a3e6ff1d01e2",
+   "prior": {
+    "crypto": 1.1071428571428572
+   },
+   "cats": {}
+  },
+  "pm:0x217d1e586fc68b4543753caf4cb84008a47f1851": {
+   "venue": "pm",
+   "addr": "0x217d1e586fc68b4543753caf4cb84008a47f1851",
+   "prior": {
+    "crypto": 1.096938775510204
+   },
+   "cats": {}
+  },
+  "pm:0x3798bde457978af9aaf95a52de99853fafef9fb1": {
+   "venue": "pm",
+   "addr": "0x3798bde457978af9aaf95a52de99853fafef9fb1",
+   "prior": {
+    "crypto": 1.056122448979592
+   },
+   "cats": {}
+  },
+  "pm:0x3c5dc3e055123c7749ab2dbc84bffc13a0917be1": {
+   "venue": "pm",
+   "addr": "0x3c5dc3e055123c7749ab2dbc84bffc13a0917be1",
+   "prior": {
+    "crypto": 0.9234693877551021
+   },
+   "cats": {}
+  },
+  "pm:0x1f4ce554d7343db49c35e450df2643ca10bfacc4": {
+   "venue": "pm",
+   "addr": "0x1f4ce554d7343db49c35e450df2643ca10bfacc4",
+   "prior": {
+    "crypto": 1.0153061224489797
+   },
+   "cats": {}
+  },
+  "pm:0x797ad2392ba98534582866b38338f17019710ca0": {
+   "venue": "pm",
+   "addr": "0x797ad2392ba98534582866b38338f17019710ca0",
+   "prior": {
+    "crypto": 1.0051020408163265
+   },
+   "cats": {}
+  },
+  "pm:0x61d77b3ccfae96843d8463501267a6d038955e00": {
+   "venue": "pm",
+   "addr": "0x61d77b3ccfae96843d8463501267a6d038955e00",
+   "prior": {
+    "crypto": 0.9846938775510203
+   },
+   "cats": {}
+  },
+  "pm:0x55e2436d747835c7e40b0c6cf92f632bf1215fc9": {
+   "venue": "pm",
+   "addr": "0x55e2436d747835c7e40b0c6cf92f632bf1215fc9",
+   "prior": {
+    "crypto": 0.9234693877551021
+   },
+   "cats": {}
+  },
+  "pm:0x77958accec3edfc6ea0194e8fb954647456b9a17": {
+   "venue": "pm",
+   "addr": "0x77958accec3edfc6ea0194e8fb954647456b9a17",
+   "prior": {
+    "macro": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "pm:0xf0ca28d5b0141f0a8e7b251dea80fd881cb166ed": {
+   "venue": "pm",
+   "addr": "0xf0ca28d5b0141f0a8e7b251dea80fd881cb166ed",
+   "prior": {
+    "macro": 1.239795918367347,
+    "commodities": 1.239795918367347
+   },
+   "cats": {}
+  },
+  "pm:0xec1fe51724fefc0b238514e88837dbcaa07bd325": {
+   "venue": "pm",
+   "addr": "0xec1fe51724fefc0b238514e88837dbcaa07bd325",
+   "prior": {
+    "macro": 1.219387755102041,
+    "commodities": 1.219387755102041
+   },
+   "cats": {}
+  },
+  "pm:0x3e03eaee9fa9d188e2a15e8bfd9c34b95e44b571": {
+   "venue": "pm",
+   "addr": "0x3e03eaee9fa9d188e2a15e8bfd9c34b95e44b571",
+   "prior": {
+    "macro": 1.2091836734693877,
+    "commodities": 1.2091836734693877
+   },
+   "cats": {
+    "geopolitics": {
+     "n": 1,
+     "w": 1.0759,
+     "cum": 0.37949999999999995,
+     "peak": 0.37949999999999995,
+     "maxDD": 0,
+     "lastAt": "2026-11-28T13:01:08.532Z"
+    }
+   },
+   "name": "nimble-mellow-comet"
+  },
+  "pm:0xf0318c32136c2db7fec88b84869aee6a1106c80c": {
+   "venue": "pm",
+   "addr": "0xf0318c32136c2db7fec88b84869aee6a1106c80c",
+   "prior": {
+    "macro": 1.1989795918367347,
+    "commodities": 1.1989795918367347
+   },
+   "cats": {}
+  },
+  "pm:0x853c37a959a5791b849e3f3225c7f5963746bd03": {
+   "venue": "pm",
+   "addr": "0x853c37a959a5791b849e3f3225c7f5963746bd03",
+   "prior": {
+    "macro": 1.1785714285714286,
+    "commodities": 1.1785714285714286
+   },
+   "cats": {}
+  },
+  "pm:0x14c32680ffc318892e0d019181e4161aa34cdf68": {
+   "venue": "pm",
+   "addr": "0x14c32680ffc318892e0d019181e4161aa34cdf68",
+   "prior": {
+    "macro": 1.1683673469387754,
+    "commodities": 1.1683673469387754
+   },
+   "cats": {}
+  },
+  "pm:0xb7632365a9edc5be7239295bf559e8cd98a8d3a5": {
+   "venue": "pm",
+   "addr": "0xb7632365a9edc5be7239295bf559e8cd98a8d3a5",
+   "prior": {
+    "macro": 1.1479591836734695,
+    "commodities": 1.1479591836734695
+   },
+   "cats": {
+    "geopolitics": {
+     "n": 1,
+     "w": 1.0047000000000001,
+     "cum": 0.023499999999999993,
+     "peak": 0.023499999999999993,
+     "maxDD": 0,
+     "lastAt": "2026-11-25T11:53:50.429Z"
+    }
+   },
+   "name": "0xB7632365a9EDC5bE7239295BF559e8cd98a8d3a5-1769632303424"
+  },
+  "pm:0x134a63b764ac7b008356e8db1857db94e6b09e42": {
+   "venue": "pm",
+   "addr": "0x134a63b764ac7b008356e8db1857db94e6b09e42",
+   "prior": {
+    "macro": 1.1479591836734695,
+    "commodities": 1.1479591836734695
+   },
+   "cats": {}
+  },
+  "pm:0x8f28821a0be0f8d51bdb46a9a6295e8069edcae2": {
+   "venue": "pm",
+   "addr": "0x8f28821a0be0f8d51bdb46a9a6295e8069edcae2",
+   "prior": {
+    "macro": 1.1071428571428572,
+    "commodities": 1.1071428571428572
+   },
+   "cats": {}
+  },
+  "pm:0xb3d36421d0576fffc203e1800a3cdb9bca9c66ff": {
+   "venue": "pm",
+   "addr": "0xb3d36421d0576fffc203e1800a3cdb9bca9c66ff",
+   "prior": {
+    "macro": 1.096938775510204,
+    "commodities": 1.096938775510204
+   },
+   "cats": {}
+  },
+  "pm:0x05f6cb63d4ffdfaecd7ad8acd0765b6f6a5a25a1": {
+   "venue": "pm",
+   "addr": "0x05f6cb63d4ffdfaecd7ad8acd0765b6f6a5a25a1",
+   "prior": {
+    "macro": 1.086734693877551,
+    "commodities": 1.086734693877551
+   },
+   "cats": {}
+  },
+  "pm:0x3cc379741b2ab96d61aab5942a1a711a89f1fb0b": {
+   "venue": "pm",
+   "addr": "0x3cc379741b2ab96d61aab5942a1a711a89f1fb0b",
+   "prior": {
+    "macro": 1.0459183673469388,
+    "commodities": 1.0459183673469388
+   },
+   "cats": {}
+  },
+  "pm:0x2b670a311561dcaf741d8155451774d3fa7fb814": {
+   "venue": "pm",
+   "addr": "0x2b670a311561dcaf741d8155451774d3fa7fb814",
+   "prior": {
+    "macro": 1.0255102040816326,
+    "commodities": 1.0255102040816326
+   },
+   "cats": {}
+  },
+  "pm:0xa84fec7697794fbfc9186b23e0ecbaefb363f2b2": {
+   "venue": "pm",
+   "addr": "0xa84fec7697794fbfc9186b23e0ecbaefb363f2b2",
+   "prior": {
+    "macro": 1.0051020408163265,
+    "commodities": 1.0051020408163265
+   },
+   "cats": {}
+  },
+  "pm:0x81f8dd54a4b5202f069ed598dc3f81f2eede8f7c": {
+   "venue": "pm",
+   "addr": "0x81f8dd54a4b5202f069ed598dc3f81f2eede8f7c",
+   "prior": {
+    "macro": 0.9642857142857143,
+    "commodities": 0.9642857142857143
+   },
+   "cats": {}
+  },
+  "pm:0xecaa8806a9a05049d7d5260a33dc924220e377a9": {
+   "venue": "pm",
+   "addr": "0xecaa8806a9a05049d7d5260a33dc924220e377a9",
+   "prior": {
+    "macro": 0.9948979591836735,
+    "commodities": 0.9948979591836735
+   },
+   "cats": {}
+  },
+  "pm:0x982a77e75498fa134607f598c861b8de9d0c6851": {
+   "venue": "pm",
+   "addr": "0x982a77e75498fa134607f598c861b8de9d0c6851",
+   "prior": {
+    "macro": 1.0765306122448979,
+    "commodities": 1.0765306122448979
+   },
+   "cats": {}
+  },
+  "pm:0xc6e956068048c1cf98d8f0b3a495edc9da130741": {
+   "venue": "pm",
+   "addr": "0xc6e956068048c1cf98d8f0b3a495edc9da130741",
+   "prior": {
+    "macro": 0.9336734693877551,
+    "commodities": 0.9336734693877551
+   },
+   "cats": {}
+  },
+  "hl:0x04889bbfa46fcf754ba06b1ca6d3e83265dcd87d": {
+   "venue": "hl",
+   "addr": "0x04889bbfa46fcf754ba06b1ca6d3e83265dcd87d",
+   "prior": {},
+   "cats": {
+    "crypto": {
+     "n": 1,
+     "w": 0.9657173660722171,
+     "cum": -0.17141316963891426,
+     "peak": 0,
+     "maxDD": 0.17141316963891426,
+     "lastAt": "2026-11-21T04:04:01.020Z"
+    }
+   }
+  },
+  "hl:0x8455193b0490ad091819000b01cd9bb833ac974b": {
+   "venue": "hl",
+   "addr": "0x8455193b0490ad091819000b01cd9bb833ac974b",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x7df034b39420cb594128b3428c501dae8176ceb3": {
+   "venue": "hl",
+   "addr": "0x7df034b39420cb594128b3428c501dae8176ceb3",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "crypto": {
+     "n": 1,
+     "w": 1.1621828921083295,
+     "cum": -0.18908553945835313,
+     "peak": 0,
+     "maxDD": 0.18908553945835313,
+     "lastAt": "2026-11-25T17:16:13.231Z"
+    }
+   }
+  },
+  "hl:0xd09dfae7d956e672f669f83163d89c334aa50044": {
+   "venue": "hl",
+   "addr": "0xd09dfae7d956e672f669f83163d89c334aa50044",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x9751cec58be43e0e27d57ba49ac3d68ec269a97e": {
+   "venue": "hl",
+   "addr": "0x9751cec58be43e0e27d57ba49ac3d68ec269a97e",
+   "prior": {
+    "macro": 1.1624936885000001,
+    "geopolitics": 1.1624936885000001,
+    "crypto": 1.1624936885000001,
+    "commodities": 1.1624936885000001
+   },
+   "cats": {}
+  },
+  "hl:0x8bae3527e5a33fa0cf184f37bc112d071463ab6d": {
+   "venue": "hl",
+   "addr": "0x8bae3527e5a33fa0cf184f37bc112d071463ab6d",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x1249351002268a45594b9c429a328a35e6981488": {
+   "venue": "hl",
+   "addr": "0x1249351002268a45594b9c429a328a35e6981488",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x94b227df8fe384dfa9273334c72e5efbf934599e": {
+   "venue": "hl",
+   "addr": "0x94b227df8fe384dfa9273334c72e5efbf934599e",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x7c27f4de1cad1b759fefa780e1158c8c8976c626": {
+   "venue": "hl",
+   "addr": "0x7c27f4de1cad1b759fefa780e1158c8c8976c626",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x71dfc07de32c2ebf1c4801f4b1c9e40b76d4a23d": {
+   "venue": "hl",
+   "addr": "0x71dfc07de32c2ebf1c4801f4b1c9e40b76d4a23d",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "pm:0x9ba7ae7ae11df2477c567d6a5aeb5b3bc9cf00ef": {
+   "venue": "pm",
+   "addr": "0x9ba7ae7ae11df2477c567d6a5aeb5b3bc9cf00ef",
+   "prior": {
+    "geopolitics": 1.1479591836734695
+   },
+   "cats": {}
+  },
+  "pm:0xc023bee917480fed315d186a7b223f33c09a0fe8": {
+   "venue": "pm",
+   "addr": "0xc023bee917480fed315d186a7b223f33c09a0fe8",
+   "prior": {
+    "geopolitics": 0.9948979591836735,
+    "macro": 0.8214285714285714,
+    "commodities": 0.8214285714285714
+   },
+   "cats": {}
+  },
+  "pm:0x9703676286b93c2eca71ca96e8757104519a69c2": {
+   "venue": "pm",
+   "addr": "0x9703676286b93c2eca71ca96e8757104519a69c2",
+   "prior": {
+    "geopolitics": 1.0765306122448979
+   },
+   "cats": {}
+  },
+  "pm:0x6276ea490d6ca3a539f1d571a89d53d26e9f9db5": {
+   "venue": "pm",
+   "addr": "0x6276ea490d6ca3a539f1d571a89d53d26e9f9db5",
+   "prior": {
+    "geopolitics": 0.9132653061224489
+   },
+   "cats": {}
+  },
+  "pm:0x83733b87090cf97aee473b1000beb9bfab7af0bc": {
+   "venue": "pm",
+   "addr": "0x83733b87090cf97aee473b1000beb9bfab7af0bc",
+   "prior": {
+    "geopolitics": 0.9336734693877551
+   },
+   "cats": {}
+  },
+  "pm:0xc22b72b0fec23b797589ef6778bb6589e325deab": {
+   "venue": "pm",
+   "addr": "0xc22b72b0fec23b797589ef6778bb6589e325deab",
+   "prior": {
+    "geopolitics": 0.9336734693877551
+   },
+   "cats": {}
+  },
+  "pm:0xa3282d3e882501229c75d0caf134e62e3afb4977": {
+   "venue": "pm",
+   "addr": "0xa3282d3e882501229c75d0caf134e62e3afb4977",
+   "prior": {
+    "geopolitics": 0.9540816326530612
+   },
+   "cats": {}
+  },
+  "pm:0x64c8ec47e1f5a367f234a74f8176d805e87173ce": {
+   "venue": "pm",
+   "addr": "0x64c8ec47e1f5a367f234a74f8176d805e87173ce",
+   "prior": {
+    "geopolitics": 0.9234693877551021
+   },
+   "cats": {}
+  },
+  "pm:0xbaa2bcb5439e985ce4ccf815b4700027d1b92c73": {
+   "venue": "pm",
+   "addr": "0xbaa2bcb5439e985ce4ccf815b4700027d1b92c73",
+   "prior": {
+    "geopolitics": 0.9132653061224489
+   },
+   "cats": {}
+  },
+  "pm:0x24ded84d901a743cfee095f8082b0f9f647183cb": {
+   "venue": "pm",
+   "addr": "0x24ded84d901a743cfee095f8082b0f9f647183cb",
+   "prior": {
+    "geopolitics": 0.903061224489796
+   },
+   "cats": {}
+  },
+  "pm:0x027e587a1086809d1a00f22216bef6a808f1c97f": {
+   "venue": "pm",
+   "addr": "0x027e587a1086809d1a00f22216bef6a808f1c97f",
+   "prior": {
+    "crypto": 0.9744897959183674
+   },
+   "cats": {}
+  },
+  "pm:0x4a742a5858aee9ad5bf704066fe8314c36ca0e24": {
+   "venue": "pm",
+   "addr": "0x4a742a5858aee9ad5bf704066fe8314c36ca0e24",
+   "prior": {
+    "crypto": 0.9438775510204082
+   },
+   "cats": {}
+  },
+  "pm:0x0524ed6ba7277dd7a68eb337ddfa2c2ff449a697": {
+   "venue": "pm",
+   "addr": "0x0524ed6ba7277dd7a68eb337ddfa2c2ff449a697",
+   "prior": {
+    "crypto": 0.9336734693877551
+   },
+   "cats": {}
+  },
+  "pm:0xdf8616e18da2ad636713f4bf4367794e810606bb": {
+   "venue": "pm",
+   "addr": "0xdf8616e18da2ad636713f4bf4367794e810606bb",
+   "prior": {
+    "macro": 1.1581632653061225,
+    "commodities": 1.1581632653061225
+   },
+   "cats": {}
+  },
+  "pm:0x2d2e8ad4572ffa76d2ece70ef7e55f3cbe2e0c54": {
+   "venue": "pm",
+   "addr": "0x2d2e8ad4572ffa76d2ece70ef7e55f3cbe2e0c54",
+   "prior": {
+    "macro": 0.9846938775510203,
+    "commodities": 0.9846938775510203
+   },
+   "cats": {}
+  },
+  "pm:0x096f5aa775c6f9904508625a5c3836ffedb9194d": {
+   "venue": "pm",
+   "addr": "0x096f5aa775c6f9904508625a5c3836ffedb9194d",
+   "prior": {
+    "macro": 0.9744897959183674,
+    "commodities": 0.9744897959183674
+   },
+   "cats": {}
+  },
+  "hl:0x10e14ba2d77263543be1bdb2851b0933ddf4f4bd": {
+   "venue": "hl",
+   "addr": "0x10e14ba2d77263543be1bdb2851b0933ddf4f4bd",
+   "prior": {
+    "macro": 1.12610660765,
+    "geopolitics": 1.12610660765,
+    "crypto": 1.12610660765,
+    "commodities": 1.12610660765
+   },
+   "cats": {}
+  },
+  "hl:0x5bc43f38c2ddcd85857f218674cd384f172c3b0c": {
+   "venue": "hl",
+   "addr": "0x5bc43f38c2ddcd85857f218674cd384f172c3b0c",
+   "prior": {
+    "macro": 1.20463699435,
+    "geopolitics": 1.20463699435,
+    "crypto": 1.20463699435,
+    "commodities": 1.20463699435
+   },
+   "cats": {}
+  },
+  "hl:0x837686cfda8a79adfb8465d39240c54166bf9a1e": {
+   "venue": "hl",
+   "addr": "0x837686cfda8a79adfb8465d39240c54166bf9a1e",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xf605cd3adabbc3110bc3efb85ebe7be57590a527": {
+   "venue": "hl",
+   "addr": "0xf605cd3adabbc3110bc3efb85ebe7be57590a527",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "pm:0x5a218c7ad04135830a45c41aaed7294df7809318": {
+   "venue": "pm",
+   "addr": "0x5a218c7ad04135830a45c41aaed7294df7809318",
+   "prior": {
+    "geopolitics": 1.1683673469387754
+   },
+   "cats": {}
+  },
+  "pm:0xb8c5238d8126123267b80b448d68ce983b389b58": {
+   "venue": "pm",
+   "addr": "0xb8c5238d8126123267b80b448d68ce983b389b58",
+   "prior": {
+    "crypto": 0.9132653061224489
+   },
+   "cats": {}
+  },
+  "pm:0xfc4a8f470ea4f69b55f56e0a19d109bfa3a22355": {
+   "venue": "pm",
+   "addr": "0xfc4a8f470ea4f69b55f56e0a19d109bfa3a22355",
+   "prior": {
+    "crypto": 0.903061224489796
+   },
+   "cats": {}
+  },
+  "pm:0xb10047d6a254b2ebb306d7a7d13bf59171ab6461": {
+   "venue": "pm",
+   "addr": "0xb10047d6a254b2ebb306d7a7d13bf59171ab6461",
+   "prior": {
+    "macro": 0.903061224489796,
+    "commodities": 0.903061224489796
+   },
+   "cats": {}
+  },
+  "pm:0xee00ba338c59557141789b127927a55f5cc5cea1": {
+   "venue": "pm",
+   "addr": "0xee00ba338c59557141789b127927a55f5cc5cea1",
+   "prior": {},
+   "cats": {
+    "geopolitics": {
+     "n": 1,
+     "w": 0.9261,
+     "cum": -0.3695,
+     "peak": 0,
+     "maxDD": 0.3695,
+     "lastAt": "2026-11-26T16:01:17.084Z"
+    }
+   },
+   "name": "S-Works"
+  },
+  "hl:0x7f60e5f637b0fe036d86306449dc476531e02cc5": {
+   "venue": "hl",
+   "addr": "0x7f60e5f637b0fe036d86306449dc476531e02cc5",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {
+    "commodities": {
+     "n": 1,
+     "w": 1.1956005386221618,
+     "cum": 0.9780026931108089,
+     "peak": 0.9780026931108089,
+     "maxDD": 0,
+     "lastAt": "2026-11-27T06:00:56.262Z"
+    }
+   }
+  },
+  "hl:0x523852be2db1a76a0e088ecbff32e849544054e5": {
+   "venue": "hl",
+   "addr": "0x523852be2db1a76a0e088ecbff32e849544054e5",
+   "prior": {},
+   "cats": {
+    "commodities": {
+     "n": 1,
+     "w": 0.9427714146313761,
+     "cum": -0.2861429268431197,
+     "peak": 0,
+     "maxDD": 0.2861429268431197,
+     "lastAt": "2026-11-27T14:38:15.284Z"
+    },
+    "crypto": {
+     "n": 1,
+     "w": 0.9916222195880244,
+     "cum": -0.04188890205987803,
+     "peak": 0,
+     "maxDD": 0.04188890205987803,
+     "lastAt": "2026-11-27T22:29:00.899Z"
+    }
+   },
+   "name": "perpfumbler"
+  },
+  "hl:0x6ab3af472fd676fdde0a13f6736b0ac64356bb06": {
+   "venue": "hl",
+   "addr": "0x6ab3af472fd676fdde0a13f6736b0ac64356bb06",
+   "prior": {
+    "macro": 1.2461217759,
+    "geopolitics": 1.2461217759,
+    "crypto": 1.2461217759,
+    "commodities": 1.2461217759
+   },
+   "cats": {}
+  },
+  "hl:0x6ea486a3426563e23023125f18867117878f0ea7": {
+   "venue": "hl",
+   "addr": "0x6ea486a3426563e23023125f18867117878f0ea7",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0xf1419f352846b723720424dc8bda9e80342ea01d": {
+   "venue": "hl",
+   "addr": "0xf1419f352846b723720424dc8bda9e80342ea01d",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "hl:0x007c20e5c339015c924735cf76cb092bc5d9bacc": {
+   "venue": "hl",
+   "addr": "0x007c20e5c339015c924735cf76cb092bc5d9bacc",
+   "prior": {
+    "macro": 1.25,
+    "geopolitics": 1.25,
+    "crypto": 1.25,
+    "commodities": 1.25
+   },
+   "cats": {}
+  },
+  "pm:0xb994506ea08bc59adbbf1b341fb71014b7e75673": {
+   "venue": "pm",
+   "addr": "0xb994506ea08bc59adbbf1b341fb71014b7e75673",
+   "prior": {
+    "geopolitics": 1.219387755102041
+   },
+   "cats": {}
+  },
+  "pm:0xc1b5f266564e6d4907cf84bdf5a8f91621ef5d85": {
+   "venue": "pm",
+   "addr": "0xc1b5f266564e6d4907cf84bdf5a8f91621ef5d85",
+   "prior": {
+    "geopolitics": 1.066326530612245
+   },
+   "cats": {}
+  },
+  "pm:0x12d6cccfc7470a3f4bafc53599a4779cbf2cf2a8": {
+   "venue": "pm",
+   "addr": "0x12d6cccfc7470a3f4bafc53599a4779cbf2cf2a8",
+   "prior": {
+    "geopolitics": 0.9234693877551021
+   },
+   "cats": {}
+  },
+  "pm:0x6bab41a0dc40d6dd4c1a915b8c01969479fd1292": {
+   "venue": "pm",
+   "addr": "0x6bab41a0dc40d6dd4c1a915b8c01969479fd1292",
+   "prior": {
+    "geopolitics": 0.903061224489796
+   },
+   "cats": {}
+  },
+  "pm:0x216b0f7fb8cc78d5035ba8d4ee67a1e71d91d8a5": {
+   "venue": "pm",
+   "addr": "0x216b0f7fb8cc78d5035ba8d4ee67a1e71d91d8a5",
+   "prior": {
+    "crypto": 1.219387755102041
+   },
+   "cats": {}
+  },
+  "pm:0xb1ca909e848cc24ec4e220ce1c453bc290c51705": {
+   "venue": "pm",
+   "addr": "0xb1ca909e848cc24ec4e220ce1c453bc290c51705",
+   "prior": {
+    "macro": 0.903061224489796,
+    "commodities": 0.903061224489796
+   },
+   "cats": {}
+  }
+ },
+ "priorsAt": "2026-11-27T17:10:28.955Z"
+}

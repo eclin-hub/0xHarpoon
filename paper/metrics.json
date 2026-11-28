@@ -1,0 +1,320 @@
+{
+ "at": "2026-11-28T13:29:35.603Z",
+ "since": "2026-11-24T14:14:39.266Z",
+ "days": 3.968708,
+ "points": 94,
+ "dailyReturns": 4,
+ "equity": 9952.77,
+ "totalReturn": -0.004723,
+ "performance": {
+  "sharpe": -4.521618,
+  "sortino": -7.050595,
+  "calmar": null,
+  "maxDrawdown": 0.019912,
+  "annualizedReturn": null,
+  "psr": 0.35276
+ },
+ "trades": {
+  "closed": 16,
+  "wins": 8,
+  "losses": 8,
+  "winRate": 0.5,
+  "expectancyUsd": -4.609365,
+  "profitFactor": 0.705452,
+  "grossWin": 176.633408,
+  "grossLoss": 250.383252,
+  "byPocket": {
+   "core": {
+    "closed": 16,
+    "netUsd": -73.74984373807173
+   },
+   "portage": {
+    "closed": 0,
+    "netUsd": 0
+   },
+   "border": {
+    "closed": 0,
+    "netUsd": 0
+   }
+  }
+ },
+ "brier": {
+  "n": 0,
+  "agent": null,
+  "market": null,
+  "skill": null
+ },
+ "significant": false,
+ "benchmarks": {
+  "since": "2026-11-24T14:14:39.266Z",
+  "btc": {
+   "totalReturn": -0.0184412263639393,
+   "sharpe": -5.266010543756177,
+   "maxDrawdown": 0.04394610139916644
+  },
+  "btcGold": {
+   "totalReturn": -0.0029184405908921907,
+   "sharpe": 7.912205246191009,
+   "maxDrawdown": 0.04313686733289379
+  }
+ },
+ "models": [
+  {
+   "model": "gemma-4-26b-a4b-it",
+   "family": "gemma",
+   "open": 1,
+   "closed": 1,
+   "wins": 1,
+   "sumR": 0.3201,
+   "openR": -0.5103,
+   "winRate": 1,
+   "avgR": 0.3201,
+   "pnlUsd": 32.01
+  },
+  {
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "open": 22,
+   "closed": 18,
+   "wins": 13,
+   "sumR": 0.1832,
+   "openR": -0.0469,
+   "winRate": 0.7222,
+   "avgR": 0.0102,
+   "pnlUsd": 18.32
+  },
+  {
+   "model": "gemini-3.8-flash",
+   "family": "gemini",
+   "open": 1,
+   "closed": 2,
+   "wins": 1,
+   "sumR": 0.1012,
+   "openR": -0.0871,
+   "winRate": 0.5,
+   "avgR": 0.0506,
+   "pnlUsd": 10.12
+  },
+  {
+   "model": "qwen/qwen3.8-27b",
+   "family": "qwen3.8",
+   "open": 4,
+   "closed": 2,
+   "wins": 1,
+   "sumR": 0.0686,
+   "openR": -0.559,
+   "winRate": 0.5,
+   "avgR": 0.0343,
+   "pnlUsd": 6.86
+  },
+  {
+   "model": "deepseek-flash",
+   "family": "deepseek-flash",
+   "open": 8,
+   "closed": 1,
+   "wins": 1,
+   "sumR": 0.0486,
+   "openR": -0.1226,
+   "winRate": 1,
+   "avgR": 0.0486,
+   "pnlUsd": 4.86
+  },
+  {
+   "model": "openrouter/free",
+   "family": "openrouter-auto",
+   "open": 5,
+   "closed": 2,
+   "wins": 1,
+   "sumR": 0.0132,
+   "openR": 0.1514,
+   "winRate": 0.5,
+   "avgR": 0.0066,
+   "pnlUsd": 1.32
+  },
+  {
+   "model": "baidu/ernie-5.5-flash-preview:free",
+   "family": "ernie",
+   "open": 1,
+   "closed": 0,
+   "wins": 0,
+   "sumR": 0,
+   "openR": 0,
+   "winRate": null,
+   "avgR": null,
+   "pnlUsd": 0
+  },
+  {
+   "model": "deepseek-v4-pro",
+   "family": "deepseek-v4-pro",
+   "open": 6,
+   "closed": 0,
+   "wins": 0,
+   "sumR": 0,
+   "openR": -0.1767,
+   "winRate": null,
+   "avgR": null,
+   "pnlUsd": 0
+  },
+  {
+   "model": "particle-ai/particle-1:free",
+   "family": "or:particle-ai/particle",
+   "open": 0,
+   "closed": 1,
+   "wins": 0,
+   "sumR": -0.0677,
+   "openR": 0,
+   "winRate": 0,
+   "avgR": -0.0677,
+   "pnlUsd": -6.77
+  },
+  {
+   "model": "gemini-3.6-flash",
+   "family": "gemini",
+   "open": 6,
+   "closed": 2,
+   "wins": 0,
+   "sumR": -0.5064,
+   "openR": 0.6782,
+   "winRate": 0,
+   "avgR": -0.2532,
+   "pnlUsd": -50.64
+  },
+  {
+   "model": "gemini-3.5-flash-lite",
+   "family": "gemini",
+   "open": 6,
+   "closed": 9,
+   "wins": 1,
+   "sumR": -1.8001,
+   "openR": 0.3021,
+   "winRate": 0.1111,
+   "avgR": -0.2,
+   "pnlUsd": -180.01
+  }
+ ],
+ "regime": {
+  "at": "2026-11-28T13:29:35.603Z",
+  "regime": "RANGE_COMPRESSION",
+  "label": "Range, volatilité comprimée",
+  "source": "règles, confirmé par deepseek-v4-pro",
+  "confidence": 50,
+  "hard": false,
+  "reasons": [
+   "pas de tendance nette (0.27)",
+   "volatilité 1.37 × la normale"
+  ],
+  "llm": {
+   "regime": "RANGE_COMPRESSION",
+   "confidence": 74,
+   "rationale": "Pas de tendance nette malgré un repli de ~4% sur 24h; la volatilité réalisée reste modérément au-dessus de la normale (1,28x) et le financement est neutre, sans catalyseur macro. Les titres baissiers créent un biais prudent mais ne constituent pas une rupture systémique.",
+   "model": "deepseek-v4-pro",
+   "at": "2026-11-28T11:48:43.362Z",
+   "cached": true
+  },
+  "calendar": {
+   "next": null,
+   "inWindow": [],
+   "upcoming": [],
+   "refreshedAt": "2026-11-28T13:10:30.072Z"
+  },
+  "policy": {
+   "families": [
+    {
+     "family": "trend_breakout",
+     "weight": 0.5,
+     "status": "atténuée",
+     "cond": null
+    },
+    {
+     "family": "mean_reversion",
+     "weight": 1.25,
+     "status": "favorisée",
+     "cond": null
+    },
+    {
+     "family": "stat_arb_leadlag",
+     "weight": 1.25,
+     "status": "favorisée",
+     "cond": null
+    },
+    {
+     "family": "volatility_squeeze",
+     "weight": 1,
+     "status": "autorisée",
+     "cond": null
+    },
+    {
+     "family": "defensive_hedge",
+     "weight": 1,
+     "status": "autorisée",
+     "cond": null
+    }
+   ],
+   "allowed": [
+    "trend_breakout",
+    "mean_reversion",
+    "stat_arb_leadlag",
+    "volatility_squeeze",
+    "defensive_hedge"
+   ],
+   "cut": []
+  },
+  "risk": {
+   "regime": "RANGE_COMPRESSION",
+   "sizeMult": 1,
+   "minConviction": null
+  },
+  "metrics": {
+   "BTC": {
+    "bars": 518,
+    "ret4": -0.0069,
+    "ret24": -0.0369,
+    "ret72": 0.0197,
+    "rv24": 0.0086,
+    "rvBase": 0.0063,
+    "volRatio": 1.3707,
+    "trend": 0.3649,
+    "funding": 0
+   },
+   "ETH": {
+    "bars": 518,
+    "ret4": -0.0027,
+    "ret24": -0.0447,
+    "ret72": 0.0099,
+    "rv24": 0.0091,
+    "rvBase": 0.0069,
+    "volRatio": 1.3285,
+    "trend": 0.1684,
+    "funding": 0
+   },
+   "NVDA": {
+    "bars": 518,
+    "ret4": -0.002,
+    "ret24": -0.0369,
+    "ret72": 0.0136,
+    "rv24": 0.0104,
+    "rvBase": 0.0164,
+    "volRatio": 0.6369,
+    "trend": 0.0975,
+    "funding": 0
+   },
+   "BRENTOIL": {
+    "bars": 518,
+    "ret4": -0.0018,
+    "ret24": -0.0127,
+    "ret72": 0.0136,
+    "rv24": 0.0025,
+    "rvBase": 0.0043,
+    "volRatio": 0.5707,
+    "trend": 0.3701,
+    "funding": 0
+   }
+  },
+  "eps": {
+   "squeeze": false,
+   "hot": false,
+   "velocity": 1.75,
+   "bias": -0.09
+  }
+ }
+}

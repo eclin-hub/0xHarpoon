@@ -1,0 +1,56 @@
+{
+ "at": "2026-11-28T13:29:35.603Z",
+ "wakeLLM": false,
+ "minScore": 2,
+ "candidates": [],
+ "rejected": [
+  {
+   "id": "hl|BTC|long",
+   "reason": "déjà en portefeuille"
+  },
+  {
+   "id": "leadlag|0xd79b73e7766faacf061db47f8d96a15039cc7bdc7bcf520722275f093b9a5b2b|Up",
+   "reason": "déjà en portefeuille"
+  },
+  {
+   "id": "hl|HYPE|long",
+   "reason": "convergence : 1 baleine qualifiée entrée en 4 h (minimum 2)"
+  },
+  {
+   "id": "pm|0x18b1c135d0a40c5894da9412e77311827d9caf16cf4cd6591b247a34730af919|No",
+   "reason": "convergence : 1 baleine qualifiée entrée en 4 h (minimum 2)"
+  },
+  {
+   "id": "pm|0x18b1c135d0a40c5894da9412e77311827d9caf16cf4cd6591b247a34730af919|Yes",
+   "reason": "convergence : 1 baleine qualifiée entrée en 4 h (minimum 2)"
+  },
+  {
+   "id": "pm|0x0ff4131bebd7e76a8d4e10951cf22ed92616ed2b5631d71e80721e7afd94f6ed|Yes",
+   "reason": "convergence : 1 baleine qualifiée entrée en 4 h (minimum 2)"
+  },
+  {
+   "id": "pm|0xf91a7667289b63e0c9c926017529e2bccaadc3da2d82075612420c43d36fbb08|No",
+   "reason": "convergence : 1 baleine qualifiée entrée en 4 h (minimum 2)"
+  },
+  {
+   "id": "pm|0x3a0c86d7d9d3e4e82d533d2b1351b5d3e63577f8e1495e2804b9ae540135a556|Yes",
+   "reason": "convergence : 1 baleine qualifiée entrée en 4 h (minimum 2)"
+  },
+  {
+   "id": "pm|0xbf7a9da08326512f76129d4accf9f7d852dbf1cb7dd2c512479ff40c872f5659|Yes",
+   "reason": "convergence : 1 baleine qualifiée entrée en 4 h (minimum 2)"
+  },
+  {
+   "id": "pm|0x598c99fbef3a7d4fb2c3a5af62e67e4ef5f5f7447e966569aee6c917bff12a25|No",
+   "reason": "convergence : 1 baleine qualifiée entrée en 4 h (minimum 2)"
+  },
+  {
+   "id": "hl|BTC|short",
+   "reason": "fraîcheur : prix à 3.56 ATR de l'entrée des baleines (max 1.2)"
+  },
+  {
+   "id": "leadlag|0xccd8213f7deee80d86fdc3d0abb15e20ab4e953c2bf0e2b17148b9a76810589a|No",
+   "reason": "barrière Polymarket à 8.6 % du prix (160 contre 147.32) > 8 %"
+  }
+ ]
+}

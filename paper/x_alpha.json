@@ -1,0 +1,1479 @@
+{
+ "at": "2026-11-28T13:29:35.603Z",
+ "collectedAt": "2026-11-28T13:10:30.072Z",
+ "source": "twitter-cli",
+ "status": "réutilisé : collecte twitter-cli de 13:10 UTC (< 45 min, protection anti-ban) + RSS / arXiv",
+ "notes": [
+  "Blueprints : 135 post(s) ∞ en attente, aucun au seuil (max 73, seuils X 75 / arXiv 60)",
+  "Builders : 8 noté(s) par deepseek-flash, 7 sous 6/10, 1 compilé(s), 0 invalide(s) ; 1 en attente"
+ ],
+ "stats": {
+  "raw": 490,
+  "spam": 8,
+  "dup": 2,
+  "known": 141,
+  "epsilon": 158,
+  "infinity": 10,
+  "ignored": 171,
+  "free": {
+   "rss": 120,
+   "arxiv": 15
+  }
+ },
+ "free": {
+  "rss": 120,
+  "arxiv": 15
+ },
+ "epsilon": {
+  "ttlH": 4,
+  "squeeze": {
+   "velocity": 2.2,
+   "bias": 0.35
+  },
+  "tickers": {
+   "BTC": {
+    "ticker": "BTC",
+    "active": true,
+    "mentionVelocityRatio": 1.75,
+    "netNarrativeBias": -0.06,
+    "squeezeWarning": false,
+    "mentions1h": 59,
+    "mentions24h": 799,
+    "expiresAt": "2026-11-28T17:09:10.000Z",
+    "catalysts": [
+     {
+      "text": "A whale wallet unstaked 527,861 $SOL ($37M) this week and sent $10M of it to FalconX. SOL since the Nov 21 low: +10.5%. BTC: +8.6%. ETH: +8.2%. The supply hit the market. Buyers took it. https://t.co/ubcWMu8Rxb",
+      "author": "crypto_varo",
+      "url": "https://x.com/crypto_varo/status/2126617105634062790",
+      "t": "2026-11-28T10:00:03.000Z",
+      "bias": 1,
+      "tier": 2,
+      "src": "x"
+     },
+     {
+      "text": "🚨 WARNING: MONDAY WILL BE THE WORST DAY OF 2026!! Everyone is talking about the AI bubble, Nvidia's collapse, and Bitcoin's crash. But something MUCH WORSE is happening right now. 98% of people will lose everything. You",
+      "author": "CryptoNobler",
+      "url": "https://x.com/CryptoNobler/status/2126644400633565550",
+      "t": "2026-11-28T11:48:30.000Z",
+      "bias": -0.43,
+      "tier": 2,
+      "src": "x"
+     },
+     {
+      "text": "JUST IN: Our traders forecast Bitcoin to hit $81,000 this month, with 2 days left https://t.co/NdFR9aavE1",
+      "author": "Kalshi",
+      "url": "https://x.com/Kalshi/status/2126647294120571271",
+      "t": "2026-11-28T12:00:00.000Z",
+      "bias": 0,
+      "tier": 2,
+      "src": "x"
+     }
+    ]
+   },
+   "ETH": {
+    "ticker": "ETH",
+    "active": true,
+    "mentionVelocityRatio": 1.67,
+    "netNarrativeBias": -0.12,
+    "squeezeWarning": false,
+    "mentions1h": 34,
+    "mentions24h": 488,
+    "expiresAt": "2026-11-28T17:09:09.000Z",
+    "catalysts": [
+     {
+      "text": "A whale wallet unstaked 527,861 $SOL ($37M) this week and sent $10M of it to FalconX. SOL since the Nov 21 low: +10.5%. BTC: +8.6%. ETH: +8.2%. The supply hit the market. Buyers took it. https://t.co/ubcWMu8Rxb",
+      "author": "crypto_varo",
+      "url": "https://x.com/crypto_varo/status/2126617105634062790",
+      "t": "2026-11-28T10:00:03.000Z",
+      "bias": 1,
+      "tier": 2,
+      "src": "x"
+     },
+     {
+      "text": "$WLFI didn't just dump $20M of ETH It pulled that ETH out of its own loans and used the cash to pay them down. WLFI has $142M of loans on Dolomite, a lending app cofounded by a WLFI adviser.... It also has $125M of stabl",
+      "author": "realtommybib",
+      "url": "https://x.com/realtommybib/status/2126625631698035138",
+      "t": "2026-11-28T10:33:56.000Z",
+      "bias": -1,
+      "tier": 2,
+      "src": "x"
+     },
+     {
+      "text": "SoSoValue (ethereum:0x76a0e27618462bdac7a29104bdcfff4e6bfcea2d ) is interesting because crypto investors face an information problem every day. market data, research reports, ETF flows and macroeconomic developments are ",
+      "author": "sallubroz",
+      "url": "https://x.com/sallubroz/status/2126639748219617515",
+      "t": "2026-11-28T11:30:01.000Z",
+      "bias": 0,
+      "tier": 2,
+      "src": "x"
+     }
+    ]
+   },
+   "SOL": {
+    "ticker": "SOL",
+    "active": true,
+    "mentionVelocityRatio": 1.82,
+    "netNarrativeBias": 0.07,
+    "squeezeWarning": false,
+    "mentions1h": 16,
+    "mentions24h": 200,
+    "expiresAt": "2026-11-28T17:08:26.000Z",
+    "catalysts": [
+     {
+      "text": "A whale wallet unstaked 527,861 $SOL ($37M) this week and sent $10M of it to FalconX. SOL since the Nov 21 low: +10.5%. BTC: +8.6%. ETH: +8.2%. The supply hit the market. Buyers took it. https://t.co/ubcWMu8Rxb",
+      "author": "crypto_varo",
+      "url": "https://x.com/crypto_varo/status/2126617105634062790",
+      "t": "2026-11-28T10:00:03.000Z",
+      "bias": 1,
+      "tier": 2,
+      "src": "x"
+     },
+     {
+      "text": "A major $SOL whale is moving funds out of staking. The wallet dogeftw.sol just unstaked 527,861 SOL worth $37.21M and sent $10.32M worth of SOL to FalconX, potentially to sell. There's still nearly $27M worth of unstaked",
+      "author": "Nebulabsxyz",
+      "url": "https://x.com/Nebulabsxyz/status/2126637707644301711",
+      "t": "2026-11-28T11:21:55.000Z",
+      "bias": -1,
+      "tier": 2,
+      "src": "x"
+     },
+     {
+      "text": "Tsuki posted this on 11 Sep “ 1 CATalyst. 2 Boosters. Compounding factors “ $TSUKI / $GME on the dash & two red buttons on the wheel one on each side here's what I think it means TSUKI/GME isn't priced in dollars its poo",
+      "author": "BigboyJuju",
+      "url": "https://x.com/BigboyJuju/status/2126651895574151504",
+      "t": "2026-11-28T12:18:17.000Z",
+      "bias": 1,
+      "tier": 2,
+      "src": "x"
+     }
+    ]
+   },
+   "HYPE": {
+    "ticker": "HYPE",
+    "active": true,
+    "mentionVelocityRatio": 1.48,
+    "netNarrativeBias": -0.13,
+    "squeezeWarning": false,
+    "mentions1h": 14,
+    "mentions24h": 212,
+    "expiresAt": "2026-11-28T17:09:30.000Z",
+    "catalysts": [
+     {
+      "text": "Ritel biasanya baru sadar ada rotasi altcoin pas chart-nya sudah hijau tinggi dan telat masuk 👀 Biar nggak cuma ikut FOMO, ini beberapa alt yang layak dipantau di siklus ini lengkap sama kelebihan dan risikonya: 1. Hype",
+      "author": "curvyxbt",
+      "url": "https://x.com/curvyxbt/status/2126653926112211143",
+      "t": "2026-11-28T12:26:21.000Z",
+      "bias": 0.33,
+      "tier": 2,
+      "src": "x"
+     },
+     {
+      "text": "How do perpetual futures work? A perpetual future (a “perp”) is a futures contract with no expiry date. You can hold it as long as you like, with leverage, long or short. A normal future is pulled towards the spot price ",
+      "author": "EricAgain_",
+      "url": "https://x.com/EricAgain_/status/2126615526117969922",
+      "t": "2026-11-28T09:53:46.000Z",
+      "bias": 0.25,
+      "tier": 2,
+      "src": "x"
+     },
+     {
+      "text": "🚨 $HYPE ETFS HAVE GONE 8 CONSECUTIVE WEEKS WITHOUT INFLOWS, WITH $82.7M IN OUTFLOWS. https://t.co/h98QXKtOJJ",
+      "author": "HyperliquidNews",
+      "url": "https://x.com/HyperliquidNews/status/2126610462078906607",
+      "t": "2026-11-28T09:33:39.000Z",
+      "bias": 0,
+      "tier": 2,
+      "src": "x"
+     }
+    ]
+   },
+   "ZEC": {
+    "ticker": "ZEC",
+    "active": true,
+    "mentionVelocityRatio": 0.69,
+    "netNarrativeBias": -0.32,
+    "squeezeWarning": false,
+    "mentions1h": 2,
+    "mentions24h": 70,
+    "expiresAt": "2026-11-28T17:00:01.000Z",
+    "catalysts": [
+     {
+      "text": "JUST IN: TRADER ‘ZERO SUM ENJOYER’ IS UP OVER $155,000 TODAY 100% OF HIS GAINS ARE ATTRIBUTED TO A 10X $ZEC SHORT https://t.co/qCQWkSbRiX",
+      "author": "MrketInsider",
+      "url": "https://x.com/MrketInsider/status/2126615733119685054",
+      "t": "2026-11-28T09:54:36.000Z",
+      "bias": -1,
+      "tier": 2,
+      "src": "x"
+     },
+     {
+      "text": "Crypto hôm nay có quá nhiều chuyện đáng chú ý! Bitcoin rơi xuống dưới 60.000 USD, tâm lý thị trường chìm trong sợ hãi, hàng trăm triệu USD vị thế bị thanh lý và dòng tiền từ các quỹ Bitcoin ETF tiếp tục chịu áp lực rút v",
+      "author": "shiba_cheems",
+      "url": "https://x.com/shiba_cheems/status/2126636840346366346",
+      "t": "2026-11-28T11:18:28.000Z",
+      "bias": 0,
+      "tier": 2,
+      "src": "x"
+     },
+     {
+      "text": ".@ZeroSumEnjoyer (Solace) $ZEC short is COOKING - Added more, position now $7.1M - Up over $230k UPNL - Liquidation at $901 - Still shorting all the way to $1k with more capital if needed - Yesterday, the whole CT was la",
+      "author": "jussy_world",
+      "url": "https://x.com/jussy_world/status/2126655837854937478",
+      "t": "2026-11-28T12:33:57.000Z",
+      "bias": -1,
+      "tier": 2,
+      "src": "x"
+     }
+    ]
+   },
+   "NVDA": {
+    "ticker": "NVDA",
+    "active": true,
+    "mentionVelocityRatio": 1.31,
+    "netNarrativeBias": 0.1,
+    "squeezeWarning": false,
+    "mentions1h": 21,
+    "mentions24h": 377,
+    "expiresAt": "2026-11-28T17:07:00.000Z",
+    "catalysts": [
+     {
+      "text": "【保存版🚨】日本株で資産を育てる方法は、6つある。 毎日売買する必要はありません。 むしろ、毎日チャートを見て、上がった株を追いかけている人ほど、判断を間違えることがあります。 大切なのは、自分の資金、生活、性格に合った投資方法を選ぶこと。 暴落を待つ人。 優良株をじっくり保有する人。 配当を積み上げる人。 これから伸びる産業を探す人。 日本株には、いくつもの資産形成の道があります。 そして今、その投資方法を考えるうえで見逃せない変化",
+      "author": "HIKARU_TOV",
+      "url": "https://x.com/HIKARU_TOV/status/2126624900110754064",
+      "t": "2026-11-28T10:31:01.000Z",
+      "bias": 0,
+      "tier": 2,
+      "src": "x"
+     },
+     {
+      "text": "【週明けの日本株、ここを見逃すな🚨】 11月27日、日経平均は1,211円95銭高。 終値は58,711円11銭。 前日比＋2.11％。 週間でも＋4.03％と大きく反発した。 しかし、ここで一つ考えてほしい。 本当に日本株全体が強くなったのか。 それとも、売られすぎていた半導体株を中心に、買い戻しが入っただけなのか。 この違いを見誤ると、月曜日の寄り付きで高値をつかむことになりかねない。 今回の相場では、半導体・AI関連の反発だけで",
+      "author": "itsuho0224",
+      "url": "https://x.com/itsuho0224/status/2126624675069604060",
+      "t": "2026-11-28T10:30:07.000Z",
+      "bias": 0,
+      "tier": 2,
+      "src": "x"
+     },
+     {
+      "text": "🚨 WARNING: MONDAY WILL BE THE WORST DAY OF 2026!! Everyone is talking about the AI bubble, Nvidia's collapse, and Bitcoin's crash. But something MUCH WORSE is happening right now. 98% of people will lose everything. You",
+      "author": "CryptoNobler",
+      "url": "https://x.com/CryptoNobler/status/2126644400633565550",
+      "t": "2026-11-28T11:48:30.000Z",
+      "bias": -0.43,
+      "tier": 2,
+      "src": "x"
+     }
+    ]
+   },
+   "SOXL": {
+    "ticker": "SOXL",
+    "active": true,
+    "mentionVelocityRatio": 0.3,
+    "netNarrativeBias": -0.11,
+    "squeezeWarning": false,
+    "mentions1h": 1,
+    "mentions24h": 83,
+    "expiresAt": "2026-11-28T16:43:46.000Z",
+    "catalysts": [
+     {
+      "text": "🚨 TOM LEE JUST SENT A MESSAGE WALL STREET MAY REGRET IGNORING: THE BIGGEST BUYING OPPORTUNITY IN 18 MONTHS COULD BE HERE. While Wall Street is pricing in fear, Tom Lee is looking 12 MONTHS AHEAD. His message? THE NEXT F",
+      "author": "BennettAlx",
+      "url": "https://x.com/BennettAlx/status/2126633270528152062",
+      "t": "2026-11-28T11:04:17.000Z",
+      "bias": 0.43,
+      "tier": 2,
+      "src": "x"
+     },
+     {
+      "text": "JPMorgan refutes the \"peak of the semiconductor cycle\" theory: none of the four major indicators have issued a warning, and market pessimism is excessive! The bank's Asia Pacific tech team runs through the four cycle-top",
+      "author": "BullRush__",
+      "url": "https://x.com/BullRush__/status/2126625783967850819",
+      "t": "2026-11-28T10:34:32.000Z",
+      "bias": -0.2,
+      "tier": 2,
+      "src": "x"
+     },
+     {
+      "text": "70% EARNINGS CUT — IS THAT WHAT CHIP STOCKS ARE PRICING IN? According to Hana Securities’ December outlook, the S&P 500 semiconductor sector may already be pricing in an extreme earnings scenario. Semiconductor net incom",
+      "author": "J2Wick",
+      "url": "https://x.com/J2Wick/status/2126652704827302021",
+      "t": "2026-11-28T12:21:30.000Z",
+      "bias": 0,
+      "tier": 2,
+      "src": "x"
+     }
+    ]
+   },
+   "BRENTOIL": {
+    "ticker": "BRENTOIL",
+    "active": true,
+    "mentionVelocityRatio": 0.98,
+    "netNarrativeBias": 0.27,
+    "squeezeWarning": false,
+    "mentions1h": 8,
+    "mentions24h": 192,
+    "expiresAt": "2026-11-28T17:07:27.000Z",
+    "catalysts": [
+     {
+      "text": "The Fed is preparing to raise interest rates to fight inflation. But there's a problem: much of the pressure is coming from oil. Crude has climbed from roughly $60 to $90 a barrel, pushing up transport and production cos",
+      "author": "felixprehn",
+      "url": "https://x.com/felixprehn/status/2126662472442736662",
+      "t": "2026-11-28T13:00:19.000Z",
+      "bias": 1,
+      "tier": 2,
+      "src": "x"
+     },
+     {
+      "text": "On November 17, Nvidia reported $115.8 billion in revenue for its latest quarter, up 103% from the same quarter last year. But strong earnings don't automatically tell you where a stock's price will move next. So I start",
+      "author": "Princematty001",
+      "url": "https://x.com/Princematty001/status/2126641246336622776",
+      "t": "2026-11-28T11:35:58.000Z",
+      "bias": 0.5,
+      "tier": 2,
+      "src": "x"
+     },
+     {
+      "text": "🌍 23–27 Kasım 2026 | Küresel Piyasalarda Haftanın Özeti Küresel piyasalarda önceki haftanın sert satışlarının ardından güçlü bir toparlanma yaşandı. Nvidia öncülüğünde teknoloji hisselerindeki yükseliş, Fed'in faiz poli",
+      "author": "Agah_Hoca",
+      "url": "https://x.com/Agah_Hoca/status/2126649349270593730",
+      "t": "2026-11-28T12:08:10.000Z",
+      "bias": 0,
+      "tier": 2,
+      "src": "x"
+     }
+    ]
+   }
+  },
+  "router": {
+   "injected": true,
+   "at": "2026-11-28T13:10:30.072Z",
+   "tickers": [
+    "BTC",
+    "ETH",
+    "SOL",
+    "HYPE",
+    "ZEC",
+    "NVDA",
+    "SOXL",
+    "BRENTOIL"
+   ]
+  }
+ },
+ "builders": {
+  "at": "2026-11-28T13:29:35.603Z",
+  "counts": {
+   "x": 20,
+   "substack": 20,
+   "reddit": 0,
+   "hn": 100,
+   "github": 0
+  },
+  "filter": {
+   "raw": 140,
+   "promo": 1,
+   "short": 24,
+   "noMech": 96,
+   "dup": 13,
+   "kept": 6
+  },
+  "queued": 1,
+  "notes": [
+   "GitHub « hyperliquid trading strategy » : HTTP 403",
+   "GitHub « polymarket trading strategy » : HTTP 403",
+   "Google News gn-reddit : aucun résultat"
+  ],
+  "compile": {
+   "scored": 8,
+   "rejected": 7,
+   "compiled": 1,
+   "invalid": 0,
+   "pending": 1,
+   "model": "deepseek-flash"
+  }
+ },
+ "infinity": {
+  "interestMin": 75,
+  "interestMinArxiv": 60,
+  "blueprints": [
+   {
+    "id": "bp-gh:Deegan4/alphapolybot",
+    "name": "Mean reversion des cotes Polymarket BTC/ETH",
+    "family": "stat_arb_leadlag",
+    "status": "En attente D1",
+    "createdAt": "2026-11-28T13:29:35.603Z",
+    "interest": 60,
+    "testability": 6,
+    "model": "deepseek-flash",
+    "source": {
+     "src": "github",
+     "badge": "GitHub",
+     "author": "Deegan4",
+     "url": "https://github.com/Deegan4/alphapolybot",
+     "postId": "gh:Deegan4/alphapolybot",
+     "fingerprint": "1s4euas",
+     "t": "2026-11-18T10:08:45.000Z",
+     "excerpt": "Deegan4/alphapolybot: Autonomous Polymarket trading engine — 8 strategies (LLM, Frank-Wolfe arb, BTC signal, dual-side hedge, mean reversion, copy trading), real-time WebSocket, Kelly sizing, circuit breaker risk management Topics: arbitrage, defi, kelly-criterion, polygon, polym"
+    },
+    "blueprint": {
+     "name": "Mean reversion des cotes Polymarket BTC/ETH",
+     "thesis": "Les cotes des marchés de seuil BTC/ETH surréagissent aux mouvements du spot puis reviennent vers leur probabilité fondamentale, ce qui crée un excès de retour à la moyenne sur les outcomes extrêmes. On achète l'outcome dont la cote s'est décalée trop vite et on fade le momentum récent de la probabilité.",
+     "universe": [
+      "PM:0x7cfd775dc4|No",
+      "PM:0x459bb1954c|No",
+      "PM:0x18c74c5f8c|No",
+      "PM:0xa2fdb75238|No",
+      "PM:0xbaa3bae4ad|No",
+      "PM:0x51cb05f3d4|No",
+      "PM:0xfe1c00ef55|No",
+      "PM:0x752fa61c93|No",
+      "PM:0xce3c54c3e7|No",
+      "PM:0xccd8213f7d|No"
+     ],
+     "side": "both",
+     "horizon_hours": 48,
+     "blocks": [
+      {
+       "type": "polymarket_edge",
+       "weight": 0.7,
+       "params": {
+        "min_move": 0.05
+       }
+      },
+      {
+       "type": "momentum",
+       "weight": -0.3,
+       "params": {
+        "lookback": 5
+       }
+      },
+      {
+       "type": "volatility_regime",
+       "weight": 0.2,
+       "params": {
+        "lookback": 20,
+        "max_atr_pct": 0.08
+       }
+      }
+     ],
+     "entry": {
+      "score_above": 0.3
+     },
+     "exit": {
+      "stop_atr": 2,
+      "take_profit_atr": 3,
+      "max_hold_hours": 48
+     }
+    }
+   },
+   {
+    "id": "bp-arxiv:2611.14245v1",
+    "name": "Liquidation Impact Momentum",
+    "family": "trend_breakout",
+    "status": "Éliminé D1",
+    "createdAt": "2026-11-28T03:10:33.346Z",
+    "interest": 66,
+    "model": "deepseek-flash",
+    "source": {
+     "src": "arxiv",
+     "author": "Ryan Donnelly et al.",
+     "url": "https://arxiv.org/abs/2611.14245v1",
+     "postId": "arxiv:2611.14245v1",
+     "t": "2026-11-10T15:56:41.000Z",
+     "excerpt": "Deep Learning for Operator Maps in Optimal Liquidation. We analyze the solution map of a optimal execution problem in which price dynamics are subject to a general transient impact kernel. Given the structure of the optimal trading strategy derived by Abi Jaber and Neuman in \\cit"
+    },
+    "blueprint": {
+     "name": "Liquidation Impact Momentum",
+     "thesis": "Le papier modélise l'exécution optimale sous impact transitoire; on approxime son signal par un momentum très court et un filtre de régime de volatilité sur les actifs les plus liquides.",
+     "universe": [
+      "BTC",
+      "ETH",
+      "SOL"
+     ],
+     "side": "both",
+     "horizon_hours": 8,
+     "blocks": [
+      {
+       "type": "momentum",
+       "weight": 0.7,
+       "params": {
+        "lookback": 4
+       }
+      },
+      {
+       "type": "volatility_regime",
+       "weight": 0.3,
+       "params": {
+        "lookback": 24,
+        "max_atr_pct": 0.08
+       }
+      }
+     ],
+     "entry": {
+      "score_above": 0.25
+     },
+     "exit": {
+      "stop_atr": 1.5,
+      "take_profit_atr": 3,
+      "max_hold_hours": 8
+     }
+    }
+   },
+   {
+    "id": "bp-arxiv:2611.14117v1",
+    "name": "OrderFlowMicropricePredictor",
+    "family": "trend_breakout",
+    "status": "Éliminé D1",
+    "createdAt": "2026-11-28T01:50:31.035Z",
+    "interest": 66,
+    "model": "openai/gpt-oss-120b",
+    "source": {
+     "src": "arxiv",
+     "author": "Fedor Shabashev",
+     "url": "https://arxiv.org/abs/2611.14117v1",
+     "postId": "arxiv:2611.14117v1",
+     "t": "2026-11-10T14:07:39.000Z",
+     "excerpt": "Fine-Tuning an Order-Flow Foundation Model for Sub-Second Forecasting. Generative models have become the standard approach in language and vision. These models are typically pretrained first and then fine-tuned. Recent work demonstrates how to pretrain an autoregressive generativ"
+    },
+    "blueprint": {
+     "name": "OrderFlowMicropricePredictor",
+     "thesis": "Le modèle pré-entraîné sur le flux d'ordres prédit les micro‑prix à l'échelle sub‑seconde, offrant un signal exploitable pour le market‑making et l'exécution. Cette approche capture la dynamique microstructure des crypto‑actifs.",
+     "universe": [
+      "BTC",
+      "ETH"
+     ],
+     "side": "both",
+     "horizon_hours": 1,
+     "blocks": [
+      {
+       "type": "linear_ml_score",
+       "weight": 0.7,
+       "params": {
+        "intercept": 0,
+        "features": [
+         "momentum",
+         "atr_pct"
+        ],
+        "coefs": [
+         0.5,
+         -0.3
+        ]
+       }
+      },
+      {
+       "type": "momentum",
+       "weight": 0.3,
+       "params": {
+        "lookback": 5
+       }
+      }
+     ],
+     "entry": {
+      "score_above": 0.2
+     },
+     "exit": {
+      "stop_atr": 1,
+      "take_profit_atr": 2,
+      "max_hold_hours": 2
+     }
+    }
+   },
+   {
+    "id": "bp-arxiv:2611.21897v1",
+    "name": "Volatility Regime Breakout",
+    "family": "volatility_squeeze",
+    "status": "Éliminé D1",
+    "createdAt": "2026-11-28T01:50:31.035Z",
+    "interest": 66,
+    "model": "openai/gpt-oss-120b",
+    "source": {
+     "src": "arxiv",
+     "author": "Farzana Afroz et al.",
+     "url": "https://arxiv.org/abs/2611.21897v1",
+     "postId": "arxiv:2611.21897v1",
+     "t": "2026-11-16T21:09:18.000Z",
+     "excerpt": "Revisiting Equity-Bond Diversification under Tail Risk and Structural Market Change: Evidence from Global ETFs and Model-Implied Option Prices. This study examines thirty equity--bond and multi-asset exchange-traded funds (ETFs) listed in the United States, Canada, and Australia "
+    },
+    "blueprint": {
+     "name": "Volatility Regime Breakout",
+     "thesis": "Exploiter les changements de volatilité détectés par un modèle GARCH pour entrer sur des cassures de prix.",
+     "universe": [
+      "NVDA"
+     ],
+     "side": "both",
+     "horizon_hours": 24,
+     "blocks": [
+      {
+       "type": "volatility_regime",
+       "weight": 0.6,
+       "params": {
+        "lookback": 50,
+        "max_atr_pct": 0.1
+       }
+      },
+      {
+       "type": "atr_breakout",
+       "weight": 0.4,
+       "params": {
+        "period": 20,
+        "mult": 2
+       }
+      }
+     ],
+     "entry": {
+      "score_above": 0.3
+     },
+     "exit": {
+      "stop_atr": 2,
+      "take_profit_atr": 5,
+      "max_hold_hours": 48
+     }
+    }
+   },
+   {
+    "id": "bp-arxiv:2611.17170v1",
+    "name": "BESS Intraday Forecast Trading",
+    "family": "trend_breakout",
+    "status": "Éliminé D1",
+    "createdAt": "2026-11-28T01:29:43.063Z",
+    "interest": 66,
+    "model": "openai/gpt-oss-120b",
+    "source": {
+     "src": "arxiv",
+     "author": "Simon Hirsch et al.",
+     "url": "https://arxiv.org/abs/2611.17170v1",
+     "postId": "arxiv:2611.17170v1",
+     "t": "2026-11-12T17:43:52.000Z",
+     "excerpt": "Improving Algorithmic Trading for BESS on Intraday Electricity Markets through Distributional Price Forecasts. Grid-scale battery energy storage systems (BESS) are becoming increasingly important in short-term energy markets, where they help balance fluctuations in variable renew"
+    },
+    "blueprint": {
+     "name": "BESS Intraday Forecast Trading",
+     "thesis": "Utiliser des prévisions de prix intrajournalières pour optimiser les charges et décharges d'une batterie, capturant les opportunités de profit à court terme.",
+     "universe": [
+      "BTC",
+      "ETH"
+     ],
+     "side": "both",
+     "horizon_hours": 6,
+     "blocks": [
+      {
+       "type": "linear_ml_score",
+       "weight": 1,
+       "params": {
+        "intercept": 0,
+        "features": [
+         "momentum",
+         "zscore"
+        ],
+        "coefs": [
+         0.6,
+         0.4
+        ]
+       }
+      }
+     ],
+     "entry": {
+      "score_above": 0.2
+     },
+     "exit": {
+      "stop_atr": 2,
+      "take_profit_atr": 5,
+      "max_hold_hours": 12
+     }
+    }
+   },
+   {
+    "id": "bp-arxiv:2611.15646v1",
+    "name": "TSM Momentum",
+    "status": "Éliminé D1",
+    "createdAt": "2026-11-28T01:10:39.417Z",
+    "interest": 78,
+    "model": "openai/gpt-oss-120b",
+    "source": {
+     "src": "arxiv",
+     "author": "Andrew Butler et al.",
+     "url": "https://arxiv.org/abs/2611.15646v1",
+     "postId": "arxiv:2611.15646v1",
+     "t": "2026-11-11T15:56:37.000Z",
+     "excerpt": "Idiosyncratic Market Effects in Global Time Series Momentum. Time series momentum is a pervasive explanatory factor in financial markets whereby a market's recent historical average return positively predicts future returns. Recent applications of statistical learning augment the"
+    },
+    "blueprint": {
+     "name": "TSM Momentum",
+     "thesis": "Le momentum temporel montre que les rendements récents prédisent les futurs, on prend position longue ou courte selon la direction du signal.",
+     "universe": [
+      "BTC",
+      "ETH"
+     ],
+     "side": "both",
+     "horizon_hours": 24,
+     "blocks": [
+      {
+       "type": "momentum",
+       "weight": 0.7,
+       "params": {
+        "lookback": 20
+       }
+      }
+     ],
+     "entry": {
+      "score_above": 0.2
+     },
+     "exit": {
+      "stop_atr": 2,
+      "take_profit_atr": 4,
+      "max_hold_hours": 48
+     }
+    }
+   },
+   {
+    "id": "bp-arxiv:2611.15657v1",
+    "name": "SeasonalityFactor",
+    "status": "Éliminé D1",
+    "createdAt": "2026-11-28T01:10:39.417Z",
+    "interest": 78,
+    "model": "openai/gpt-oss-120b",
+    "source": {
+     "src": "arxiv",
+     "author": "Andrew Butler et al.",
+     "url": "https://arxiv.org/abs/2611.15657v1",
+     "postId": "arxiv:2611.15657v1",
+     "t": "2026-11-11T16:06:34.000Z",
+     "excerpt": "Global Seasonality Factor Investing. We study seasonality as a factor for predicting risk-adjusted returns across global futures markets. We document five seasonality anomalies that, in aggregate, are pervasive across bond, commodity and equity markets. We demonstrate that each s"
+    },
+    "blueprint": {
+     "name": "SeasonalityFactor",
+     "thesis": "Les modèles saisonniers capturent des anomalies récurrentes (jour de la semaine, jour du mois, jour du trimestre) qui génèrent des rendements excédentaires sur BTC et ETH.",
+     "universe": [
+      "BTC",
+      "ETH"
+     ],
+     "side": "both",
+     "horizon_hours": 24,
+     "blocks": [
+      {
+       "type": "momentum",
+       "weight": 0.7,
+       "params": {
+        "lookback": 5
+       }
+      },
+      {
+       "type": "volatility_regime",
+       "weight": 0.3,
+       "params": {
+        "lookback": 30,
+        "max_atr_pct": 0.1
+       }
+      }
+     ],
+     "entry": {
+      "score_above": 0.2
+     },
+     "exit": {
+      "stop_atr": 2,
+      "take_profit_atr": 5,
+      "max_hold_hours": 72
+     }
+    }
+   },
+   {
+    "id": "bp-arxiv:2611.19937v1",
+    "name": "AllocFlow Crypto Momentum",
+    "status": "Éliminé D1",
+    "createdAt": "2026-11-28T01:10:39.417Z",
+    "interest": 78,
+    "model": "qwen/qwen3.8-27b",
+    "source": {
+     "src": "arxiv",
+     "author": "Annan Wang et al.",
+     "url": "https://arxiv.org/abs/2611.19937v1",
+     "postId": "arxiv:2611.19937v1",
+     "t": "2026-11-15T11:10:37.000Z",
+     "excerpt": "AllocFlow: End-to-End Portfolio Trading Action Generation from Raw Market Data. Real-world portfolio management requires converting noisy market observations into coordinated, simultaneous allocations across multiple assets under shared capital constraints. Advances in forecastin"
+    },
+    "blueprint": {
+     "name": "AllocFlow Crypto Momentum",
+     "thesis": "Stratégie de momentum multi-actifs sur les futures perpétuels crypto, visant à capturer les tendances de prix via un score linéaire combinant la dynamique récente et la volatilité.",
+     "universe": [
+      "BTC",
+      "ETH",
+      "SOL"
+     ],
+     "side": "both",
+     "horizon_hours": 24,
+     "blocks": [
+      {
+       "type": "linear_ml_score",
+       "weight": 1,
+       "params": {
+        "intercept": 0,
+        "features": [
+         "momentum",
+         "zscore",
+         "atr_pct"
+        ],
+        "coefs": [
+         2,
+         -1,
+         -0.5
+        ]
+       }
+      }
+     ],
+     "entry": {
+      "score_above": 0.3
+     },
+     "exit": {
+      "stop_atr": 2,
+      "take_profit_atr": 4,
+      "max_hold_hours": 48
+     }
+    }
+   },
+   {
+    "id": "bp-arxiv:2611.23126v1",
+    "name": "EquityTransformerShortTerm",
+    "status": "Éliminé D1",
+    "createdAt": "2026-11-28T00:22:54.063Z",
+    "interest": 78,
+    "model": "openai/gpt-oss-120b",
+    "source": {
+     "src": "arxiv",
+     "author": "Chariton Chalvatzis",
+     "url": "https://arxiv.org/abs/2611.23126v1",
+     "postId": "arxiv:2611.23126v1",
+     "t": "2026-11-17T17:44:41.000Z",
+     "excerpt": "Which Past Matters? Training History and Multi-Forecast Horizon in Equity Transformers. More historical data can improve estimation while introducing relationships that transfer poorly to current market conditions. We therefore examine how training quantity and historical selecti"
+    },
+    "blueprint": {
+     "name": "EquityTransformerShortTerm",
+     "thesis": "Modèle ML prédit les rendements intrajournaliers des actions, exploitable sur de courts horizons (5‑120 min).",
+     "universe": [
+      "NVDA"
+     ],
+     "side": "both",
+     "horizon_hours": 2,
+     "blocks": [
+      {
+       "type": "linear_ml_score",
+       "weight": 1,
+       "params": {
+        "intercept": 0,
+        "features": [
+         "momentum",
+         "rsi",
+         "zscore",
+         "atr_pct"
+        ],
+        "coefs": [
+         0.4,
+         0.3,
+         0.2,
+         0.1
+        ]
+       }
+      }
+     ],
+     "entry": {
+      "score_above": 0.2
+     },
+     "exit": {
+      "stop_atr": 2,
+      "take_profit_atr": 4,
+      "max_hold_hours": 4
+     }
+    }
+   },
+   {
+    "id": "bp-arxiv:2611.24028v1",
+    "name": "RoughVolatilitySignal",
+    "status": "Éliminé D1",
+    "createdAt": "2026-11-28T00:22:54.063Z",
+    "interest": 78,
+    "model": "openai/gpt-oss-120b",
+    "source": {
+     "src": "arxiv",
+     "author": "Sai Niranjan Ramachandran",
+     "url": "https://arxiv.org/abs/2611.24028v1",
+     "postId": "arxiv:2611.24028v1",
+     "t": "2026-11-18T08:16:22.000Z",
+     "excerpt": "Algorithmic Market Making Can Lead to Rough Volatility Through the Order Book. Existing work suggests that markets can show volatility with paths rougher than those of Brownian motion. In theory this can happen when the order flow is close to instability with memory that decays a"
+    },
+    "blueprint": {
+     "name": "RoughVolatilitySignal",
+     "thesis": "Les modèles de market making algorithmique créent une volatilité rugueuse via la mémoire du flux d'ordres, offrant une opportunité de capturer des régimes de volatilité extrême.",
+     "universe": [
+      "BTC",
+      "ETH"
+     ],
+     "side": "both",
+     "horizon_hours": 24,
+     "blocks": [
+      {
+       "type": "volatility_regime",
+       "weight": 0.6,
+       "params": {
+        "lookback": 60,
+        "max_atr_pct": 0.04
+       }
+      },
+      {
+       "type": "atr_breakout",
+       "weight": 0.3,
+       "params": {
+        "period": 20,
+        "mult": 2
+       }
+      },
+      {
+       "type": "momentum",
+       "weight": 0.2,
+       "params": {
+        "lookback": 5
+       }
+      }
+     ],
+     "entry": {
+      "score_above": 0.25
+     },
+     "exit": {
+      "stop_atr": 2,
+      "take_profit_atr": 4,
+      "max_hold_hours": 48
+     }
+    }
+   },
+   {
+    "id": "bp-arxiv:2611.30584v1",
+    "name": "TechIndicatorsValue",
+    "status": "Éliminé D1",
+    "createdAt": "2026-11-28T00:22:54.063Z",
+    "interest": 78,
+    "model": "openai/gpt-oss-120b",
+    "source": {
+     "src": "arxiv",
+     "author": "Peng Liu et al.",
+     "url": "https://arxiv.org/abs/2611.30584v1",
+     "postId": "arxiv:2611.30584v1",
+     "t": "2026-11-23T12:26:04.000Z",
+     "excerpt": "Do Candlestick Charts Suffice? The Incremental Economic Value of Technical Indicators in Stock Return Prediction. Although technical analysis remains widely used in practice, the need for manually constructed indicators is increasingly questioned as deep learning models can extra"
+    },
+    "blueprint": {
+     "name": "TechIndicatorsValue",
+     "thesis": "Les indicateurs techniques montrent une capacité prédictive positive sur les rendements, même si leur ajout aux graphiques OHLC n'améliore pas systématiquement la performance.",
+     "universe": [
+      "BTC",
+      "ETH"
+     ],
+     "side": "both",
+     "horizon_hours": 24,
+     "blocks": [
+      {
+       "type": "linear_ml_score",
+       "weight": 0.8,
+       "params": {
+        "intercept": 0,
+        "features": [
+         "momentum",
+         "rsi"
+        ],
+        "coefs": [
+         0.5,
+         0.5
+        ]
+       }
+      }
+     ],
+     "entry": {
+      "score_above": 0.2
+     },
+     "exit": {
+      "stop_atr": 2,
+      "take_profit_atr": 4,
+      "max_hold_hours": 48
+     }
+    }
+   },
+   {
+    "id": "bp-arxiv:2611.30843v3",
+    "name": "MaxVar Factor Model",
+    "status": "Éliminé D1",
+    "createdAt": "2026-11-28T00:22:54.063Z",
+    "interest": 78,
+    "model": "openai/gpt-oss-120b",
+    "source": {
+     "src": "arxiv",
+     "author": "Sébastien Valeyre",
+     "url": "https://arxiv.org/abs/2611.30843v3",
+     "postId": "arxiv:2611.30843v3",
+     "t": "2026-11-23T15:27:00.000Z",
+     "excerpt": "Cleaning correlation matrices with external information: the Maximum Variance estimator. Rotationally invariant estimators clean the eigenvalues of an empirical correlation matrix but keep its noisy eigenvectors. We study an estimator that corrects the eigenvectors by using exter"
+    },
+    "blueprint": {
+     "name": "MaxVar Factor Model",
+     "thesis": "Utilise l'estimateur MaxVar pour améliorer la sélection d'actifs via un modèle linéaire combinant momentum, z‑score et volatilité, ciblant BTC et ETH.",
+     "universe": [
+      "BTC",
+      "ETH"
+     ],
+     "side": "both",
+     "horizon_hours": 24,
+     "blocks": [
+      {
+       "type": "linear_ml_score",
+       "weight": 1,
+       "params": {
+        "intercept": 0,
+        "features": [
+         "momentum",
+         "zscore",
+         "atr_pct"
+        ],
+        "coefs": [
+         0.4,
+         0.3,
+         0.3
+        ]
+       }
+      }
+     ],
+     "entry": {
+      "score_above": 0.2
+     },
+     "exit": {
+      "stop_atr": 2,
+      "take_profit_atr": 4,
+      "max_hold_hours": 48
+     }
+    }
+   },
+   {
+    "id": "bp-arxiv:2611.34209v1",
+    "name": "GraphFactorStatArb",
+    "status": "En test",
+    "createdAt": "2026-11-28T00:22:54.063Z",
+    "interest": 78,
+    "model": "openai/gpt-oss-120b",
+    "source": {
+     "src": "arxiv",
+     "author": "Evelyn Zhu et al.",
+     "url": "https://arxiv.org/abs/2611.34209v1",
+     "postId": "arxiv:2611.34209v1",
+     "t": "2026-11-25T11:32:29.000Z",
+     "excerpt": "Graph-Informed Deep Factor Model for Statistical Arbitrage. Statistical arbitrage exploits temporary mispricings between similar assets in the cross-section of daily equity returns. We propose a nonlinear single-factor model, called a Graph-Informed Deep Factor (GIDF) model, whos"
+    },
+    "blueprint": {
+     "name": "GraphFactorStatArb",
+     "thesis": "Le modèle GIDF identifie des résidus mean‑reverting pour exploiter les désalignements de prix entre actifs similaires.",
+     "universe": [
+      "BTC",
+      "ETH"
+     ],
+     "side": "both",
+     "horizon_hours": 24,
+     "blocks": [
+      {
+       "type": "bollinger_zscore",
+       "weight": 0.6,
+       "params": {
+        "period": 20,
+        "z": 2
+       }
+      },
+      {
+       "type": "momentum",
+       "weight": 0.4,
+       "params": {
+        "lookback": 10
+       }
+      },
+      {
+       "type": "linear_ml_score",
+       "weight": 0.2,
+       "params": {
+        "intercept": 0,
+        "features": [
+         "momentum",
+         "zscore"
+        ],
+        "coefs": [
+         0.5,
+         0.5
+        ]
+       }
+      }
+     ],
+     "entry": {
+      "score_above": 0.2
+     },
+     "exit": {
+      "stop_atr": 2,
+      "take_profit_atr": 4,
+      "max_hold_hours": 48
+     }
+    }
+   },
+   {
+    "id": "bp-arxiv:2611.19903v1",
+    "name": "ST-GAT-NCO Tactical Allocation",
+    "status": "Éliminé D1",
+    "createdAt": "2026-11-28T00:22:54.063Z",
+    "interest": 90,
+    "model": "qwen/qwen3.8-27b",
+    "source": {
+     "src": "arxiv",
+     "author": "Supriadi",
+     "url": "https://arxiv.org/abs/2611.19903v1",
+     "postId": "arxiv:2611.19903v1",
+     "t": "2026-11-15T09:31:57.000Z",
+     "excerpt": "Dynamic Spatio-Temporal Graph Attention Networks with Nested Clustered Optimization for Multi-Asset Portfolios. Nested Clustered Optimization (NCO) insulates asset allocation from Markowitz covariance ill-conditioning. However, classical tree clustering relies on static pairwise "
+    },
+    "blueprint": {
+     "name": "ST-GAT-NCO Tactical Allocation",
+     "thesis": "Allocation tactique multi-actifs basée sur l'extraction de la dynamique de momentum temporel et du risque de baisse via un réseau d'attention graphique spatio-temporel dynamique, optimisé pour la préservation du capital.",
+     "universe": [
+      "BTC",
+      "ETH",
+      "NVDA",
+      "SOXL",
+      "BRENTOIL"
+     ],
+     "side": "long",
+     "horizon_hours": 720,
+     "blocks": [
+      {
+       "type": "momentum",
+       "weight": 0.6,
+       "params": {
+        "lookback": 20
+       }
+      },
+      {
+       "type": "volatility_regime",
+       "weight": 0.4,
+       "params": {
+        "lookback": 50,
+        "max_atr_pct": 0.05
+       }
+      },
+      {
+       "type": "bollinger_zscore",
+       "weight": 0.2,
+       "params": {
+        "period": 20,
+        "z": 1.5
+       }
+      }
+     ],
+     "entry": {
+      "score_above": 0.2
+     },
+     "exit": {
+      "stop_atr": 3,
+      "take_profit_atr": 6,
+      "max_hold_hours": 720
+     }
+    }
+   }
+  ],
+  "pending": 0,
+  "errors": [],
+  "translator": "deepseek-flash → deepseek-chat → gpt-oss-120b → qwen3.8 (après le vote)"
+ },
+ "leagues": {
+  "at": "2026-11-28T13:29:35.603Z",
+  "strategies": [
+   {
+    "id": "bp-arxiv:2611.34209v1",
+    "name": "GraphFactorStatArb",
+    "division": "D2",
+    "universe": [
+     "BTC",
+     "ETH",
+     "HL_CRYPTO"
+    ],
+    "assets": 20,
+    "equity": 9815.19,
+    "capital": 10000,
+    "trades": 8,
+    "open": [
+     {
+      "asset": "BTC",
+      "label": "BTC",
+      "side": "long",
+      "entry": 59976.9877,
+      "mark": 59202,
+      "pnlPct": -0.0129,
+      "notional": 1474.51,
+      "stop": 59097.6966,
+      "tp": 61735.5699,
+      "since": "2026-11-28T00:00:00.000Z",
+      "bars": 13
+     },
+     {
+      "asset": "ETH",
+      "label": "ETH",
+      "side": "long",
+      "entry": 1665.0994,
+      "mark": 1647.4,
+      "pnlPct": -0.0106,
+      "notional": 1474.57,
+      "stop": 1636.2103,
+      "tp": 1722.8775,
+      "since": "2026-11-28T00:00:00.000Z",
+      "bars": 13
+     }
+    ],
+    "closed": [
+     {
+      "asset": "NEAR",
+      "label": "NEAR",
+      "side": "long",
+      "entry": 2.9884,
+      "exit": 2.9943,
+      "pnlPct": 0.002,
+      "pnlUsd": 1.88,
+      "reason": "fermée (plafond de concentration)",
+      "opened": "2026-11-28T10:55:33.952Z",
+      "closed": "2026-11-28T11:48:43.362Z",
+      "bars": 0
+     },
+     {
+      "asset": "ZEC",
+      "label": "ZEC",
+      "side": "long",
+      "entry": 725.3575,
+      "exit": 721.8333,
+      "pnlPct": -0.0049,
+      "pnlUsd": -8.23,
+      "reason": "fermée (plafond de concentration)",
+      "opened": "2026-11-28T10:55:33.952Z",
+      "closed": "2026-11-28T11:48:43.362Z",
+      "bars": 0
+     },
+     {
+      "asset": "HYPE",
+      "label": "HYPE",
+      "side": "long",
+      "entry": 62.6178,
+      "exit": 62.5452,
+      "pnlPct": -0.0012,
+      "pnlUsd": -2.74,
+      "reason": "fermée (plafond de concentration)",
+      "opened": "2026-11-28T10:55:33.952Z",
+      "closed": "2026-11-28T11:48:43.362Z",
+      "bars": 0
+     },
+     {
+      "asset": "NEAR",
+      "label": "NEAR",
+      "side": "long",
+      "entry": 2.9884,
+      "exit": 2.9943,
+      "pnlPct": 0.002,
+      "pnlUsd": 3.56,
+      "reason": "réduite au plafond de 15 %",
+      "opened": "2026-11-28T10:55:33.952Z",
+      "closed": "2026-11-28T11:48:43.362Z",
+      "bars": 0
+     },
+     {
+      "asset": "ZEC",
+      "label": "ZEC",
+      "side": "long",
+      "entry": 725.3575,
+      "exit": 721.8333,
+      "pnlPct": -0.0049,
+      "pnlUsd": -12.05,
+      "reason": "réduite au plafond de 15 %",
+      "opened": "2026-11-28T10:55:33.952Z",
+      "closed": "2026-11-28T11:48:43.362Z",
+      "bars": 0
+     },
+     {
+      "asset": "HYPE",
+      "label": "HYPE",
+      "side": "long",
+      "entry": 62.6178,
+      "exit": 62.5452,
+      "pnlPct": -0.0012,
+      "pnlUsd": -6.29,
+      "reason": "réduite au plafond de 15 %",
+      "opened": "2026-11-28T10:55:33.952Z",
+      "closed": "2026-11-28T11:48:43.362Z",
+      "bars": 0
+     },
+     {
+      "asset": "ETH",
+      "label": "ETH",
+      "side": "long",
+      "entry": 1665.0994,
+      "exit": 1646.7058,
+      "pnlPct": -0.011,
+      "pnlUsd": -50.18,
+      "reason": "réduite au plafond de 15 %",
+      "opened": "2026-11-28T00:00:00.000Z",
+      "closed": "2026-11-28T11:48:43.362Z",
+      "bars": 11
+     },
+     {
+      "asset": "BTC",
+      "label": "BTC",
+      "side": "long",
+      "entry": 59976.9877,
+      "exit": 59179.2409,
+      "pnlPct": -0.0133,
+      "pnlUsd": -74.56,
+      "reason": "réduite au plafond de 15 %",
+      "opened": "2026-11-28T00:00:00.000Z",
+      "closed": "2026-11-28T11:48:43.362Z",
+      "bars": 11
+     }
+    ]
+   }
+  ]
+ },
+ "compile": {
+  "at": "2026-11-28T13:29:35.603Z",
+  "quota": 6,
+  "made": 1,
+  "posts": 0,
+  "builders": 1,
+  "pending": {
+   "posts": 0,
+   "builders": 1
+  },
+  "models": {
+   "deepseek-flash": 1
+  },
+  "errors": [],
+  "available": {
+   "posts": true,
+   "builders": true
+  }
+ },
+ "regime": {
+  "at": "2026-11-28T13:29:35.603Z",
+  "regime": "RANGE_COMPRESSION",
+  "label": "Range, volatilité comprimée",
+  "source": "règles, confirmé par deepseek-v4-pro",
+  "confidence": 50,
+  "hard": false,
+  "reasons": [
+   "pas de tendance nette (0.27)",
+   "volatilité 1.37 × la normale"
+  ],
+  "llm": {
+   "regime": "RANGE_COMPRESSION",
+   "confidence": 74,
+   "rationale": "Pas de tendance nette malgré un repli de ~4% sur 24h; la volatilité réalisée reste modérément au-dessus de la normale (1,28x) et le financement est neutre, sans catalyseur macro. Les titres baissiers créent un biais prudent mais ne constituent pas une rupture systémique.",
+   "model": "deepseek-v4-pro",
+   "at": "2026-11-28T11:48:43.362Z",
+   "cached": true
+  },
+  "calendar": {
+   "next": null,
+   "inWindow": [],
+   "upcoming": [],
+   "refreshedAt": "2026-11-28T13:10:30.072Z"
+  },
+  "policy": {
+   "families": [
+    {
+     "family": "trend_breakout",
+     "weight": 0.5,
+     "status": "atténuée",
+     "cond": null
+    },
+    {
+     "family": "mean_reversion",
+     "weight": 1.25,
+     "status": "favorisée",
+     "cond": null
+    },
+    {
+     "family": "stat_arb_leadlag",
+     "weight": 1.25,
+     "status": "favorisée",
+     "cond": null
+    },
+    {
+     "family": "volatility_squeeze",
+     "weight": 1,
+     "status": "autorisée",
+     "cond": null
+    },
+    {
+     "family": "defensive_hedge",
+     "weight": 1,
+     "status": "autorisée",
+     "cond": null
+    }
+   ],
+   "allowed": [
+    "trend_breakout",
+    "mean_reversion",
+    "stat_arb_leadlag",
+    "volatility_squeeze",
+    "defensive_hedge"
+   ],
+   "cut": []
+  },
+  "risk": {
+   "regime": "RANGE_COMPRESSION",
+   "sizeMult": 1,
+   "minConviction": null
+  },
+  "metrics": {
+   "BTC": {
+    "bars": 518,
+    "ret4": -0.0069,
+    "ret24": -0.0369,
+    "ret72": 0.0197,
+    "rv24": 0.0086,
+    "rvBase": 0.0063,
+    "volRatio": 1.3707,
+    "trend": 0.3649,
+    "funding": 0
+   },
+   "ETH": {
+    "bars": 518,
+    "ret4": -0.0027,
+    "ret24": -0.0447,
+    "ret72": 0.0099,
+    "rv24": 0.0091,
+    "rvBase": 0.0069,
+    "volRatio": 1.3285,
+    "trend": 0.1684,
+    "funding": 0
+   },
+   "NVDA": {
+    "bars": 518,
+    "ret4": -0.002,
+    "ret24": -0.0369,
+    "ret72": 0.0136,
+    "rv24": 0.0104,
+    "rvBase": 0.0164,
+    "volRatio": 0.6369,
+    "trend": 0.0975,
+    "funding": 0
+   },
+   "BRENTOIL": {
+    "bars": 518,
+    "ret4": -0.0018,
+    "ret24": -0.0127,
+    "ret72": 0.0136,
+    "rv24": 0.0025,
+    "rvBase": 0.0043,
+    "volRatio": 0.5707,
+    "trend": 0.3701,
+    "funding": 0
+   }
+  },
+  "eps": {
+   "squeeze": false,
+   "hot": false,
+   "velocity": 1.75,
+   "bias": -0.09
+  }
+ }
+}

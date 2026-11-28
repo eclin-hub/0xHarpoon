@@ -1,0 +1,341 @@
+{
+ "version": 2,
+ "at": "2026-11-28T13:29:35.603Z",
+ "health": {
+  "openai/gpt-oss-120b": {
+   "fails": 0.8002,
+   "calls": 15,
+   "failures": 7,
+   "lastAt": "2026-11-28T13:10:30.072Z",
+   "lastError": "champ manquant : horizon_hours ; champ manquant : horizon_hours ; champ manquant : horizon_hours ; champ manquant : horizon_hours ; champ manquant : horizon_hours ; champ manquant : horizon_hours ; ch"
+  },
+  "meta-llama/llama-3.3-70b-instruct:free": {
+   "fails": 0.657,
+   "calls": 3,
+   "failures": 3,
+   "lastAt": "2026-11-28T01:50:31.035Z",
+   "lastError": "HTTP 404 : {\"error\":{\"message\":\"This model is unavailable for free. The paid version is available now - use this slug instead: meta-llama/llama-3.3-70b-instruct\",\"code\":404},\"user_id\":\"user_3MYd7YiQgC"
+  },
+  "qwen/qwen3-235b-a22b:free": {
+   "fails": 0.657,
+   "calls": 3,
+   "failures": 3,
+   "lastAt": "2026-11-28T01:50:31.035Z",
+   "lastError": "HTTP 404 : {\"error\":{\"message\":\"Qwen3 235B A22B was deprecated on Oct 9, 2026. We recommend migrating to Qwen3.7 Plus (openrouter.ai/qwen/qwen3.7-plus).\",\"code\":404},\"user_id\":\"user_3MYd7YiQgCuzAXorFB"
+  },
+  "mistral-small-latest": {
+   "fails": 0.51,
+   "calls": 2,
+   "failures": 2,
+   "lastAt": "2026-11-28T01:29:43.063Z",
+   "lastError": "HTTP 402 : {\"object\":\"error\",\"message\":\"You need a subscription to access this API.\",\"type\":\"billing_no_api_budget_configured\",\"param\":null,\"code\":\"2314\",\"raw_status_code\":402}"
+  },
+  "qwen/qwen3.8-27b": {
+   "fails": 0.1284,
+   "calls": 15,
+   "failures": 3,
+   "lastAt": "2026-11-28T13:10:30.072Z",
+   "lastError": "HTTP 429 : {\"error\":{\"message\":\"Request too large for model `qwen/qwen3.8-27b` in organization `org_01m39v2s0be3steedechxyhrj5` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000,"
+  },
+  "gemini-3.5-flash-lite": {
+   "fails": 0.1029,
+   "calls": 4,
+   "failures": 1,
+   "lastAt": "2026-11-28T02:10:47.146Z",
+   "lastError": "JSON incomplet dans la réponse"
+  },
+  "openrouter/free": {
+   "fails": 0.5043,
+   "calls": 15,
+   "failures": 10,
+   "lastAt": "2026-11-28T13:10:30.072Z",
+   "lastError": "The operation was aborted due to timeout"
+  },
+  "baidu/ernie-5.5-flash-preview:free": {
+   "fails": 0.7599,
+   "calls": 4,
+   "failures": 4,
+   "lastAt": "2026-11-28T02:10:47.146Z",
+   "lastError": "réponse sans contenu : {\"id\":\"gen-1795831889-1Czsn8mm3Yt5ZYXi8A6V\",\"object\":\"chat.completion\",\"created\":1795831889,\"model\":\"baidu/ernie-5.5-flash-preview:free\",\"provider\":\"Baidu\",\"system_fingerprint\":"
+  },
+  "gemini-3.8-flash": {
+   "fails": 0.7599,
+   "calls": 4,
+   "failures": 4,
+   "lastAt": "2026-11-28T02:10:47.146Z",
+   "lastError": "The operation was aborted due to timeout"
+  },
+  "particle-ai/particle-1:free": {
+   "fails": 0.519,
+   "calls": 6,
+   "failures": 3,
+   "lastAt": "2026-11-28T08:10:44.865Z",
+   "lastError": "HTTP 429 : {\"error\":{\"message\":\"Provider returned error\",\"code\":429,\"metadata\":{\"raw\":\"particle-ai/particle-1:free is temporarily rate-limited upstream. Please retry shortly, or add your own provider "
+  },
+  "nvidia/nemotron-3.5-super-vl:free": {
+   "fails": 0.8823,
+   "calls": 6,
+   "failures": 6,
+   "lastAt": "2026-11-28T08:10:44.865Z",
+   "lastError": "réponse sans contenu : {\"id\":\"gen-1795853530-UHFqhgggJdmesq3VNn34\",\"object\":\"chat.completion\",\"created\":1795853530,\"model\":\"nvidia/nemotron-3.5-super-vl:free\",\"provider\":\"Nvidia\",\"system_fingerprint\":"
+  },
+  "recursive/flint-v1.0:free": {
+   "fails": 0.8823,
+   "calls": 6,
+   "failures": 6,
+   "lastAt": "2026-11-28T08:10:44.865Z",
+   "lastError": "The operation was aborted due to timeout"
+  },
+  "deepseek-flash": {
+   "fails": 0.1643,
+   "calls": 11,
+   "failures": 2,
+   "lastAt": "2026-11-28T13:10:30.072Z",
+   "lastError": "réponse sans contenu : {\"id\":\"02ce84b9-01d8-4512-b15c-15b416136bd4\",\"object\":\"chat.completion\",\"created\":1795866548,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"conten"
+  },
+  "deepseek-v4-pro": {
+   "fails": 0.3356,
+   "calls": 11,
+   "failures": 4,
+   "lastAt": "2026-11-28T13:10:30.072Z",
+   "lastError": "réponse sans contenu : {\"id\":\"85b2efff-3fd9-4890-add1-f1b4ffaca648\",\"object\":\"chat.completion\",\"created\":1795866548,\"model\":\"deepseek-v4-pro\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"conte"
+  },
+  "google/gemma-4-31b-it:free": {
+   "fails": 0.7599,
+   "calls": 4,
+   "failures": 4,
+   "lastAt": "2026-11-28T11:48:43.362Z",
+   "lastError": "HTTP 429 : {\"error\":{\"message\":\"Provider returned error\",\"code\":429,\"metadata\":{\"raw\":\"google/gemma-4-31b-it:free is temporarily rate-limited upstream. Please retry shortly, or add your own provider k"
+  },
+  "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": {
+   "fails": 0.51,
+   "calls": 2,
+   "failures": 2,
+   "lastAt": "2026-11-28T13:10:30.072Z",
+   "lastError": "réponse tronquée (finish_reason length, max_tokens 4000 épuisé par le raisonnement)"
+  }
+ },
+ "params": {
+  "windowDays": 30,
+  "maxTrades": 40,
+  "minTrades": 5,
+  "maxWeight": 0.3,
+  "minWeight": 0.04,
+  "active": 6,
+  "cap": 0.3,
+  "floor": 0.04
+ },
+ "models": [
+  {
+   "rank": 1,
+   "model": "qwen/qwen3.8-27b",
+   "family": "qwen3.8",
+   "provider": "groq",
+   "shadowOnly": false,
+   "trades": 2,
+   "winRate": 0.5,
+   "sumR": 0.0686,
+   "avgR": 0.0343,
+   "profitFactor": 1.1528,
+   "sharpe": 0.0502,
+   "psr": null,
+   "raw": null,
+   "score": 0.9615,
+   "fails": 0.1284,
+   "negative": false,
+   "status": "Actif",
+   "target": 0.1893,
+   "weight": 0.1893,
+   "sharedWith": [],
+   "lastError": {
+    "code": "429 TPM",
+    "message": "HTTP 429 : {\"error\":{\"message\":\"Request too large for model `qwen/qwen3.8-27b` in organization `org_01m39v2s0be3steedechxyhrj5` service tier `on_demand` on output tokens per minute (OTPM): Limit 1000,",
+    "at": "2026-11-28T13:10:30.072Z"
+   }
+  },
+  {
+   "rank": 2,
+   "model": "deepseek-flash",
+   "family": "deepseek-flash",
+   "provider": "deepseek",
+   "shadowOnly": false,
+   "trades": 1,
+   "winRate": 1,
+   "sumR": 0.0486,
+   "avgR": 0.0486,
+   "profitFactor": null,
+   "sharpe": null,
+   "psr": null,
+   "raw": null,
+   "score": 0.9507,
+   "fails": 0.1643,
+   "negative": false,
+   "status": "Actif",
+   "target": 0.185,
+   "weight": 0.185,
+   "sharedWith": [],
+   "lastError": {
+    "code": "réponse vide",
+    "message": "réponse sans contenu : {\"id\":\"02ce84b9-01d8-4512-b15c-15b416136bd4\",\"object\":\"chat.completion\",\"created\":1795866548,\"model\":\"deepseek-flash\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"conten",
+    "at": "2026-11-28T13:10:30.072Z"
+   }
+  },
+  {
+   "rank": 3,
+   "model": "openai/gpt-oss-120b",
+   "family": "gpt-oss",
+   "provider": "groq",
+   "shadowOnly": false,
+   "trades": 18,
+   "winRate": 0.7222,
+   "sumR": 0.1832,
+   "avgR": 0.0102,
+   "profitFactor": 1.2185,
+   "sharpe": 0.0555,
+   "psr": 0.5875,
+   "raw": 1.2357,
+   "score": 0.9001,
+   "fails": 0.8002,
+   "negative": false,
+   "status": "Actif",
+   "target": 0.1659,
+   "weight": 0.1659,
+   "sharedWith": [],
+   "lastError": {
+    "code": "champ manquant : horizon_hours ; champ m",
+    "message": "champ manquant : horizon_hours ; champ manquant : horizon_hours ; champ manquant : horizon_hours ; champ manquant : horizon_hours ; champ manquant : horizon_hours ; champ manquant : horizon_hours ; ch",
+    "at": "2026-11-28T13:10:30.072Z"
+   }
+  },
+  {
+   "rank": 4,
+   "model": "deepseek-v4-pro",
+   "family": "deepseek-v4-pro",
+   "provider": "deepseek",
+   "shadowOnly": false,
+   "trades": 0,
+   "winRate": null,
+   "sumR": 0,
+   "avgR": null,
+   "profitFactor": null,
+   "sharpe": null,
+   "psr": null,
+   "raw": null,
+   "score": 0.8993,
+   "fails": 0.3356,
+   "negative": false,
+   "status": "Actif",
+   "target": 0.1656,
+   "weight": 0.1656,
+   "sharedWith": [],
+   "lastError": {
+    "code": "réponse vide",
+    "message": "réponse sans contenu : {\"id\":\"85b2efff-3fd9-4890-add1-f1b4ffaca648\",\"object\":\"chat.completion\",\"created\":1795866548,\"model\":\"deepseek-v4-pro\",\"choices\":[{\"index\":0,\"message\":{\"role\":\"assistant\",\"conte",
+    "at": "2026-11-28T13:10:30.072Z"
+   }
+  },
+  {
+   "rank": 5,
+   "model": "openrouter/free",
+   "family": "openrouter-auto",
+   "provider": "openrouter",
+   "shadowOnly": false,
+   "trades": 2,
+   "winRate": 0.5,
+   "sumR": 0.0132,
+   "avgR": 0.0066,
+   "profitFactor": 1.614,
+   "sharpe": 0.1661,
+   "psr": null,
+   "raw": null,
+   "score": 0.8487,
+   "fails": 0.5043,
+   "negative": false,
+   "status": "Actif",
+   "target": 0.1475,
+   "weight": 0.1475,
+   "sharedWith": [],
+   "lastError": {
+    "code": "délai",
+    "message": "The operation was aborted due to timeout",
+    "at": "2026-11-28T13:10:30.072Z"
+   }
+  },
+  {
+   "rank": 6,
+   "model": "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+   "family": "or:nvidia/nemotron",
+   "provider": "openrouter",
+   "shadowOnly": false,
+   "trades": 0,
+   "winRate": null,
+   "sumR": 0,
+   "avgR": null,
+   "profitFactor": null,
+   "sharpe": null,
+   "psr": null,
+   "raw": null,
+   "score": 0.847,
+   "fails": 0.51,
+   "negative": false,
+   "status": "Actif",
+   "target": 0.1469,
+   "weight": 0.1469,
+   "sharedWith": [],
+   "lastError": {
+    "code": "réponse tronquée",
+    "message": "réponse tronquée (finish_reason length, max_tokens 4000 épuisé par le raisonnement)",
+    "at": "2026-11-28T13:10:30.072Z"
+   }
+  }
+ ],
+ "active": [
+  "qwen/qwen3.8-27b",
+  "deepseek-flash",
+  "openai/gpt-oss-120b",
+  "deepseek-v4-pro",
+  "openrouter/free",
+  "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"
+ ],
+ "probes": [],
+ "target": {
+  "qwen/qwen3.8-27b": 0.1893,
+  "deepseek-flash": 0.185,
+  "openai/gpt-oss-120b": 0.1659,
+  "deepseek-v4-pro": 0.1656,
+  "openrouter/free": 0.1475,
+  "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": 0.1469
+ },
+ "families": {
+  "qwen/qwen3.8-27b": "qwen3.8",
+  "deepseek-flash": "deepseek-flash",
+  "openai/gpt-oss-120b": "gpt-oss",
+  "deepseek-v4-pro": "deepseek-v4-pro",
+  "openrouter/free": "openrouter-auto",
+  "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": "or:nvidia/nemotron"
+ },
+ "configured": [
+  "qwen/qwen3.8-27b",
+  "deepseek-flash",
+  "openai/gpt-oss-120b",
+  "deepseek-v4-pro",
+  "openrouter/free",
+  "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"
+ ],
+ "order": [
+  "qwen/qwen3.8-27b",
+  "deepseek-flash",
+  "openai/gpt-oss-120b",
+  "deepseek-v4-pro",
+  "openrouter/free",
+  "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"
+ ],
+ "scores": {
+  "qwen/qwen3.8-27b": 0.9615,
+  "deepseek-flash": 0.9507,
+  "openai/gpt-oss-120b": 0.9001,
+  "deepseek-v4-pro": 0.8993,
+  "openrouter/free": 0.8487,
+  "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free": 0.847
+ }
+}

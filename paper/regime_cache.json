@@ -1,0 +1,714 @@
+{
+ "version": 1,
+ "calendar": {
+  "at": 1795871430072,
+  "events": [
+   {
+    "title": "Core Retail Sales q/q",
+    "cur": "NZD",
+    "t": 1795383900000,
+    "impact": "Low",
+    "forecast": "0.8%",
+    "previous": "0.7%",
+    "actual": ""
+   },
+   {
+    "title": "Retail Sales q/q",
+    "cur": "NZD",
+    "t": 1795383900000,
+    "impact": "Low",
+    "forecast": "0.5%",
+    "previous": "-0.5%",
+    "actual": ""
+   },
+   {
+    "title": "Flash Manufacturing PMI",
+    "cur": "AUD",
+    "t": 1795384800000,
+    "impact": "Low",
+    "forecast": "",
+    "previous": "49.7",
+    "actual": ""
+   },
+   {
+    "title": "Flash Services PMI",
+    "cur": "AUD",
+    "t": 1795384800000,
+    "impact": "Low",
+    "forecast": "",
+    "previous": "47.8",
+    "actual": ""
+   },
+   {
+    "title": "Bank Holiday",
+    "cur": "JPY",
+    "t": 1795392000000,
+    "impact": "Holiday",
+    "forecast": "",
+    "previous": "",
+    "actual": ""
+   },
+   {
+    "title": "French Flash Manufacturing PMI",
+    "cur": "EUR",
+    "t": 1795421700000,
+    "impact": "Medium",
+    "forecast": "49.8",
+    "previous": "49.3",
+    "actual": ""
+   },
+   {
+    "title": "French Flash Services PMI",
+    "cur": "EUR",
+    "t": 1795421700000,
+    "impact": "Medium",
+    "forecast": "47.4",
+    "previous": "48.4",
+    "actual": ""
+   },
+   {
+    "title": "German Flash Manufacturing PMI",
+    "cur": "EUR",
+    "t": 1795422600000,
+    "impact": "Medium",
+    "forecast": "54.1",
+    "previous": "54.2",
+    "actual": ""
+   },
+   {
+    "title": "German Flash Services PMI",
+    "cur": "EUR",
+    "t": 1795422600000,
+    "impact": "Medium",
+    "forecast": "52.4",
+    "previous": "51.7",
+    "actual": ""
+   },
+   {
+    "title": "Flash Manufacturing PMI",
+    "cur": "EUR",
+    "t": 1795424400000,
+    "impact": "Low",
+    "forecast": "52.7",
+    "previous": "52.4",
+    "actual": ""
+   },
+   {
+    "title": "Flash Services PMI",
+    "cur": "EUR",
+    "t": 1795424400000,
+    "impact": "Low",
+    "forecast": "51.8",
+    "previous": "51.7",
+    "actual": ""
+   },
+   {
+    "title": "Flash Manufacturing PMI",
+    "cur": "GBP",
+    "t": 1795426200000,
+    "impact": "Medium",
+    "forecast": "53.0",
+    "previous": "52.8",
+    "actual": ""
+   },
+   {
+    "title": "Flash Services PMI",
+    "cur": "GBP",
+    "t": 1795426200000,
+    "impact": "Medium",
+    "forecast": "53.0",
+    "previous": "53.1",
+    "actual": ""
+   },
+   {
+    "title": "MPC Member Pill Speaks",
+    "cur": "GBP",
+    "t": 1795438800000,
+    "impact": "Low",
+    "forecast": "",
+    "previous": "",
+    "actual": ""
+   },
+   {
+    "title": "Corporate Profits q/q",
+    "cur": "CAD",
+    "t": 1795440720000,
+    "impact": "Low",
+    "forecast": "",
+    "previous": "8.7%",
+    "actual": ""
+   },
+   {
+    "title": "Flash Manufacturing PMI",
+    "cur": "USD",
+    "t": 1795445100000,
+    "impact": "Medium",
+    "forecast": "54.5",
+    "previous": "56.0",
+    "actual": ""
+   },
+   {
+    "title": "Flash Services PMI",
+    "cur": "USD",
+    "t": 1795445100000,
+    "impact": "Medium",
+    "forecast": "55.6",
+    "previous": "57.9",
+    "actual": ""
+   },
+   {
+    "title": "FOMC Member Williams Speaks",
+    "cur": "USD",
+    "t": 1795467600000,
+    "impact": "Low",
+    "forecast": "",
+    "previous": "",
+    "actual": ""
+   },
+   {
+    "title": "Flash Manufacturing PMI",
+    "cur": "JPY",
+    "t": 1795480200000,
+    "impact": "Low",
+    "forecast": "53.5",
+    "previous": "53.3",
+    "actual": ""
+   },
+   {
+    "title": "German ifo Business Climate",
+    "cur": "EUR",
+    "t": 1795510800000,
+    "impact": "Low",
+    "forecast": "90.5",
+    "previous": "90.2",
+    "actual": ""
+   },
+   {
+    "title": "CBI Realized Sales",
+    "cur": "GBP",
+    "t": 1795518000000,
+    "impact": "Low",
+    "forecast": "-27",
+    "previous": "-10",
+    "actual": ""
+   },
+   {
+    "title": "MPC Member Greene Speaks",
+    "cur": "GBP",
+    "t": 1795523400000,
+    "impact": "Low",
+    "forecast": "",
+    "previous": "",
+    "actual": ""
+   },
+   {
+    "title": "ADP Weekly Employment Change",
+    "cur": "USD",
+    "t": 1795526100000,
+    "impact": "Low",
+    "forecast": "",
+    "previous": "23.8K",
+    "actual": ""
+   },
+   {
+    "title": "CB Leading Index m/m",
+    "cur": "CNY",
+    "t": 1795528260000,
+    "impact": "Low",
+    "forecast": "",
+    "previous": "-0.1%",
+    "actual": ""
+   },
+   {
+    "title": "Belgian NBB Business Climate",
+    "cur": "EUR",
+    "t": 1795528800000,
+    "impact": "Low",
+    "forecast": "-9.4",
+    "previous": "-9.8",
+    "actual": ""
+   },
+   {
+    "title": "HPI m/m",
+    "cur": "USD",
+    "t": 1795528800000,
+    "impact": "Low",
+    "forecast": "0.2%",
+    "previous": "0.3%",
+    "actual": ""
+   },
+   {
+    "title": "S&P/CS Composite-20 HPI y/y",
+    "cur": "USD",
+    "t": 1795528800000,
+    "impact": "Low",
+    "forecast": "2.7%",
+    "previous": "2.7%",
+    "actual": ""
+   },
+   {
+    "title": "CB Consumer Confidence",
+    "cur": "USD",
+    "t": 1795532400000,
+    "impact": "Medium",
+    "forecast": "92.4",
+    "previous": "91.7",
+    "actual": ""
+   },
+   {
+    "title": "Richmond Manufacturing Index",
+    "cur": "USD",
+    "t": 1795532400000,
+    "impact": "Low",
+    "forecast": "-2",
+    "previous": "-2",
+    "actual": ""
+   },
+   {
+    "title": "BOC Gov Macklem Speaks",
+    "cur": "CAD",
+    "t": 1795541100000,
+    "impact": "Medium",
+    "forecast": "",
+    "previous": "",
+    "actual": ""
+   },
+   {
+    "title": "API Weekly Statistical Bulletin",
+    "cur": "USD",
+    "t": 1795555800000,
+    "impact": "Low",
+    "forecast": "",
+    "previous": "",
+    "actual": ""
+   },
+   {
+    "title": "SPPI y/y",
+    "cur": "JPY",
+    "t": 1795564200000,
+    "impact": "Low",
+    "forecast": "3.6%",
+    "previous": "3.7%",
+    "actual": ""
+   },
+   {
+    "title": "CPI m/m",
+    "cur": "AUD",
+    "t": 1795566600000,
+    "impact": "High",
+    "forecast": "0.4%",
+    "previous": "0.8%",
+    "actual": ""
+   },
+   {
+    "title": "CPI y/y",
+    "cur": "AUD",
+    "t": 1795566600000,
+    "impact": "High",
+    "forecast": "4.7%",
+    "previous": "4.3%",
+    "actual": ""
+   },
+   {
+    "title": "Trimmed Mean CPI m/m",
+    "cur": "AUD",
+    "t": 1795566600000,
+    "impact": "High",
+    "forecast": "0.3%",
+    "previous": "0.3%",
+    "actual": ""
+   },
+   {
+    "title": "Construction Work Done q/q",
+    "cur": "AUD",
+    "t": 1795566600000,
+    "impact": "Low",
+    "forecast": "0.8%",
+    "previous": "-2.1%",
+    "actual": ""
+   },
+   {
+    "title": "BOJ Core CPI y/y",
+    "cur": "JPY",
+    "t": 1795582800000,
+    "impact": "Low",
+    "forecast": "2.5%",
+    "previous": "2.4%",
+    "actual": ""
+   },
+   {
+    "title": "German Final GDP q/q",
+    "cur": "EUR",
+    "t": 1795590000000,
+    "impact": "Low",
+    "forecast": "0.2%",
+    "previous": "0.2%",
+    "actual": ""
+   },
+   {
+    "title": "UBS Economic Expectations",
+    "cur": "CHF",
+    "t": 1795597200000,
+    "impact": "Low",
+    "forecast": "",
+    "previous": "-15.3",
+    "actual": ""
+   },
+   {
+    "title": "German 10-y Bond Auction",
+    "cur": "EUR",
+    "t": 1795602720000,
+    "impact": "Low",
+    "forecast": "",
+    "previous": "3.37|1.1",
+    "actual": ""
+   },
+   {
+    "title": "FOMC Member Bowman Speaks",
+    "cur": "USD",
+    "t": 1795609500000,
+    "impact": "Low",
+    "forecast": "",
+    "previous": "",
+    "actual": ""
+   },
+   {
+    "title": "Core PCE Price Index m/m",
+    "cur": "USD",
+    "t": 1795613400000,
+    "impact": "High",
+    "forecast": "0.3%",
+    "previous": "0.3%",
+    "actual": ""
+   },
+   {
+    "title": "Prelim GDP q/q",
+    "cur": "USD",
+    "t": 1795613400000,
+    "impact": "High",
+    "forecast": "3.5%",
+    "previous": "3.4%",
+    "actual": ""
+   },
+   {
+    "title": "Prelim GDP Price Index q/q",
+    "cur": "USD",
+    "t": 1795613400000,
+    "impact": "Medium",
+    "forecast": "2.3%",
+    "previous": "2.3%",
+    "actual": ""
+   },
+   {
+    "title": "Core Durable Goods Orders m/m",
+    "cur": "USD",
+    "t": 1795613400000,
+    "impact": "Low",
+    "forecast": "0.5%",
+    "previous": "0.5%",
+    "actual": ""
+   },
+   {
+    "title": "Durable Goods Orders m/m",
+    "cur": "USD",
+    "t": 1795613400000,
+    "impact": "Low",
+    "forecast": "0.7%",
+    "previous": "1.8%",
+    "actual": ""
+   },
+   {
+    "title": "Personal Income m/m",
+    "cur": "USD",
+    "t": 1795613400000,
+    "impact": "Low",
+    "forecast": "0.4%",
+    "previous": "0.2%",
+    "actual": ""
+   },
+   {
+    "title": "Personal Spending m/m",
+    "cur": "USD",
+    "t": 1795613400000,
+    "impact": "Low",
+    "forecast": "0.4%",
+    "previous": "0.5%",
+    "actual": ""
+   },
+   {
+    "title": "Unemployment Claims",
+    "cur": "USD",
+    "t": 1795613400000,
+    "impact": "Low",
+    "forecast": "201K",
+    "previous": "203K",
+    "actual": ""
+   },
+   {
+    "title": "Monetary Policy Report Hearings",
+    "cur": "GBP",
+    "t": 1795616100000,
+    "impact": "Medium",
+    "forecast": "",
+    "previous": "",
+    "actual": ""
+   },
+   {
+    "title": "New Home Sales",
+    "cur": "USD",
+    "t": 1795618800000,
+    "impact": "Low",
+    "forecast": "650K",
+    "previous": "676K",
+    "actual": ""
+   },
+   {
+    "title": "Crude Oil Inventories",
+    "cur": "USD",
+    "t": 1795620600000,
+    "impact": "Low",
+    "forecast": "2.0M",
+    "previous": "3.4M",
+    "actual": ""
+   },
+   {
+    "title": "Natural Gas Storage",
+    "cur": "USD",
+    "t": 1795626000000,
+    "impact": "Low",
+    "forecast": "-19B",
+    "previous": "20B",
+    "actual": ""
+   },
+   {
+    "title": "Beige Book",
+    "cur": "USD",
+    "t": 1795633200000,
+    "impact": "Low",
+    "forecast": "",
+    "previous": "",
+    "actual": ""
+   },
+   {
+    "title": "Private Capital Expenditure q/q",
+    "cur": "AUD",
+    "t": 1795653000000,
+    "impact": "Low",
+    "forecast": "4.5%",
+    "previous": "-3.6%",
+    "actual": ""
+   },
+   {
+    "title": "RBA Bulletin",
+    "cur": "AUD",
+    "t": 1795653000000,
+    "impact": "Low",
+    "forecast": "",
+    "previous": "",
+    "actual": ""
+   },
+   {
+    "title": "German GfK Consumer Climate",
+    "cur": "EUR",
+    "t": 1795676400000,
+    "impact": "Low",
+    "forecast": "-29.4",
+    "previous": "-30.8",
+    "actual": ""
+   },
+   {
+    "title": "M3 Money Supply y/y",
+    "cur": "EUR",
+    "t": 1795683600000,
+    "impact": "Low",
+    "forecast": "3.5%",
+    "previous": "3.5%",
+    "actual": ""
+   },
+   {
+    "title": "Private Loans y/y",
+    "cur": "EUR",
+    "t": 1795683600000,
+    "impact": "Low",
+    "forecast": "3.2%",
+    "previous": "3.1%",
+    "actual": ""
+   },
+   {
+    "title": "Euro Summit",
+    "cur": "EUR",
+    "t": 1795684500000,
+    "impact": "Low",
+    "forecast": "",
+    "previous": "",
+    "actual": ""
+   },
+   {
+    "title": "BOE Financial Stability Report",
+    "cur": "GBP",
+    "t": 1795689000000,
+    "impact": "Low",
+    "forecast": "",
+    "previous": "",
+    "actual": ""
+   },
+   {
+    "title": "FPC Meeting Minutes",
+    "cur": "GBP",
+    "t": 1795689000000,
+    "impact": "Low",
+    "forecast": "",
+    "previous": "",
+    "actual": ""
+   },
+   {
+    "title": "FPC Statement",
+    "cur": "GBP",
+    "t": 1795689000000,
+    "impact": "Low",
+    "forecast": "",
+    "previous": "",
+    "actual": ""
+   },
+   {
+    "title": "ECB Monetary Policy Meeting Accounts",
+    "cur": "EUR",
+    "t": 1795696200000,
+    "impact": "Low",
+    "forecast": "",
+    "previous": "",
+    "actual": ""
+   },
+   {
+    "title": "Bank Holiday",
+    "cur": "USD",
+    "t": 1795698000000,
+    "impact": "Holiday",
+    "forecast": "",
+    "previous": "",
+    "actual": ""
+   },
+   {
+    "title": "Tokyo Core CPI y/y",
+    "cur": "JPY",
+    "t": 1795735800000,
+    "impact": "Medium",
+    "forecast": "3.0%",
+    "previous": "2.6%",
+    "actual": ""
+   },
+   {
+    "title": "French Consumer Spending m/m",
+    "cur": "EUR",
+    "t": 1795765500000,
+    "impact": "Low",
+    "forecast": "0.1%",
+    "previous": "-0.5%",
+    "actual": ""
+   },
+   {
+    "title": "French Final Private Payrolls q/q",
+    "cur": "EUR",
+    "t": 1795765500000,
+    "impact": "Low",
+    "forecast": "-0.1%",
+    "previous": "-0.1%",
+    "actual": ""
+   },
+   {
+    "title": "French Prelim CPI m/m",
+    "cur": "EUR",
+    "t": 1795765500000,
+    "impact": "Low",
+    "forecast": "-0.2%",
+    "previous": "0.4%",
+    "actual": ""
+   },
+   {
+    "title": "French Prelim GDP q/q",
+    "cur": "EUR",
+    "t": 1795765500000,
+    "impact": "Low",
+    "forecast": "-0.1%",
+    "previous": "-0.1%",
+    "actual": ""
+   },
+   {
+    "title": "Spanish Flash CPI y/y",
+    "cur": "EUR",
+    "t": 1795766400000,
+    "impact": "Low",
+    "forecast": "4.7%",
+    "previous": "4.9%",
+    "actual": ""
+   },
+   {
+    "title": "German Unemployment Change",
+    "cur": "EUR",
+    "t": 1795769700000,
+    "impact": "Low",
+    "forecast": "5K",
+    "previous": "4K",
+    "actual": ""
+   },
+   {
+    "title": "Italian 10-y Bond Auction",
+    "cur": "EUR",
+    "t": 1795773900000,
+    "impact": "Low",
+    "forecast": "",
+    "previous": "4.49|1.6",
+    "actual": ""
+   },
+   {
+    "title": "German Buba President Nagel Speaks",
+    "cur": "EUR",
+    "t": 1795783200000,
+    "impact": "Low",
+    "forecast": "",
+    "previous": "",
+    "actual": ""
+   },
+   {
+    "title": "Current Account",
+    "cur": "CAD",
+    "t": 1795786200000,
+    "impact": "Low",
+    "forecast": "9.5B",
+    "previous": "8.8B",
+    "actual": ""
+   },
+   {
+    "title": "Goods Trade Balance",
+    "cur": "USD",
+    "t": 1795786200000,
+    "impact": "Low",
+    "forecast": "-135.9B",
+    "previous": "-134.9B",
+    "actual": ""
+   },
+   {
+    "title": "Prelim Wholesale Inventories m/m",
+    "cur": "USD",
+    "t": 1795786200000,
+    "impact": "Low",
+    "forecast": "0.5%",
+    "previous": "0.6%",
+    "actual": ""
+   }
+  ]
+ },
+ "llm": {
+  "at": "2026-11-28T11:48:43.362Z",
+  "key": "",
+  "model": "deepseek-v4-pro",
+  "regime": "RANGE_COMPRESSION",
+  "confidence": 74,
+  "rationale": "Pas de tendance nette malgré un repli de ~4% sur 24h; la volatilité réalisée reste modérément au-dessus de la normale (1,28x) et le financement est neutre, sans catalyseur macro. Les titres baissiers créent un biais prudent mais ne constituent pas une rupture systémique."
+ },
+ "last": {
+  "at": "2026-11-28T13:29:35.603Z",
+  "regime": "RANGE_COMPRESSION",
+  "source": "règles, confirmé par deepseek-v4-pro"
+ }
+}

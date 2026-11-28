@@ -1,0 +1,887 @@
+{
+ "0xecb99c5cbaddbf592c95add1413ed6dc56fa9d0893b4e080c3dc4e0779a64158": {
+  "title": "Will the price of Bitcoin be above $60,000 on November 26?",
+  "endDate": "2026-11-26",
+  "slug": "bitcoin-above-on-november-26-2026",
+  "url": "https://polymarket.com/event/bitcoin-above-on-november-26-2026",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x3c7951f8534f2623d1ba2e0df14e96dc11699b7ddf369a15f239167e3ff476ae": {
+  "title": "Will the price of Bitcoin be above $60,000 on November 27?",
+  "endDate": "2026-11-27",
+  "slug": "bitcoin-above-on-november-27-2026",
+  "url": "https://polymarket.com/event/bitcoin-above-on-november-27-2026",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x023d1f30e5366832d575d9a926e4e4e4f578eead14f0acbb8a8401a87c62af5c": {
+  "title": "Will Ethereum reach $1,700 November 23-29?",
+  "seenAt": "2026-11-27T20:10:30.710Z",
+  "triedAt": "2026-11-26T01:10:25.056Z",
+  "endDate": "2026-11-30T05:00:00Z",
+  "slug": "what-price-will-ethereum-hit-november-23-29-2026",
+  "url": "https://polymarket.com/event/what-price-will-ethereum-hit-november-23-29-2026"
+ },
+ "0x199d6ad1c70c41312abd559fc8e9f85b90f6db4ea66fd8e299a11eaaaa860b7d": {
+  "title": "Will Ethereum reach $1,700 on November 25?",
+  "seenAt": "2026-11-27T20:10:30.710Z",
+  "triedAt": "2026-11-26T01:10:25.056Z",
+  "endDate": "2026-11-26T05:00:00Z",
+  "slug": "what-price-will-ethereum-hit-on-november-25-2026",
+  "url": "https://polymarket.com/event/what-price-will-ethereum-hit-on-november-25-2026"
+ },
+ "0x56fda50857de4a67dd8265a9659917e2dc28275441526651f122b1da5dab2b06": {
+  "title": "Dogecoin Up or Down - November 25, 4:00PM-8:00PM ET",
+  "seenAt": "2026-11-27T20:10:30.710Z",
+  "triedAt": "2026-11-26T01:10:25.056Z",
+  "endDate": "2026-11-26T01:00:00Z",
+  "slug": "doge-updown-4h-1795640400",
+  "url": "https://polymarket.com/event/doge-updown-4h-1795640400"
+ },
+ "0xd753fee3f7ebf442caff98cfcedb2587fefd21e33c5c723eed4c3010fe2e82ea": {
+  "title": "Will Bitcoin reach $61,000 on November 25?",
+  "seenAt": "2026-11-27T19:10:27.120Z",
+  "triedAt": "2026-11-26T01:10:25.056Z",
+  "endDate": "2026-11-26T05:00:00Z",
+  "slug": "what-price-will-bitcoin-hit-on-november-25-2026",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-on-november-25-2026"
+ },
+ "0x5db6b438dbd30b0e7817700893751b76870573f6f7aebda142b6bd56b953deb7": {
+  "title": "Will the price of Bitcoin be above $54,000 on December 2?",
+  "endDate": "2026-12-02",
+  "slug": "bitcoin-above-on-december-2-2026",
+  "url": "https://polymarket.com/event/bitcoin-above-on-december-2-2026",
+  "seenAt": "2026-11-27T19:10:27.120Z"
+ },
+ "0x723822eb2b143cee54c0bd7c1efba322b21f0051984c266df8879c394f1011c0": {
+  "title": "Will there be no change in Fed interest rates after the December 2026 meeting?",
+  "endDate": "2026-12-09",
+  "slug": "fed-decision-in-december-20260729232808632",
+  "url": "https://polymarket.com/event/fed-decision-in-december-20260729232808632",
+  "seenAt": "2026-11-27T14:35:06.570Z"
+ },
+ "0x7ad403c3508f8e3912940fd1a913f227591145ca0614074208e0b962d5fcc422": {
+  "title": "Will JD Vance win the 2028 US Presidential Election?",
+  "endDate": "2028-11-08",
+  "slug": "presidential-election-winner-2028",
+  "url": "https://polymarket.com/event/presidential-election-winner-2028",
+  "seenAt": "2026-11-28T05:10:38.681Z"
+ },
+ "0xb2bf3159186bab0585539ab048d541fd0d314b97155632f6f9c0e1f3b5d38434": {
+  "title": "Will the price of Ethereum be above $1,700 on November 24?",
+  "seenAt": "2026-11-27T07:10:32.167Z",
+  "triedAt": "2026-11-26T01:10:25.056Z",
+  "endDate": "2026-11-24T17:00:00Z",
+  "slug": "ethereum-above-on-november-24-2026",
+  "url": "https://polymarket.com/event/ethereum-above-on-november-24-2026"
+ },
+ "0x5c85c4c7366213aafaadd040410470f7d98111480d8f72d6c4c4b4c3118478a6": {
+  "title": "Bitcoin Up or Down - November 24, 9:00AM-10:00AM ET",
+  "seenAt": "2026-11-27T07:10:32.167Z",
+  "triedAt": "2026-11-26T01:10:25.056Z",
+  "endDate": "2026-11-24T15:00:00Z",
+  "slug": "btc-updown-1h-1795528800",
+  "url": "https://polymarket.com/event/btc-updown-1h-1795528800"
+ },
+ "0x8dce6c6a126ca47f9c2f645ac9a925bfc421fc43b55f12ff107515dbb1e21fb0": {
+  "title": "Bitcoin Up or Down - November 24, 9:35AM-9:40AM ET",
+  "seenAt": "2026-11-27T07:10:32.167Z",
+  "triedAt": "2026-11-26T01:10:25.056Z",
+  "endDate": "2026-11-24T14:40:00Z",
+  "slug": "btc-updown-5m-1795530900",
+  "url": "https://polymarket.com/event/btc-updown-5m-1795530900"
+ },
+ "0x94b38f834e3497acfd95387024246de1be8e47fb7ca32a176bd0576eef3dad17": {
+  "title": "Bitcoin Up or Down - November 25, 6:50AM-6:55AM ET",
+  "seenAt": "2026-11-27T11:10:26.050Z",
+  "triedAt": "2026-11-26T01:10:25.056Z",
+  "endDate": "2026-11-25T11:55:00Z",
+  "slug": "btc-updown-5m-1795607400",
+  "url": "https://polymarket.com/event/btc-updown-5m-1795607400"
+ },
+ "0xf59b9c521c633df7e99ff893560f48de95a761e075ee6e5fa9241dbeb296effa": {
+  "title": "Bitcoin Up or Down - November 25, 6:55AM-7:00AM ET",
+  "seenAt": "2026-11-27T11:10:26.050Z",
+  "triedAt": "2026-11-26T01:10:25.056Z",
+  "endDate": "2026-11-25T12:00:00Z",
+  "slug": "btc-updown-5m-1795607700",
+  "url": "https://polymarket.com/event/btc-updown-5m-1795607700"
+ },
+ "0xbcb39bf9a3327a2d52bc3c69350c1441728ec927376fa4b91ca4cbe6c19e7072": {
+  "title": "Will Bitcoin dip to $58,000 November 23-29?",
+  "seenAt": "2026-11-27T14:10:25.734Z",
+  "triedAt": "2026-11-26T01:10:25.056Z",
+  "endDate": "2026-11-30T05:00:00Z",
+  "slug": "what-price-will-bitcoin-hit-november-23-29-2026",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-november-23-29-2026"
+ },
+ "0x8b751f3eebcfe45a36014c6fca09ca89db2a273f3c2f0b811d14d2d55f1eba0e": {
+  "title": "Will the price of Bitcoin be above $58,000 on November 25?",
+  "seenAt": "2026-11-27T12:10:28.832Z",
+  "triedAt": "2026-11-26T01:10:25.056Z",
+  "endDate": "2026-11-25T17:00:00Z",
+  "slug": "bitcoin-above-on-november-25-2026",
+  "url": "https://polymarket.com/event/bitcoin-above-on-november-25-2026"
+ },
+ "0x784e2c46bed32b13a078e518399752d89b5def56a3a945870b1565ee59b7b200": {
+  "title": "Will Bitcoin dip to $57,500 in November?",
+  "seenAt": "2026-11-27T14:10:25.734Z",
+  "triedAt": "2026-11-26T01:10:25.056Z",
+  "endDate": "2026-12-01T05:00:00Z",
+  "slug": "what-price-will-bitcoin-hit-in-november-2026",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-in-november-2026"
+ },
+ "0x552453d48669e7e7d067ab27ffe544e199f6068eaaa519295fcdda7cdd2a3c16": {
+  "title": "Bitcoin Up or Down on November 25?",
+  "seenAt": "2026-11-27T12:10:28.832Z",
+  "triedAt": "2026-11-26T01:10:25.056Z",
+  "endDate": "2026-11-25T17:00:00Z",
+  "slug": "btc-updown-1d-1795539600",
+  "url": "https://polymarket.com/event/btc-updown-1d-1795539600"
+ },
+ "0xede6acdd94e284f297ea71c389b794a80377db813136465a431bcec9649a7e9c": {
+  "title": "Will Bitcoin reach $60,000 on November 25?",
+  "seenAt": "2026-11-27T14:10:25.734Z",
+  "triedAt": "2026-11-26T01:10:25.056Z",
+  "endDate": "2026-11-26T05:00:00Z",
+  "slug": "what-price-will-bitcoin-hit-on-november-25-2026",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-on-november-25-2026"
+ },
+ "0x7cfd775dc4f2bedbc43fe70493e88a340fcdb0986727c15f4963237231bb806d": {
+  "title": "Will Bitcoin dip to $55,000 in November?",
+  "endDate": "2026-12-01",
+  "slug": "what-price-will-bitcoin-hit-in-november-2026",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-in-november-2026",
+  "seenAt": "2026-11-27T16:10:27.198Z"
+ },
+ "0x51cb05f3d4af8985141a29b81dcfdeec5081c4edc36640579823118ae91e516d": {
+  "title": "Will Ethereum dip to $1,500 in November?",
+  "endDate": "2026-12-01",
+  "slug": "what-price-will-ethereum-hit-in-november-2026",
+  "url": "https://polymarket.com/event/what-price-will-ethereum-hit-in-november-2026",
+  "seenAt": "2026-11-27T16:10:27.198Z"
+ },
+ "0xa2fdb75238670fd4bd0576c3dc34fa873bee3a0e23b1ce72441f1485f3608dc1": {
+  "title": "Will Ethereum dip to $1,600 November 23-29?",
+  "endDate": "2026-11-30",
+  "slug": "what-price-will-ethereum-hit-november-23-29-2026",
+  "url": "https://polymarket.com/event/what-price-will-ethereum-hit-november-23-29-2026",
+  "seenAt": "2026-11-27T16:10:27.198Z"
+ },
+ "0x752fa61c93f16c4b15e85b0bd438d9c684176b0ea7b319a84c8aca34616e8a8c": {
+  "title": "Will Bitcoin dip to $55,000 by December 31, 2026?",
+  "endDate": "2027-01-01",
+  "slug": "what-price-will-bitcoin-hit-before-2027",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-before-2027",
+  "seenAt": "2026-11-27T16:10:27.198Z"
+ },
+ "0x578a5dee029e92d905a300a4fc9fa8280a8e2f147a578939c55c9a21be055987": {
+  "title": "Bitcoin Up or Down - November 25, 12:00PM-4:00PM ET",
+  "seenAt": "2026-11-27T16:10:27.198Z",
+  "triedAt": "2026-11-26T01:10:25.056Z",
+  "endDate": "2026-11-25T21:00:00Z",
+  "slug": "btc-updown-4h-1795626000",
+  "url": "https://polymarket.com/event/btc-updown-4h-1795626000"
+ },
+ "0x2e18a7e742036eafd38881cb59e49da5b95b750c0223d3a0c8a5462089a1c17e": {
+  "title": "Solana Up or Down - November 25, 12:00PM-4:00PM ET",
+  "seenAt": "2026-11-27T16:10:27.198Z",
+  "triedAt": "2026-11-26T01:10:25.056Z",
+  "endDate": "2026-11-25T21:00:00Z",
+  "slug": "sol-updown-4h-1795626000",
+  "url": "https://polymarket.com/event/sol-updown-4h-1795626000"
+ },
+ "0x9c13d6d6ab70375468117d98537a299e26931088b35d7319bc6bdfcb08df521e": {
+  "title": "Will NVIDIA (NVDA) close above $150 on November 25?",
+  "seenAt": "2026-11-27T17:10:28.955Z",
+  "triedAt": "2026-11-26T01:10:25.056Z",
+  "endDate": "2026-11-25T21:00:00Z",
+  "slug": "nvda-close-above-on-november-25-2026",
+  "url": "https://polymarket.com/event/nvda-close-above-on-november-25-2026"
+ },
+ "0xe9fe6f191702f83bfe5273a9418e5213e5d9485d368dab1f536a1c0061b5cdb8": {
+  "title": "Will Tesla, Inc. (TSLA) hit (LOW) $330 in November?",
+  "endDate": "2026-12-01",
+  "slug": "what-price-will-tsla-hit-in-november-2026",
+  "url": "https://polymarket.com/event/what-price-will-tsla-hit-in-november-2026",
+  "seenAt": "2026-11-27T18:10:27.143Z"
+ },
+ "0xccd8213f7deee80d86fdc3d0abb15e20ab4e953c2bf0e2b17148b9a76810589a": {
+  "title": "Will NVIDIA (NVDA) hit (HIGH) $160 in November?",
+  "endDate": "2026-12-01",
+  "slug": "what-price-will-nvda-hit-in-november-2026",
+  "url": "https://polymarket.com/event/what-price-will-nvda-hit-in-november-2026",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x988e80bf6747d9230ea49f792bfd910ce1bf52fcbc794ae2609a72078f9882ae": {
+  "title": "Dogecoin Up or Down - November 25, 8:00PM-12:00AM ET",
+  "endDate": "2026-11-26",
+  "slug": "doge-updown-4h-1795654800",
+  "url": "https://polymarket.com/event/doge-updown-4h-1795654800",
+  "seenAt": "2026-11-27T23:05:27.405Z"
+ },
+ "0xb2e5be9825da736daf802470a3bcfe791c25d9f290ebe79cc12d0e9cc0ce5862": {
+  "title": "Will the price of Ethereum be above $1,800 on November 27?",
+  "endDate": "2026-11-27",
+  "slug": "ethereum-above-on-november-27-2026",
+  "url": "https://polymarket.com/event/ethereum-above-on-november-27-2026",
+  "seenAt": "2026-11-26T05:10:25.792Z"
+ },
+ "0x20dbf16394cc69f604e083a15ae310a358789622f9c974eb377d1b4e7c722229": {
+  "title": "Will Bitcoin reach $62,000 on November 25?",
+  "endDate": "2026-11-26",
+  "slug": "what-price-will-bitcoin-hit-on-november-25-2026",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-on-november-25-2026",
+  "seenAt": "2026-11-27T23:05:27.405Z"
+ },
+ "0xcdc3f466a84592160554b078d4e031934f14ef194766458569c827522ed4a03a": {
+  "title": "Bitcoin Up or Down - November 25, 8:00PM-12:00AM ET",
+  "endDate": "2026-11-26",
+  "slug": "btc-updown-4h-1795654800",
+  "url": "https://polymarket.com/event/btc-updown-4h-1795654800",
+  "seenAt": "2026-11-26T04:10:28.187Z"
+ },
+ "0x5e84192166b2c6fb02944c79958250dd565811ba37ded95012c54b4882bc59ed": {
+  "title": "Will NVIDIA (NVDA) hit (HIGH) $184 in November?",
+  "endDate": "2026-12-01",
+  "slug": "what-price-will-nvda-hit-in-november-2026",
+  "url": "https://polymarket.com/event/what-price-will-nvda-hit-in-november-2026",
+  "seenAt": "2026-11-27T23:07:03.986Z"
+ },
+ "0x105a63cff5c28bd502f2aea88b8422414398d8f7cfb78e2c69a6751a217ffc40": {
+  "title": "Bitcoin Up or Down - November 26, 12:00AM-4:00AM ET",
+  "endDate": "2026-11-26",
+  "slug": "btc-updown-4h-1795669200",
+  "url": "https://polymarket.com/event/btc-updown-4h-1795669200",
+  "seenAt": "2026-11-27T23:08:33.977Z"
+ },
+ "0x18b1c135d0a40c5894da9412e77311827d9caf16cf4cd6591b247a34730af919": {
+  "title": "Will J.D. Vance win the 2028 Republican presidential nomination?",
+  "endDate": "2028-11-08",
+  "slug": "republican-presidential-nominee-2028",
+  "url": "https://polymarket.com/event/republican-presidential-nominee-2028",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0xcec4af7058e4776472c45c7e960ea0c204f7372b62b067626239e603cdeccd3b": {
+  "title": "Will Ethereum dip to $1,650 on November 26?",
+  "endDate": "2026-11-27",
+  "slug": "what-price-will-ethereum-hit-on-november-26-2026",
+  "url": "https://polymarket.com/event/what-price-will-ethereum-hit-on-november-26-2026",
+  "seenAt": "2026-11-28T00:10:31.743Z"
+ },
+ "0x68f425a37a2bf693d43de418335b00841af699ef37cc5cb6634c83432c6541cd": {
+  "title": "Will Bitcoin dip to $57,500 in November?",
+  "endDate": "2026-12-01",
+  "slug": "what-price-will-bitcoin-hit-in-november-2026",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-in-november-2026",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x18c74c5f8c9eb6ed04f45d4675272e680669a6c9e17c81150f90351a82383d1f": {
+  "title": "Will Bitcoin dip to $58,000 November 23-29?",
+  "endDate": "2026-11-30",
+  "slug": "what-price-will-bitcoin-hit-november-23-29-2026",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-november-23-29-2026",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0xc82ecd06c0bf3e4b73a0f8cebd7b46523378605f0bd73052c21b8225348c8e80": {
+  "title": "Will Tesla (TSLA) finish week of November 23 above $380?",
+  "endDate": "2026-11-27",
+  "slug": "tsla-above-on-november-27-2026",
+  "url": "https://polymarket.com/event/tsla-above-on-november-27-2026",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x9089b3948ff0c875bde4b622a48e669a2f7085d05091031f4f9b57ce39020bd5": {
+  "title": "Bitcoin Up or Down - November 26, 4:00AM-8:00AM ET",
+  "endDate": "2026-11-26",
+  "slug": "btc-updown-4h-1795683600",
+  "url": "https://polymarket.com/event/btc-updown-4h-1795683600",
+  "seenAt": "2026-11-26T13:10:25.803Z"
+ },
+ "0x748c4b6aa076c01d7071f4b77707ee55e72c7956b682305211209c826989672f": {
+  "title": "Will NVIDIA (NVDA) hit (HIGH) $176 in November?",
+  "endDate": "2026-12-01",
+  "slug": "what-price-will-nvda-hit-in-november-2026",
+  "url": "https://polymarket.com/event/what-price-will-nvda-hit-in-november-2026",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x22291b79eb98851632b12a0691635cf32bb014796d0ba78bf5a06a289f34d7ce": {
+  "title": "Dogecoin Up or Down - November 26, 8:00AM-12:00PM ET",
+  "endDate": "2026-11-26",
+  "slug": "doge-updown-4h-1795698000",
+  "url": "https://polymarket.com/event/doge-updown-4h-1795698000",
+  "seenAt": "2026-11-28T01:10:39.417Z"
+ },
+ "0xe7e8479028f6c52642c0157dcdf7e0704168cccce64debda2935488ee2858bc1": {
+  "title": "Bitcoin Up or Down - November 26, 8:00AM-12:00PM ET",
+  "endDate": "2026-11-26",
+  "slug": "btc-updown-4h-1795698000",
+  "url": "https://polymarket.com/event/btc-updown-4h-1795698000",
+  "seenAt": "2026-11-28T01:10:39.417Z"
+ },
+ "0x177770c9acac9d3e4d29974f62ef9e5dac2973ade93cc9a4b23be5f3092f9fec": {
+  "title": "Will Tesla (TSLA) finish week of November 23 above $360?",
+  "endDate": "2026-11-27",
+  "slug": "tsla-above-on-november-27-2026",
+  "url": "https://polymarket.com/event/tsla-above-on-november-27-2026",
+  "seenAt": "2026-11-28T01:50:31.035Z"
+ },
+ "0xce3c54c3e773e8b3bf73e4c12af93205b21195d03b9c386e22f274b9acfc2c56": {
+  "title": "Will Bitcoin dip to $50,000 by December 31, 2026?",
+  "endDate": "2027-01-01",
+  "slug": "what-price-will-bitcoin-hit-before-2027",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-before-2027",
+  "seenAt": "2026-11-26T20:10:26.858Z"
+ },
+ "0xea3fc87eb93319e7ec9bc2d6c2b0b1a7aa9bdbfa9c74fcb268d1c98bda0d7e18": {
+  "title": "Will Bitcoin reach $62,000 November 23-29?",
+  "endDate": "2026-11-30",
+  "slug": "what-price-will-bitcoin-hit-november-23-29-2026",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-november-23-29-2026",
+  "seenAt": "2026-11-28T09:10:35.903Z"
+ },
+ "0xe6fe3c029eb14b786792ccabca7dd4b81edae32b7464a622aead806a40d9fd05": {
+  "title": "Bitcoin Up or Down - November 26, 12:00PM-4:00PM ET",
+  "endDate": "2026-11-26",
+  "slug": "btc-updown-4h-1795712400",
+  "url": "https://polymarket.com/event/btc-updown-4h-1795712400",
+  "seenAt": "2026-11-28T02:24:27.091Z"
+ },
+ "0x90878b27ed0e77cb4ca53729b2aff95e87b7f33e3d33bc19ea691cde2cbeba2e": {
+  "title": "Dogecoin Up or Down - November 26, 12:00PM-4:00PM ET",
+  "endDate": "2026-11-26",
+  "slug": "doge-updown-4h-1795712400",
+  "url": "https://polymarket.com/event/doge-updown-4h-1795712400",
+  "seenAt": "2026-11-28T02:24:27.091Z"
+ },
+ "0xe297b40e3459524287eebc052c517c6b206c511cff80a02b7d3b33cbc992962f": {
+  "title": "Will the price of Bitcoin be greater than $68,000 on December 2?",
+  "endDate": "2026-12-02",
+  "slug": "bitcoin-price-on-december-2-2026",
+  "url": "https://polymarket.com/event/bitcoin-price-on-december-2-2026",
+  "seenAt": "2026-11-28T07:10:35.607Z"
+ },
+ "0x5d95aa50be92d3980227e31c3cc9a90efe8d7b79872900c807447859fcc5233b": {
+  "title": "Dogecoin Up or Down on November 27?",
+  "endDate": "2026-11-27",
+  "slug": "doge-updown-1d-1795712400",
+  "url": "https://polymarket.com/event/doge-updown-1d-1795712400",
+  "seenAt": "2026-11-28T08:10:44.865Z"
+ },
+ "0xcb123b5f454942fd31017b662207a0b30970b21c1667dbd22972e095192eb2bb": {
+  "title": "Will Bitcoin dip to $60,000 in November?",
+  "endDate": "2026-12-01",
+  "slug": "what-price-will-bitcoin-hit-in-november-2026",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-in-november-2026",
+  "seenAt": "2026-11-28T12:10:37.514Z"
+ },
+ "0x77081aabacace2132d066ffdf11f96b044d8cfd908e9108fbf521be0882e9f8f": {
+  "title": "Dogecoin Up or Down - November 26, 8:00PM-12:00AM ET",
+  "endDate": "2026-11-27",
+  "slug": "doge-updown-4h-1795741200",
+  "url": "https://polymarket.com/event/doge-updown-4h-1795741200",
+  "seenAt": "2026-11-28T06:10:32.318Z"
+ },
+ "0x1c4a6c3a8f622b43fede8a6c7387285c23807c8bc4af5f9baf830034dee17649": {
+  "title": "Bitcoin Up or Down - November 26, 8:00PM-12:00AM ET",
+  "endDate": "2026-11-27",
+  "slug": "btc-updown-4h-1795741200",
+  "url": "https://polymarket.com/event/btc-updown-4h-1795741200",
+  "seenAt": "2026-11-28T07:10:35.607Z"
+ },
+ "0x38d1e6f33b214cd873cf41ce03338bf3e8e3b4000ab825b40b4eaec8609a5705": {
+  "title": "Will the price of Bitcoin be above $64,000 on November 27?",
+  "endDate": "2026-11-27",
+  "slug": "bitcoin-above-on-november-27-2026",
+  "url": "https://polymarket.com/event/bitcoin-above-on-november-27-2026",
+  "seenAt": "2026-11-27T06:10:27.599Z"
+ },
+ "0x1f5575d09bc24465235fcab6c220865df6fa596ab5d7dd37c9d5c36ce54f7a5f": {
+  "title": "Will Ethereum reach $1,800 November 23-29?",
+  "endDate": "2026-11-30",
+  "slug": "what-price-will-ethereum-hit-november-23-29-2026",
+  "url": "https://polymarket.com/event/what-price-will-ethereum-hit-november-23-29-2026",
+  "seenAt": "2026-11-27T16:10:27.198Z"
+ },
+ "0xaa7e93dd8215e9819e80f30015e42d481ec4fb5f90cda7e6771524612b2cafa7": {
+  "title": "Will Bitcoin reach $62,500 in November?",
+  "endDate": "2026-12-01",
+  "slug": "what-price-will-bitcoin-hit-in-november-2026",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-in-november-2026",
+  "seenAt": "2026-11-28T11:48:43.362Z"
+ },
+ "0x5eb5d77d8607ce8b2859fb059e07859164b5096fe84c7b181c3ce034b19d7a5b": {
+  "title": "Will Ethereum reach $1,800 in November?",
+  "endDate": "2026-12-01",
+  "slug": "what-price-will-ethereum-hit-in-november-2026",
+  "url": "https://polymarket.com/event/what-price-will-ethereum-hit-in-november-2026",
+  "seenAt": "2026-11-27T16:10:27.198Z"
+ },
+ "0x6916f272b22f98cfd265b81cccb29d1e0ce9137aa1a4617339d2a4bc93af8beb": {
+  "title": "Will the price of Bitcoin be above $62,000 on November 27?",
+  "endDate": "2026-11-27",
+  "slug": "bitcoin-above-on-november-27-2026",
+  "url": "https://polymarket.com/event/bitcoin-above-on-november-27-2026",
+  "seenAt": "2026-11-28T11:48:43.362Z"
+ },
+ "0x99df5a5c7776cd0ab096fa07a815763cd31c49e54aa4c40b2d89dc372489bf2d": {
+  "title": "Will Bitcoin reach $62,000 on November 26?",
+  "endDate": "2026-11-27",
+  "slug": "what-price-will-bitcoin-hit-on-november-26-2026",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-on-november-26-2026",
+  "seenAt": "2026-11-28T07:10:35.607Z"
+ },
+ "0x3d48e0367e64f3f43f82534e4d4b0c7a82666d3a51df1db793cb2514ce9394da": {
+  "title": "Will the price of Solana be above $70 on November 27?",
+  "endDate": "2026-11-27",
+  "slug": "solana-above-on-november-27-2026",
+  "url": "https://polymarket.com/event/solana-above-on-november-27-2026",
+  "seenAt": "2026-11-27T03:10:25.807Z"
+ },
+ "0x01497022e50b016813829ab5bfcf1531e9a79acdbe4005e914271d94cc525506": {
+  "title": "Ethereum Up or Down on November 27?",
+  "endDate": "2026-11-27",
+  "slug": "eth-updown-1d-1795712400",
+  "url": "https://polymarket.com/event/eth-updown-1d-1795712400",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0xc37eaefb55f825531160420a7de22bb4f03457990679a8f35b8da501b608a679": {
+  "title": "Will the price of Ethereum be above $1,700 on November 27?",
+  "endDate": "2026-11-27",
+  "slug": "ethereum-above-on-november-27-2026",
+  "url": "https://polymarket.com/event/ethereum-above-on-november-27-2026",
+  "seenAt": "2026-11-28T12:10:37.514Z"
+ },
+ "0xcf1e429c51ff6fb8b638ea7cfd555017db4992b4cf4eea7d70ab6e77cdf1589d": {
+  "title": "Will Ethereum reach $3,100 in November?",
+  "endDate": "2026-12-01",
+  "slug": "what-price-will-ethereum-hit-in-november-2026",
+  "url": "https://polymarket.com/event/what-price-will-ethereum-hit-in-november-2026",
+  "seenAt": "2026-11-27T08:10:29.263Z"
+ },
+ "0xf0672f4ba1ce2b179de472f2dbdaa10ecaef5f491a77715c2351c9fb5532d3d4": {
+  "title": "Will XRP reach $8.00 by December 31, 2026?",
+  "endDate": "2027-01-01",
+  "slug": "what-price-will-xrp-hit-before-2027",
+  "url": "https://polymarket.com/event/what-price-will-xrp-hit-before-2027",
+  "seenAt": "2026-11-27T08:10:29.263Z"
+ },
+ "0xf3519e50e99fa353443d45060813453b1b717e463b5b76c306e85e8f5b026116": {
+  "title": "Will Bitcoin reach $500,000 by December 31, 2026?",
+  "endDate": "2027-01-01",
+  "slug": "what-price-will-bitcoin-hit-before-2027",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-before-2027",
+  "seenAt": "2026-11-27T09:10:25.103Z"
+ },
+ "0xf91a7667289b63e0c9c926017529e2bccaadc3da2d82075612420c43d36fbb08": {
+  "title": "Will Puma Shen win the 2026 Taipei Mayoral Election by 8% or more?",
+  "endDate": "2026-11-29",
+  "slug": "2026-taipei-mayoral-election-margin-of-victory-20261103233704870",
+  "url": "https://polymarket.com/event/2026-taipei-mayoral-election-margin-of-victory-20261103233704870",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x70f08e5b189bfad9bcc4b7c01c5e355e67cdd2acec23c3d93ef86e55536a71ff": {
+  "title": "Will Chiang Wan-an win the 2026 Taipei Mayoral Election by 12% or more?",
+  "endDate": "2026-11-29",
+  "slug": "2026-taipei-mayoral-election-margin-of-victory-20261103233704870",
+  "url": "https://polymarket.com/event/2026-taipei-mayoral-election-margin-of-victory-20261103233704870",
+  "seenAt": "2026-11-27T13:10:24.954Z"
+ },
+ "0x6504d657208c9bf59ecd57555cac2aa18f0dcf143b2d8de7704151bec277f66a": {
+  "title": "Dogecoin Up or Down - November 27, 4:00AM-8:00AM ET",
+  "endDate": "2026-11-27",
+  "slug": "doge-updown-4h-1795770000",
+  "url": "https://polymarket.com/event/doge-updown-4h-1795770000",
+  "seenAt": "2026-11-28T11:10:34.117Z"
+ },
+ "0x8e00cd642ada2c18ededefa8c7c505a0ad37b9b44ac63376cbacfafbb22c2108": {
+  "title": "Will Huang Shih-chieh win the next Taoyuan Mayor election?",
+  "endDate": "2026-11-29",
+  "slug": "taoyuan-mayor-election-winner-20260813125857300",
+  "url": "https://polymarket.com/event/taoyuan-mayor-election-winner-20260813125857300",
+  "seenAt": "2026-11-27T14:10:25.734Z"
+ },
+ "0xcbbb3c835a57bba715b065169999014d205a6f33eb10d82e7eebdf7c4b650afe": {
+  "title": "Bitcoin Up or Down - November 27, 8:00AM-12:00PM ET",
+  "endDate": "2026-11-27",
+  "slug": "btc-updown-4h-1795784400",
+  "url": "https://polymarket.com/event/btc-updown-4h-1795784400",
+  "seenAt": "2026-11-27T16:10:27.198Z"
+ },
+ "0x405a426de0bc2ba64747ef4317787876bba0acb9a3cbb5d140c359d10cc90c7e": {
+  "title": "Will Chang San-cheng win the next Taoyuan Mayor election?",
+  "endDate": "2026-11-29",
+  "slug": "taoyuan-mayor-election-winner-20260813125857300",
+  "url": "https://polymarket.com/event/taoyuan-mayor-election-winner-20260813125857300",
+  "seenAt": "2026-11-27T18:10:27.143Z"
+ },
+ "0x7801551b839b0ed9bbe155b70f8160bd9647ebae5e62e483c0c6d36eabf86ea3": {
+  "title": "Dogecoin Up or Down - November 27, 8:00AM-12:00PM ET",
+  "endDate": "2026-11-27",
+  "slug": "doge-updown-4h-1795784400",
+  "url": "https://polymarket.com/event/doge-updown-4h-1795784400",
+  "seenAt": "2026-11-27T15:10:26.337Z"
+ },
+ "0xcf25ccc8360f3952139fb5e3f14cb9bb0636cb53d0e30e947321ceccab7e9780": {
+  "title": "Will Ethereum dip to $1,500 by December 31, 2026?",
+  "endDate": "2027-01-01",
+  "slug": "what-price-will-ethereum-hit-before-2027",
+  "url": "https://polymarket.com/event/what-price-will-ethereum-hit-before-2027",
+  "seenAt": "2026-11-27T16:10:27.198Z"
+ },
+ "0x1444c23bbb16890b3c128f420d7dffcc1034b27c1a0832c6301586ac4154caca": {
+  "title": "Will Bitcoin reach $65,000 in November?",
+  "endDate": "2026-12-01",
+  "slug": "what-price-will-bitcoin-hit-in-november-2026",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-in-november-2026",
+  "seenAt": "2026-11-27T15:10:26.337Z"
+ },
+ "0xbaa3bae4ad27e14a6903a99a5e50430cc2dfd2a0ba75ef7d031fca86351c3b0a": {
+  "title": "Will Ethereum dip to $1,600 in November?",
+  "endDate": "2026-12-01",
+  "slug": "what-price-will-ethereum-hit-in-november-2026",
+  "url": "https://polymarket.com/event/what-price-will-ethereum-hit-in-november-2026",
+  "seenAt": "2026-11-27T16:10:27.198Z"
+ },
+ "0x459bb1954c553022e8d64b02acf6e752287947c7402a59edb8f4beb754b7804f": {
+  "title": "Will Bitcoin dip to $56,000 November 23-29?",
+  "endDate": "2026-11-30",
+  "slug": "what-price-will-bitcoin-hit-november-23-29-2026",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-november-23-29-2026",
+  "seenAt": "2026-11-27T15:10:26.337Z"
+ },
+ "0x2fd4812e439b196db0ccb1196ded57599d72460e6607edea16dd3583561b7f72": {
+  "title": "Will NVIDIA (NVDA) hit (HIGH) $168 in November?",
+  "endDate": "2026-12-01",
+  "slug": "what-price-will-nvda-hit-in-november-2026",
+  "url": "https://polymarket.com/event/what-price-will-nvda-hit-in-november-2026",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x22b069c1d8ef9af798919c707b50f2d49b4d82acbdaa37c9169739469b2a19ff": {
+  "title": "Will Bitcoin reach $64,000 November 23-29?",
+  "endDate": "2026-11-30",
+  "slug": "what-price-will-bitcoin-hit-november-23-29-2026",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-november-23-29-2026",
+  "seenAt": "2026-11-27T15:10:26.337Z"
+ },
+ "0x658e34e466fd07264869464a8f4875d18b486114fdae179dbcce7a1f2767c0df": {
+  "title": "Bitcoin Up or Down on November 27?",
+  "endDate": "2026-11-27",
+  "slug": "btc-updown-1d-1795712400",
+  "url": "https://polymarket.com/event/btc-updown-1d-1795712400",
+  "seenAt": "2026-11-27T15:10:26.337Z"
+ },
+ "0xed407c4b8b34e3987660c55c23289c8877ac0e17292e112c465ac625c8ccee70": {
+  "title": "Will the price of Ethereum be above $1,700 on November 28?",
+  "endDate": "2026-11-28",
+  "slug": "ethereum-above-on-november-28-2026",
+  "url": "https://polymarket.com/event/ethereum-above-on-november-28-2026",
+  "seenAt": "2026-11-27T16:10:27.198Z"
+ },
+ "0xb7fb66c088245c065a5316ddc9ecc60e9471dc7b1b91f0c94b588e93416f3ea6": {
+  "title": "Will Bitcoin dip to $58,000 on November 27?",
+  "endDate": "2026-11-28",
+  "slug": "what-price-will-bitcoin-hit-on-november-27-2026",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-on-november-27-2026",
+  "seenAt": "2026-11-27T15:10:26.337Z"
+ },
+ "0xe6cd40d13b3a3b6637438b8f3747db660c7b2ee26be7a56fb6210e174cf5a8a2": {
+  "title": "Solana Up or Down on November 27?",
+  "endDate": "2026-11-27",
+  "slug": "sol-updown-1d-1795712400",
+  "url": "https://polymarket.com/event/sol-updown-1d-1795712400",
+  "seenAt": "2026-11-27T16:10:27.198Z"
+ },
+ "0x8ce30d4daf91a2dc39fa86e60deb76fe938397f4abf4dd86378e337dd62d716b": {
+  "title": "Will Ethereum dip to $1,600 on November 27?",
+  "endDate": "2026-11-28",
+  "slug": "what-price-will-ethereum-hit-on-november-27-2026",
+  "url": "https://polymarket.com/event/what-price-will-ethereum-hit-on-november-27-2026",
+  "seenAt": "2026-11-27T15:10:26.337Z"
+ },
+ "0x6890d1aa95e486cb7f34fe8a3ee56bc35472967261f90a71b08bf47db2de12cb": {
+  "title": "Will Ethereum dip to $1,550 on November 27?",
+  "endDate": "2026-11-28",
+  "slug": "what-price-will-ethereum-hit-on-november-27-2026",
+  "url": "https://polymarket.com/event/what-price-will-ethereum-hit-on-november-27-2026",
+  "seenAt": "2026-11-27T15:10:26.337Z"
+ },
+ "0xa6baebc146628fdfc58adac1e291633baa86c5818e204c753e1eacc87ad7be96": {
+  "title": "Will the price of Bitcoin be above $60,000 on November 29?",
+  "endDate": "2026-11-29",
+  "slug": "bitcoin-above-on-november-29-2026",
+  "url": "https://polymarket.com/event/bitcoin-above-on-november-29-2026",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0xec672aef62823d58a0fa0ce745e812c2a9c520f2e1d8288b292dfe2e09a84b96": {
+  "title": "Will the price of Ethereum be less than $1,300 on November 29?",
+  "endDate": "2026-11-29",
+  "slug": "ethereum-price-on-november-29-2026",
+  "url": "https://polymarket.com/event/ethereum-price-on-november-29-2026",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0xc32fcc5becdfb4ba5e1edd9cdea2886d13d68200371eb8bce98f230e2ed62983": {
+  "title": "Dogecoin Up or Down - November 27, 12:00PM-4:00PM ET",
+  "endDate": "2026-11-27",
+  "slug": "doge-updown-4h-1795798800",
+  "url": "https://polymarket.com/event/doge-updown-4h-1795798800",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x910aabbfae28b3569929c31fb5461f4db13f7ddd427bdee1e696d313125838e3": {
+  "title": "Will Puma Shen win the next Taipei Mayor election?",
+  "endDate": "2026-11-29",
+  "slug": "taipei-mayor-election-winner-20260813125857100",
+  "url": "https://polymarket.com/event/taipei-mayor-election-winner-20260813125857100",
+  "seenAt": "2026-11-28T11:10:34.117Z"
+ },
+ "0x541fe26331737937cf44ba059b96b180912a5dbd600154f101c2554c489e1a32": {
+  "title": "Bitcoin Up or Down - November 27, 12:00PM-4:00PM ET",
+  "endDate": "2026-11-27",
+  "slug": "btc-updown-4h-1795798800",
+  "url": "https://polymarket.com/event/btc-updown-4h-1795798800",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x1ba4dbdac68b10bba3218bbd09b0c566ff71666d27917e5ca9b4d88db88d683c": {
+  "title": "Dogecoin Up or Down on November 28?",
+  "endDate": "2026-11-28",
+  "slug": "doge-updown-1d-1795798800",
+  "url": "https://polymarket.com/event/doge-updown-1d-1795798800",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0xecf5b7fbb13965cfaecee89c7738295554efa8e4b07f468ee96270d2d2f06bf8": {
+  "title": "Bitcoin Up or Down - November 27, 5:00PM-6:00PM ET",
+  "endDate": "2026-11-27",
+  "slug": "btc-updown-1h-1795816800",
+  "url": "https://polymarket.com/event/btc-updown-1h-1795816800",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0xafdb9554731fab4591bd756ff922e537752046bcdda164f468bf735e106178ba": {
+  "title": "Bitcoin Up or Down - November 27, 4:00PM-8:00PM ET",
+  "endDate": "2026-11-28",
+  "slug": "btc-updown-4h-1795813200",
+  "url": "https://polymarket.com/event/btc-updown-4h-1795813200",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0xcb34def5f3f7cd01b795e7c5e2c9ecd2b4ee8ce8cfd0719a9a252be72751b781": {
+  "title": "Will Ethereum reach $1,700 in November?",
+  "endDate": "2026-12-01",
+  "slug": "what-price-will-ethereum-hit-in-november-2026",
+  "url": "https://polymarket.com/event/what-price-will-ethereum-hit-in-november-2026",
+  "seenAt": "2026-11-28T06:10:32.318Z"
+ },
+ "0xb6b73782138ae120edaf633f97f65bf3975ddd51c809ede740a3f693b30cfb06": {
+  "title": "Solana Up or Down on November 28?",
+  "endDate": "2026-11-28",
+  "slug": "sol-updown-1d-1795798800",
+  "url": "https://polymarket.com/event/sol-updown-1d-1795798800",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x91e20860241f7c90fcff5ec348a68f953bd66a02d5662ac26cab32ac1f904be6": {
+  "title": "Will Pedro Sánchez be the next Prime Minister of Spain?",
+  "endDate": "2026-11-30",
+  "slug": "next-prime-minister-of-spain-20260625005215443",
+  "url": "https://polymarket.com/event/next-prime-minister-of-spain-20260625005215443",
+  "seenAt": "2026-11-28T02:24:27.091Z"
+ },
+ "0x97c0b1316b8d9ba677414e8a682948e7560c1af60fc239b085a68cc467c21f23": {
+  "title": "Will Alberto Núñez Feijóo be the next Prime Minister of Spain?",
+  "endDate": "2026-11-30",
+  "slug": "next-prime-minister-of-spain-20260625005215443",
+  "url": "https://polymarket.com/event/next-prime-minister-of-spain-20260625005215443",
+  "seenAt": "2026-11-28T02:24:27.091Z"
+ },
+ "0xf6584c269881d166f31fe204f776cb30160db6e561799abe81a381d76a63241c": {
+  "title": "Bitcoin Up or Down - November 27, 5:55PM-6:00PM ET",
+  "endDate": "2026-11-27",
+  "slug": "btc-updown-5m-1795820100",
+  "url": "https://polymarket.com/event/btc-updown-5m-1795820100",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0xd5fd472d1ab12cbe436d1b9b1c4cfb7999ab003f62fecd171aad858280ee702b": {
+  "title": "Dogecoin Up or Down - November 27, 4:00PM-8:00PM ET",
+  "endDate": "2026-11-28",
+  "slug": "doge-updown-4h-1795813200",
+  "url": "https://polymarket.com/event/doge-updown-4h-1795813200",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x11aea05b6d8ef69db3a0457e8366256844b50c6cedb022820f4ca40337ca90be": {
+  "title": "Bitcoin Up or Down - November 27, 6:05PM-6:10PM ET",
+  "endDate": "2026-11-27",
+  "slug": "btc-updown-5m-1795820700",
+  "url": "https://polymarket.com/event/btc-updown-5m-1795820700",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x55f33b784237e0b5ce47babcdcc23d8873a00ed593f87733f3c24242493cb673": {
+  "title": "Bitcoin Up or Down - November 27, 6:00PM-7:00PM ET",
+  "endDate": "2026-11-28",
+  "slug": "btc-updown-1h-1795820400",
+  "url": "https://polymarket.com/event/btc-updown-1h-1795820400",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x9b0b4496eceee97608bf1305c1313cceced8ab807f3330c42ef15b54a8c55e56": {
+  "title": "Ethereum Up or Down - November 27, 4:00PM-8:00PM ET",
+  "endDate": "2026-11-28",
+  "slug": "eth-updown-4h-1795813200",
+  "url": "https://polymarket.com/event/eth-updown-4h-1795813200",
+  "seenAt": "2026-11-28T01:50:31.035Z"
+ },
+ "0x425b9680d03c65768cfddfe0b467c889b3d88f085e26e9b2e10d7dc593b3f544": {
+  "title": "Bitcoin Up or Down on November 28?",
+  "endDate": "2026-11-28",
+  "slug": "btc-updown-1d-1795798800",
+  "url": "https://polymarket.com/event/btc-updown-1d-1795798800",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x7685cd0aafece7d4b1277e2023fbbce07dd892fa63534399eadd58114894468a": {
+  "title": "Ethereum Up or Down - November 27, 8:00PM-9:00PM ET",
+  "endDate": "2026-11-28",
+  "slug": "eth-updown-1h-1795827600",
+  "url": "https://polymarket.com/event/eth-updown-1h-1795827600",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0xfcdc72b56d0e46439ce535551b8375737589ccf17c9700ca287e8a45e16f3ae3": {
+  "title": "Dogecoin Up or Down - November 27, 8:00PM-12:00AM ET",
+  "endDate": "2026-11-28",
+  "slug": "doge-updown-4h-1795827600",
+  "url": "https://polymarket.com/event/doge-updown-4h-1795827600",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x7d4818645789a59b2d6128e38b5400acf5f925bcb6cbffece2e8b19ca10862b3": {
+  "title": "Will NVIDIA (NVDA) hit (LOW) $112 in December?",
+  "endDate": "2027-01-01",
+  "slug": "what-price-will-nvda-hit-in-december-2026",
+  "url": "https://polymarket.com/event/what-price-will-nvda-hit-in-december-2026",
+  "seenAt": "2026-11-28T03:10:33.346Z"
+ },
+ "0x2a6a575282f16e0d70f8479edcf8529950e7cab1b804b4146991bf3455bb04e4": {
+  "title": "Bitcoin Up or Down - November 27, 8:50PM-8:55PM ET",
+  "endDate": "2026-11-28",
+  "slug": "btc-updown-5m-1795830600",
+  "url": "https://polymarket.com/event/btc-updown-5m-1795830600",
+  "seenAt": "2026-11-28T03:10:33.346Z"
+ },
+ "0x75f3fa31d3e87b78c1898b7417d69d2467da7ace0eb9cad6a2a9e35b962ef1fc": {
+  "title": "Ethereum Up or Down on November 28?",
+  "endDate": "2026-11-28",
+  "slug": "eth-updown-1d-1795798800",
+  "url": "https://polymarket.com/event/eth-updown-1d-1795798800",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x345aa444fb701a312917e5f6f7b9c5293d69614d1ada897f0567021d1315d536": {
+  "title": "Bitcoin Up or Down - November 27, 8:00PM-12:00AM ET",
+  "endDate": "2026-11-28",
+  "slug": "btc-updown-4h-1795827600",
+  "url": "https://polymarket.com/event/btc-updown-4h-1795827600",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0xcbd4306c24a4349159a1ea07a75db898c659342bdee45743555189550588d016": {
+  "title": "Will Tesla, Inc. (TSLA) hit (HIGH) $405 in November?",
+  "endDate": "2026-12-01",
+  "slug": "what-price-will-tsla-hit-in-november-2026",
+  "url": "https://polymarket.com/event/what-price-will-tsla-hit-in-november-2026",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x4809910f845021ae201406eac6aecb3d1ee820810b6a5a840fb201e81e5993ba": {
+  "title": "Will the price of Bitcoin be above $60,000 on November 28?",
+  "endDate": "2026-11-28",
+  "slug": "bitcoin-above-on-november-28-2026",
+  "url": "https://polymarket.com/event/bitcoin-above-on-november-28-2026",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x20fa568747e40e2f8c40abd0754c2e7de72d1f6f88f87385c12733b842564aad": {
+  "title": "Will Ethereum reach $1,700 November 23-29?",
+  "endDate": "2026-11-30",
+  "slug": "what-price-will-ethereum-hit-november-23-29-2026",
+  "url": "https://polymarket.com/event/what-price-will-ethereum-hit-november-23-29-2026",
+  "seenAt": "2026-11-28T06:10:32.318Z"
+ },
+ "0x162e356bfab7ad18fe4e3029d5811d9a95fce95d93858b42924a3b9ffbcf1a93": {
+  "title": "Will PP win the most seats in the 2026 Spanish general election?",
+  "endDate": "2026-11-30",
+  "slug": "spain-general-election-winner",
+  "url": "https://polymarket.com/event/spain-general-election-winner",
+  "seenAt": "2026-11-28T09:10:35.903Z"
+ },
+ "0x598c99fbef3a7d4fb2c3a5af62e67e4ef5f5f7447e966569aee6c917bff12a25": {
+  "title": "Will Su Chiao-hui win the next New Taipei Mayor election?",
+  "endDate": "2026-11-29",
+  "slug": "new-taipei-mayor-election-winner-20260813125857200",
+  "url": "https://polymarket.com/event/new-taipei-mayor-election-winner-20260813125857200",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0xbf7a9da08326512f76129d4accf9f7d852dbf1cb7dd2c512479ff40c872f5659": {
+  "title": "Will Chiang Wan-an win the next Taipei Mayor election?",
+  "endDate": "2026-11-29",
+  "slug": "taipei-mayor-election-winner-20260813125857100",
+  "url": "https://polymarket.com/event/taipei-mayor-election-winner-20260813125857100",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x79174889bc1b03940ee33613e80d9a8021c4c5afabcc0f7a95e0db027b6626a7": {
+  "title": "Will Bitcoin reach $60,000 on November 28?",
+  "endDate": "2026-11-29",
+  "slug": "what-price-will-bitcoin-hit-on-november-28-2026",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-on-november-28-2026",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x0ff4131bebd7e76a8d4e10951cf22ed92616ed2b5631d71e80721e7afd94f6ed": {
+  "title": "Will Lee Shu-chuan win the next New Taipei Mayor election?",
+  "endDate": "2026-11-29",
+  "slug": "new-taipei-mayor-election-winner-20260813125857200",
+  "url": "https://polymarket.com/event/new-taipei-mayor-election-winner-20260813125857200",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0xa2c72f9cd9b03702ff8f10c1c85f6a28b3046851908a24c60c6df1d5a89b0349": {
+  "title": "Will Bitcoin dip to $58,000 on November 28?",
+  "endDate": "2026-11-29",
+  "slug": "what-price-will-bitcoin-hit-on-november-28-2026",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-on-november-28-2026",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x44f20c7bf7fd09d3630be9b9a74804a8c28cafd02dd443b89e81bb450b03b09a": {
+  "title": "Bitcoin Up or Down - November 28, 5:00AM-6:00AM ET",
+  "endDate": "2026-11-28",
+  "slug": "btc-updown-1h-1795860000",
+  "url": "https://polymarket.com/event/btc-updown-1h-1795860000",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x4c57042fd16cffe524441fb85f1ec299695218e62ac624b0ae9547074d94cc78": {
+  "title": "Bitcoin Up or Down - November 28, 5:55AM-6:00AM ET",
+  "endDate": "2026-11-28",
+  "slug": "btc-updown-5m-1795863300",
+  "url": "https://polymarket.com/event/btc-updown-5m-1795863300",
+  "seenAt": "2026-11-28T12:10:37.514Z"
+ },
+ "0xdef0451c5febbb67f177b2b130b1ea8252107ecf8b1edc86842cda39b51a0aa6": {
+  "title": "Bitcoin Up or Down - November 28, 4:00AM-8:00AM ET",
+  "endDate": "2026-11-28",
+  "slug": "btc-updown-4h-1795856400",
+  "url": "https://polymarket.com/event/btc-updown-4h-1795856400",
+  "seenAt": "2026-11-28T11:48:43.362Z"
+ },
+ "0x94f826d46f1b82790cabe8d5e5d0130084e9b8feab391402cbcf9060f7f7f276": {
+  "title": "Bitcoin Up or Down - November 28, 6:00AM-7:00AM ET",
+  "endDate": "2026-11-28",
+  "slug": "btc-updown-1h-1795863600",
+  "url": "https://polymarket.com/event/btc-updown-1h-1795863600",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x85a9ced846a53491c911e67f4fa45668759dc176ca4c7f9a94043cf6fe92237f": {
+  "title": "Will Bitcoin dip to $59,000 on November 28?",
+  "endDate": "2026-11-29",
+  "slug": "what-price-will-bitcoin-hit-on-november-28-2026",
+  "url": "https://polymarket.com/event/what-price-will-bitcoin-hit-on-november-28-2026",
+  "seenAt": "2026-11-28T12:10:37.514Z"
+ },
+ "0xd79b73e7766faacf061db47f8d96a15039cc7bdc7bcf520722275f093b9a5b2b": {
+  "title": "Bitcoin Up or Down - November 28, 6:45AM-6:50AM ET",
+  "endDate": "2026-11-28",
+  "slug": "btc-updown-5m-1795866300",
+  "url": "https://polymarket.com/event/btc-updown-5m-1795866300",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ },
+ "0x3a0c86d7d9d3e4e82d533d2b1351b5d3e63577f8e1495e2804b9ae540135a556": {
+  "title": "Israel x Iran ceasefire continues through December 15?",
+  "endDate": "2026-12-16",
+  "slug": "israel-x-iran-ceasefire-continues-throughptptpt-20260716224448963",
+  "url": "https://polymarket.com/event/israel-x-iran-ceasefire-continues-throughptptpt-20260716224448963",
+  "seenAt": "2026-11-28T13:29:35.603Z"
+ }
+}
