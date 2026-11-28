@@ -148,6 +148,11 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 - Blueprints : qwen3.8 d'abord, normalisation avant validation, compilation à chaque cycle même avec une collecte réutilisée.
 - D1 labo synthétique (GJR-GARCH, sauts, régimes), D2 live sur les vrais prix horaires, D3 champions mêlés aux LLM (65 / 35). Rien n'est encore en D2 en production : il faut d'abord des Blueprints compilés (clé Groq) qui passent la D1, puis au moins 15 trades réels pour atteindre la D3.
 
+### Quota Groq et routage OpenRouter (28/11/2026)
+- Cause des « 429 TPM » sur qwen3.8 : Groq compte l'entrée ET le max_tokens demandé ; dossier réel ≈ 3 800 tokens + 4 000 demandés ≈ 7 800 pour 8 000/min. Dossier compacté (métriques arrondies, titres coupés, flux ε sans titres, coupe progressive) : 2 495 tokens sur le cycle réel (budget 2 500) ; réponse Groq plafonnée à 1 400 tokens, gpt-oss en raisonnement court (`reasoning_effort: low`, retiré automatiquement si refusé).
+- OpenRouter : Gemma 4 gratuit (pool saturé, 429) et Ernie (réponses vides) exclus de la découverte ; openrouter/free reçoit le champ `models` avec les 3 meilleurs :free du catalogue (aujourd'hui particle-1, flint, nemotron-3.5-super-vl). Seul modèle gratuit ≥ 24 Md restant comme votant : nemotron-3-nano-omni 30B (3 Md actifs, sans mode JSON).
+- À surveiller : bulletins tronqués si 1 400 tokens ne suffisent pas (beaucoup de positions ouvertes) — l'erreur apparaîtrait en « JSON » dans le classement.
+
 ### Univers élargi, positions D2 et votes expliqués (28/11/2026)
 - Votes tracés et colonne « Avis / Raison » : vérifié en réel, l'historique publié montre déjà des phrases générées en CI (« Ouvert par l'arbitre deepseek-v4-pro (votes partagés 2/3) : … »).
 - Univers : catalogue réel du jour 304 perps Hyperliquid (125 TradFi) et 82 marchés Polymarket actifs ; GraphFactorStatArb migré de BTC, ETH vers BTC, ETH, HL_CRYPTO (20 cryptos) et ouvre aussitôt HYPE et NEAR en plus de BTC et ETH. Exposition virtuelle bornée à 3 × l'équité (sinon 20 positions × 1 × le capital).

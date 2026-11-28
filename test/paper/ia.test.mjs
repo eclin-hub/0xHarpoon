@@ -239,7 +239,7 @@ test("socle réel : DeepSeek + Groq + OpenRouter votent ensemble ; requête chat
   const d = calls.find((c) => c.body.model === "deepseek-v4-pro");
   assert.equal(d.url, "https://api.deepseek.com/chat/completions"); assert.equal(d.headers.authorization, "Bearer secret-d");
   assert.equal(d.body.max_tokens, 8000); assert.deepEqual(d.body.response_format, { type: "json_object" });
-  assert.equal(calls.find((c) => c.body.model === "openai/gpt-oss-120b").body.max_tokens, 4000);
+  const g = calls.find((c) => c.body.model === "openai/gpt-oss-120b").body; assert.equal(g.max_tokens, 1400); assert.equal(g.reasoning_effort, "low");   // quota Groq
   // sans clé DeepSeek : les autres votent quand même (non bloquant)
   const r2 = new LLMRouter({ env: { GROQ_API_KEY: "k" }, fetch: f });
   assert.deepEqual(r2.available().map((m) => m.model), ["openai/gpt-oss-120b", "qwen/qwen3.8-27b"]);

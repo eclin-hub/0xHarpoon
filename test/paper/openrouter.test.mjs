@@ -38,14 +38,14 @@ test("catalogue :free : 1 modèle d'au moins 24 Md (taille connue), gratuit, tex
   assert.equal(OPENROUTER_CFG.max, 1); assert.equal(OPENROUTER_CFG.minParamsB, 24);
   // sans limite : JSON d'abord, plus gros d'abord ; une version par famille (gemma 31b, pas 26b) ; jamais les exclus
   const all = selectFreeModels(CATALOG, DEFAULT_PROVIDERS, { now: NOW, cfg: { ...OPENROUTER_CFG, max: 10 } }).map((m) => m.id);
-  assert.deepEqual(all, ["deepcogito/cogito-v3-70b", "google/gemma-4-31b-it:free", "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"]);
+  assert.deepEqual(all, ["deepcogito/cogito-v3-70b", "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"]);   // Gemma 4 gratuit exclu (pool saturé)
   for (const bad of ["particle-ai/particle-1:free", "recursive/flint-v1.0:free", "nvidia/nemotron-3.5-super-vl:free", "baidu/ernie-5.5-flash-preview:free",   // taille inconnue
-    "liquid/lfm-3-1.7b:free", "google/gemma-4-26b-a4b-it:free", "google/lyria-3-pro-preview", "openai/gpt-oss-120b:free", "qwen/qwen3.8-27b:free",
+    "liquid/lfm-3-1.7b:free", "google/gemma-4-26b-a4b-it:free", "google/gemma-4-31b-it:free", "google/lyria-3-pro-preview", "openai/gpt-oss-120b:free", "qwen/qwen3.8-27b:free",
     "deepseek/deepseek-v4-pro-671b:free", "acme/old-model-70b:free", "openrouter/free", "mistralai/mistral-large", "nvidia/nemotron-3.5-lightning:free",
     "nvidia/nemotron-3-ultra-550b-a55b:free"]) assert.ok(!all.includes(bad), bad);
-  // catalogue réel du 28/11/2026 (sans cogito) : Gemma 4 31B
+  // catalogue réel du 28/11/2026 (sans cogito, Gemma exclu) : seul nemotron-3-nano-omni 30B reste au-dessus de 24 Md
   const real = { data: CATALOG.data.filter((m) => !m.id.startsWith("deepcogito")) };
-  assert.deepEqual(selectFreeModels(real, DEFAULT_PROVIDERS, { now: NOW }).map((m) => m.id), ["google/gemma-4-31b-it:free"]);
+  assert.deepEqual(selectFreeModels(real, DEFAULT_PROVIDERS, { now: NOW }).map((m) => m.id), ["nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"]);
   assert.equal(openrouterFamily("nvidia/nemotron-3.5-super-vl:free"), "nvidia/nemotron");
   assert.deepEqual(selectFreeModels({}, DEFAULT_PROVIDERS), []); assert.deepEqual(selectFreeModels(null), []);
 });

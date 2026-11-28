@@ -121,13 +121,13 @@ const xContext = xr.alpha ? promptContext(xr.alpha.epsilon?.tickers, now) : null
 // recalculé à chaque cycle ; poids du cycle et causes d'échec après le vote (recordCycle). Le meilleur votant actif
 // sert aussi à la synthèse du régime macro.
 // votants gratuits d'OpenRouter : découverts dans le catalogue public (gardé 6 h), les identifiants « :free » changeant souvent
-let orModels = [], orCache = (await store.readJson(FILES.openrouterModels).catch(() => null)) ?? null;
+let orModels = [], orRouting = [], orCache = (await store.readJson(FILES.openrouterModels).catch(() => null)) ?? null;
 if (process.env.OPENROUTER_API_KEY && !process.env.PAPER_LLM_PROVIDERS) {
   const od = await discoverOpenRouter({ cache: orCache, now, net: !noNet && !noLlm });
-  orModels = od.models; orCache = od.cache;
+  orModels = od.models; orRouting = od.routing ?? []; orCache = od.cache;
   if (od.error) problems.push(od.models.length ? `${od.error} (liste en cache gardée)` : od.error);
 }
-const llmRouter = new LLMRouter(process.env.PAPER_LLM_PROVIDERS ? {} : { providers: withDiscovered(DEFAULT_PROVIDERS, orModels) });
+const llmRouter = new LLMRouter(process.env.PAPER_LLM_PROVIDERS ? {} : { providers: withDiscovered(DEFAULT_PROVIDERS, orModels, orRouting) });
 const rankPrev = (await store.readJson(FILES.llmRanking).catch(() => null)) ?? emptyRanking();
 let ranking = rankModels({ models: llmRouter.rankable(), book: shadow, state: rankPrev, now });
 
@@ -246,7 +246,7 @@ const summary = {
   candidates: { kept: sel.candidates.map((c) => `${c.id} score=${c.score}`), wakeLLM: sel.wakeLLM, rejected: dossier.rejected.length },
   ai,
   regime: regime ? { regime: regime.regime, source: regime.source, reasons: regime.reasons, next: regime.calendar.next, cut: regime.policy.cut, risk: regime.risk } : null,
-  openrouter: orModels.map((m) => m.id),
+  openrouter: { voter: orModels.map((m) => m.id), routing: orRouting },
   ranking: { active: ranking.active.length, target: ranking.target, cycle: ranking.applied ?? null, silent: ranking.models.filter((m) => m.cycleError).map((m) => `${m.model} : ${m.cycleError.code}`) },
   metrics: { sharpe: metrics.performance.sharpe, maxDrawdown: metrics.performance.maxDrawdown, closedTrades: metrics.trades.closed, shadowOpen: shadow.open.length, shadowClosed: sh.closed.length },
   leagues: { d1q: leagues.entries.filter((e) => e.division === "D1Q").length, d2: leagues.entries.filter((e) => e.division === "D2").length,
