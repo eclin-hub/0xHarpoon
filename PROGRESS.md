@@ -152,7 +152,7 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 - Fin du Top 6 et du repêchage : tous les modèles non `shadowOnly` votent à chaque réveil (`LLMRouter.collectAll`), poids cible max(0,2 ; score)² borné entre 4 % et 30 % ; un modèle muet pèse 0 sur le cycle, sa part est redistribuée.
 - Moins d'échecs « sans réponse » : Blueprints compilés après le vote et par mistral-small en priorité (quota TPM de gpt-oss-120b réservé au vote) ; 400 ms entre deux requêtes OpenRouter ; extraction JSON plus tolérante (plusieurs blocs markdown, accolades dans la prose, `</think>` seul, virgules finales).
 - Classement : colonne Poids « 16,7 % (cible 12,1 %) », « Cible 15,1 % · Cycle 0 % » pour un actif muet, « 0 % exclu » pour un modèle grisé ; Statut « Actif · sans réponse · 429 TPM / 404 policy / JSON / délai ».
-- Note : llama 3.3 70b est servi deux fois (Cerebras et OpenRouter) ; les deux votent désormais, ce même modèle pèse donc deux voix.
+- Une voix par modèle : llama 3.3 70b, servi par Cerebras et OpenRouter, vote deux fois mais n'a qu'un poids, partagé entre ses copies (pool réel à score neutre : 7 voix de 14,3 %, les deux copies de llama à 7,15 % chacune).
 
 ### Carnet permanent des stratégies (28/11/2026)
 - `d1Stats` figées à l'évaluation D1 et gardées après promotion ; `strategy_ledger.json` (jamais purgé) mis à jour à chaque cycle et publié ; page autonome `public/ledger.html` ouverte depuis l'arène X Alpha.

@@ -58,7 +58,10 @@ test("(2) poids cible continu : max(0,2 ; score)², strictement positif, borné 
   // un excellent, un très mauvais et dix neutres
   const r = rankModels({ models: MODELS, book: book(trades("m1", Array(40).fill(3)), trades("m2", Array(40).fill(-1))), now: NOW });
   const act = r.models.filter((m) => !m.shadowOnly);
-  assert.ok(act.every((m) => m.target >= 0.04 - 1e-9 && m.target <= 0.3 + 1e-9), JSON.stringify(act.map((m) => [m.model, m.target])));
+  assert.ok(act.every((m) => m.target > 0 && m.target <= 0.3 + 1e-9), JSON.stringify(act.map((m) => [m.model, m.target])));
+  // bornes 4 % / 30 % par voix (famille) : m1 et m12 partagent celle de f1
+  const fam = {}; for (const m of act) fam[m.family] = (fam[m.family] ?? 0) + m.target;
+  assert.ok(Object.values(fam).every((x) => x >= 0.04 - 1e-3 && x <= 0.3 + 1e-3), JSON.stringify(fam));
   assert.ok(Math.abs(sum(r.target) - 1) < 1e-3);
   const t = Object.fromEntries(act.map((m) => [m.model, m.target]));
   assert.equal(t.m2, 0.04);                                                           // le plus mauvais garde une voix réelle
@@ -76,6 +79,24 @@ test("(2) poids cible continu : max(0,2 ; score)², strictement positif, borné 
   const w2 = capWeights({ a: 100, b: 50, c: 9, d: 3, e: 2, f: 1 });
   assert.equal(w2.a, 0.3); assert.equal(w2.b, 0.3); assert.ok(Object.values(w2).every((x) => x <= 0.3 + 1e-9)); assert.ok(Math.abs(sum(w2) - 1) < 1e-3);
   assert.deepEqual(boundedWeights({ a: 1, b: 1, c: 1, d: 1 }), { a: 0.25, b: 0.25, c: 0.25, d: 0.25 });
+});
+
+test("une voix par modèle : les copies d'un même modèle (même famille, plusieurs fournisseurs) votent mais partagent un poids", async () => {
+  // llama 3.3 70b sur Cerebras et OpenRouter (famille commune), 4 autres modèles ; tous au score neutre
+  const ms = [{ model: "llama-cerebras", family: "llama", provider: "c" }, { model: "llama-openrouter", family: "llama", provider: "o" },
+    ...["a", "b", "c", "d"].map((x) => ({ model: x, family: x, provider: "p" }))];
+  const r = rankModels({ models: ms, now: NOW });
+  assert.equal(r.active.length, 6);                                                       // les deux copies votent
+  assert.equal(r.target["llama-cerebras"] + r.target["llama-openrouter"], 0.2);          // ensemble : une voix sur 5
+  assert.equal(r.target["llama-cerebras"], 0.1); assert.equal(r.target.a, 0.2);
+  assert.deepEqual(r.models.find((m) => m.model === "llama-cerebras").sharedWith, ["llama-openrouter"]);
+  // au vote : les deux répondent → 10 % chacune ; une copie muette → l'autre porte seule la voix de la famille
+  const both = voterWeights(r.active, r), one = voterWeights(r.active.filter((m) => m !== "llama-openrouter"), r);
+  assert.equal(both["llama-cerebras"], 0.1); assert.equal(one["llama-cerebras"], 0.2); assert.equal(one.a, 0.2);
+  // décision réelle : 6 bulletins, mais la somme des poids des deux copies ne dépasse pas une voix
+  const router = routerFor(ms, reply(() => ballot("REJECT")));
+  const d = await decide({ router, dossier: { wakeLLM: true, candidates: [CAND], rejected: [] }, portfolio: initialPortfolio(), now: NOW, ranking: r });
+  assert.equal(d.records[0].n, 6); assert.equal(d.weights["llama-cerebras"] + d.weights["llama-openrouter"], 0.2);
 });
 
 test("(3) poids 0 % uniquement pour les modèles shadowOnly ; leurs votes restent dans le shadow book", async () => {
