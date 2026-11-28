@@ -138,21 +138,33 @@ App.views.paper = (() => {
         h("td", { class: "muted" }, tally(d.candidate_id)), h("td", { class: "num" }, d.conviction ?? "—"), h("td", { class: "muted", title: d.arbiter ? `arbitre ${d.arbiter.model} : ${d.arbiter.reason}` : null }, d.via || "")],
         h("div", {}, d.arbiter ? h("p", { class: "muted", style: "margin:0 0 8px;font-size:.8rem" }, `Arbitre ${d.arbiter.model} : ${d.arbiter.reason}`) : null,
           table(["Modèle", "Vote", "Conviction", "Métrique citée", "Invalidation"], vs.filter((v) => v.candidate_id === d.candidate_id).map((v) => h("tr", {},
-            h("td", { class: "mono" }, v.model, v.weight === 0 ? h("span", { class: "sub2" }, v.probe ? "ombre : repêchage, poids nul" : "ombre : poids nul") : typeof v.weight === "number" && v.weight < 1 ? h("span", { class: "sub2" }, `poids ${pct(v.weight, 0)}`) : null), h("td", {}, dchip(v.action), v.valid ? null : h("span", { class: "muted", title: v.invalid_reason }, " écarté")),
+            h("td", { class: "mono" }, v.model, v.weight === 0 ? h("span", { class: "sub2" }, "ombre : poids nul") : typeof v.weight === "number" && v.weight < 1 ? h("span", { class: "sub2" }, `poids ${pct(v.weight, 0)}`) : null), h("td", {}, dchip(v.action), v.valid ? null : h("span", { class: "muted", title: v.invalid_reason }, " écarté")),
             h("td", { class: "num" }, v.conviction), h("td", { class: "muted", title: v.cited_risk_metric }, (v.citation_ok ? "✓ " : "✗ ") + (v.cited_risk_metric || "")), h("td", { class: "muted", title: v.invalidation_condition }, v.invalidation_condition))))), 5))));
   }
 
   // Classement dynamique des modèles (llm_ranking.json) : remplace l'ancien tableau du PnL contrefactuel par modèle
   function models() {
-    const rk = D.rk, ms = rk?.models || [];
-    const st = (m) => h("span", { class: "chip " + (m.status.startsWith("Actif") ? "up" : "neutral"), title: m.fails ? `échecs récents ${pct(m.fails, 0)}${rk.health?.[m.model]?.lastError ? " · " + rk.health[m.model].lastError : ""}` : null }, m.status);
-    const P = rk?.params || {};
-    return panel("Classement des modèles IA", { sub: `${rk ? when(rk.at) + " · " : ""}${P.minActive ?? 6} votants actifs au plus, poids plafonné à ${pct(P.cap ?? P.maxWeight ?? 0.3, 0)} · trades fantômes clos sur ${P.windowDays ?? 30} j (${P.maxTrades ?? 40} au plus)`,
-      noteText: "Score : PSR, facteur de profit et taux de réussite des trades fantômes (chaque vote OPEN valide ouvre une position fantôme pour son modèle), ramenés vers 1 (neutre) par un prior bayésien : score neutre sous 5 trades clos, légère pénalité en cas d'échecs répétés. Les 6 meilleurs de familles distinctes votent avec un poids proportionnel à leur score, plafonné à 30 % ; les autres sont en sourdine (poids nul), mais 2 d'entre eux votent en ombre à chaque réveil et redeviennent actifs dès qu'ils remontent dans le Top 6. 1 R = 1 % du capital de départ." },
-      ms.length ? table(["Modèle", "Statut", "Trades shadow", "Réussite", "R cumulé · Sharpe", "Poids de vote"], ms.map((m) => h("tr", {},
+    const rk = D.rk, ms = rk?.models || [], P = rk?.params || {}, voted = !!rk?.applied;
+    // Statut : « Actif », « Actif · sans réponse · 429 TPM » (cause courte, message complet en infobulle), « Ombre (config) »
+    const st = (m) => {
+      const err = m.cycleError?.message || m.lastError?.message || rk.health?.[m.model]?.lastError || null;
+      const tone = m.shadowOnly ? "neutral" : m.cycleError ? "warn" : "up";
+      return h("span", { class: "chip " + tone, title: [m.shadowOnly ? "grisé : poids nul dans la décision, votes suivis dans le shadow book" : null, err, m.fails ? `échecs récents ${pct(m.fails, 0)}` : null].filter(Boolean).join(" · ") || null }, m.status);
+    };
+    // Poids : grisé (0 %, exclu) ; actif au dernier vote (poids du cycle, cible en sous-ligne) ; actif muet (cible · cycle 0 %)
+    const weightCell = (m) => {
+      if (m.shadowOnly) return h("td", { class: "num muted", title: "modèle grisé (shadowOnly) : exclu de la décision" }, "0 %", h("span", { class: "sub2" }, "exclu"));
+      const tgt = m.target ?? m.weight;
+      if (voted && m.cycleError) return h("td", { class: "num warn", title: "actif, mais sans réponse au dernier vote : sa part a été redistribuée aux modèles qui ont répondu" }, `Cible ${pct(tgt, 1)} · Cycle 0 %`);
+      if (voted && m.cycle != null) return h("td", { class: "num" }, pct(m.cycle, 1), Math.abs(m.cycle - tgt) >= 0.0005 ? h("span", { class: "sub2" }, `cible ${pct(tgt, 1)}`) : null);
+      return h("td", { class: "num", title: "poids cible (pas de vote depuis ce classement)" }, pct(tgt, 1), h("span", { class: "sub2" }, "cible"));
+    };
+    return panel("Classement des modèles IA", { sub: `${rk ? when(rk.at) + " · " : ""}${P.active ?? ms.filter((m) => !m.shadowOnly).length} modèles actifs votent à chaque réveil · poids de ${pct(P.floor ?? P.minWeight ?? 0.04, 0)} à ${pct(P.cap ?? P.maxWeight ?? 0.3, 0)} · trades fantômes clos sur ${P.windowDays ?? 30} j (${P.maxTrades ?? 40} au plus)`,
+      noteText: "Score : PSR, facteur de profit et taux de réussite des trades fantômes (chaque vote OPEN valide ouvre une position fantôme pour son modèle), ramenés vers 1 (neutre) par un prior bayésien : score neutre sous 5 trades clos, légère pénalité en cas d'échecs répétés. Tous les modèles actifs votent à chaque réveil ; poids cible proportionnel à max(0,2 ; score)², borné entre 4 % (un modèle mal classé garde une voix) et 30 %. Un modèle actif qui ne répond pas pèse 0 sur ce cycle (« Cible · Cycle 0 % ») et sa part est redistribuée aux autres. Les modèles grisés (Ombre) ne pèsent jamais sur la décision, mais leurs votes restent suivis. 1 R = 1 % du capital de départ." },
+      ms.length ? table(["Modèle", "Statut", "Trades shadow", "Réussite", "R cumulé · Sharpe", "Poids de vote"], ms.map((m) => h("tr", m.shadowOnly ? { style: "opacity:.6" } : {},
         h("td", { class: "mono", title: `rang ${m.rank} · famille ${m.family} · ${m.provider} · score ${f2(m.score, 2)}` }, m.model, h("span", { class: "sub2" }, `#${m.rank} · score ${f2(m.score, 2)}`)),
         h("td", {}, st(m)), h("td", { class: "num" }, String(m.trades)), h("td", { class: "num" }, pctOr(m.winRate, 0)),
-        h("td", { class: "num " + cls(m.sumR || 0) }, `${f2(m.sumR)} R · ${f2(m.sharpe)}`), h("td", { class: "num" }, m.weight > 0 ? pct(m.weight, 1) : "0 %"))))
+        h("td", { class: "num " + cls(m.sumR || 0) }, `${f2(m.sumR)} R · ${f2(m.sharpe)}`), weightCell(m))))
         : empty("Pas encore de classement : il apparaît au premier cycle avec une clé LLM."));
   }
 
@@ -179,7 +191,7 @@ App.views.paper = (() => {
 
   return {
     title: () => ["Agent de ", h("em", {}, "paper trading")],
-    sub: "10 000 $ fictifs : candidats filtrés par le code, vote pondéré de 6 modèles classés sur leurs résultats, risque et exécution déterministes.",
+    sub: "10 000 $ fictifs : candidats filtrés par le code, vote pondéré de tous les modèles actifs, classés sur leurs résultats, risque et exécution déterministes.",
     init(box) { z.box = h("div", { style: "display:flex;flex-direction:column;gap:var(--gap)" }); box.append(z.box); render(); load(); },
     update() { if (Date.now() - D.at > 60_000) load(); },
   };

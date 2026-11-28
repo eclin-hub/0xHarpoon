@@ -1,113 +1,155 @@
-// Classement dynamique des modèles LLM (llm_ranking.mjs) : minimum de 6 votants actifs, plafond de 30 % avec
-// redistribution, mise en sourdine d'un modèle faible et repêchage automatique par ses votes en ombre.
+// Classement dynamique des modèles LLM (llm_ranking.mjs) : TOUS les modèles décisionnels votent à chaque réveil, avec un
+// poids continu borné entre 4 % et 30 % ; poids nul pour les seuls modèles shadowOnly ; part d'un modèle muet redistribuée.
+// Routeur : appels parallèles à tous les votants, 400 ms entre deux requêtes vers OpenRouter, JSON habillé toléré.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { rankModels, capWeights, voterWeights, scoreOf, performance, updateHealth, recordCycle, emptyRanking, MIN_ACTIVE_VOTERS, MAX_WEIGHT } from "../../lib/paper/llm_ranking.mjs";
+import { rankModels, boundedWeights, capWeights, targetWeights, voterWeights, scoreOf, performance, updateHealth, recordCycle, errorCode, emptyRanking,
+  MAX_WEIGHT, MIN_WEIGHT } from "../../lib/paper/llm_ranking.mjs";
 import { LLMRouter } from "../../lib/paper/router.mjs";
+import { extractJson } from "../../lib/paper/schema.mjs";
 import { decide, tallyCandidate } from "../../lib/paper/decision.mjs";
 import { addShadows } from "../../lib/paper/shadow.mjs";
+import { runXAlpha, compileLibrary, blueprintExtractor } from "../../lib/paper/x_scraper.mjs";
 import { initialPortfolio } from "../../lib/paper/store.mjs";
 
 const NOW = Date.UTC(2026, 10, 28, 12), H = 3600e3, D = 24 * H;
 const iso = (t) => new Date(t).toISOString();
 const sum = (o) => Object.values(o).reduce((a, b) => a + b, 0);
-// 9 modèles décisionnels de 8 familles (m8 partage la famille de m1) + 1 modèle ombre de configuration
-const MODELS = [...Array.from({ length: 8 }, (_, i) => ({ model: `m${i + 1}`, family: `f${i + 1}`, provider: "p" })), { model: "m9", family: "f1", provider: "q" },
-  { model: "sh", family: "fs", provider: "p", shadowOnly: true }];
-// trades fantômes clos : R donnés, du plus ancien au plus récent
 const trades = (model, Rs, end = NOW - H) => Rs.map((R, i) => ({ model, family: "x", candidateId: `c${i}`, R, closedAt: iso(end - (Rs.length - i) * H), exit: "horizon" }));
 const book = (...xs) => ({ open: [], closed: xs.flat() });
 const GOOD = [1.5, 2, -1, 1.2, 0.8, 1.1, -0.5, 1.4], BAD = [-1, -1, -0.8, -1, 0.2, -1, -1, -0.9];
+// 12 modèles décisionnels (m1 et m12 de la même famille, comme llama 3.3 sur Cerebras et OpenRouter) + 2 modèles ombre
+const DEC = Array.from({ length: 12 }, (_, i) => ({ model: `m${i + 1}`, family: i === 11 ? "f1" : `f${i + 1}`, provider: "p" }));
+const MODELS = [...DEC, { model: "sh1", family: "gemini", provider: "g", shadowOnly: true }, { model: "sh2", family: "ernie", provider: "o", shadowOnly: true }];
+const CAND = { id: "hl|BTC|long", type: "whale", venue: "hl", coin: "BTC", side: "long", pocket: "core", score: 3, metrics: { mark: 100, atr14: 2, dist_atr: 0.55 } };
+const ballot = (action) => ({ votes: [{ candidate_id: CAND.id, action, conviction: 80, invalidation_condition: "retour sous l'entrée", horizon_hours: 48, cited_risk_metric: "dist_atr = 0.55" }] });
+const routerFor = (models, f, extra = {}) => new LLMRouter({ env: { K: "k" }, fetch: f, ...extra,
+  providers: [{ name: "p", url: "https://example.test/v1", keyEnv: "K", models: models.map((m) => ({ id: m.model, family: m.family, ...(m.shadowOnly ? { shadowOnly: true } : { role: "voter" }) })) }] });
+const reply = (fn) => async (url, init) => { const m = JSON.parse(init.body).model; const r = fn(m); return r instanceof Response ? r : new Response(JSON.stringify({ choices: [{ message: { content: typeof r === "string" ? r : JSON.stringify(r) } }] }), { status: 200 }); };
 
 test("score : prior neutre 1,0 sous 5 trades clos ; bons et mauvais résultats lissés ; fenêtre 30 j / 40 trades ; pénalité d'échecs légère", () => {
-  assert.equal(scoreOf(performance([3, 3, 3, 3])).score, 1);                         // 4 trades : neutre, même parfaits
+  assert.equal(scoreOf(performance([3, 3, 3, 3])).score, 1);
   const good = scoreOf(performance(GOOD)).score, bad = scoreOf(performance(BAD)).score;
   assert.ok(good > 1.3 && good < 2, String(good)); assert.ok(bad < 0.6, String(bad));
-  assert.ok(scoreOf(performance(GOOD), 1).score >= good * 0.7 - 1e-4 && scoreOf(performance(GOOD), 0.3).score < good);   // au plus −30 %
-  // trades hors fenêtre (31 jours) ignorés ; 40 au plus
-  const r = rankModels({ models: [MODELS[0]], book: book(trades("m1", BAD, NOW - 31 * D), trades("m1", Array(50).fill(1))), now: NOW });
+  assert.ok(scoreOf(performance(GOOD), 1).score >= good * 0.7 - 1e-4 && scoreOf(performance(GOOD), 0.3).score < good);
+  const r = rankModels({ models: [DEC[0]], book: book(trades("m1", BAD, NOW - 31 * D), trades("m1", Array(50).fill(1))), now: NOW });
   assert.equal(r.models[0].trades, 40); assert.equal(r.models[0].winRate, 1);
-  // santé : moyenne mobile des échecs, d'après le journal du routeur
   let hl = updateHealth({}, [{ model: "m1", ok: false, error: "HTTP 429" }, { model: "m2", ok: true }], NOW);
   assert.equal(hl.m1.fails, 0.3); assert.equal(hl.m2.fails, 0); assert.equal(hl.m1.lastError, "HTTP 429");
   hl = updateHealth(hl, [{ model: "m1", ok: true }], NOW); assert.equal(hl.m1.fails, 0.21);
 });
 
-test("(1) au moins 6 votants actifs de familles distinctes ; 100 % des modèles quand moins de 6 sont disponibles", () => {
+test("(1) tous les modèles non shadowOnly participent à chaque réveil, sans limite à 6 ni contrainte de famille", async () => {
   const r = rankModels({ models: MODELS, book: book(trades("m2", GOOD), trades("m3", BAD)), now: NOW });
-  assert.equal(MIN_ACTIVE_VOTERS, 6);
-  assert.equal(r.active.length, 6);
-  assert.equal(new Set(r.active.map((m) => MODELS.find((x) => x.model === m).family)).size, 6);   // m1 et m9 jamais ensemble
-  assert.equal(r.active[0], "m2");                                                                 // le meilleur en tête
-  assert.ok(!r.active.includes("m3"));                                                             // le mauvais en sourdine
-  assert.ok(!r.active.includes("sh")); assert.equal(r.models.find((m) => m.model === "sh").status, "Ombre (config)");
-  assert.ok(Math.abs(sum(Object.fromEntries(r.models.map((m) => [m.model, m.weight]))) - 1) < 1e-3);
-  // 3 modèles seulement : tous actifs, même un mauvais
-  const few = rankModels({ models: MODELS.slice(0, 3), book: book(trades("m3", BAD)), now: NOW });
-  assert.deepEqual(few.active.sort(), ["m1", "m2", "m3"]); assert.deepEqual(few.probes, []);
-  assert.ok(few.models.every((m) => m.weight > 0));
-  // ordre transmis au routeur : actifs d'abord, puis la réserve (remplaçants)
-  assert.deepEqual(r.order.slice(0, 6), r.active); assert.equal(r.order.length, 9);
-});
-
-test("(2) plafond strict de 30 % : l'excédent est redistribué au prorata, somme 1 ; moins de 4 votants → 1/n", () => {
-  assert.equal(MAX_WEIGHT, 0.3);
-  const w = capWeights({ a: 10, b: 1, c: 1, d: 1, e: 1, f: 1 });
-  assert.equal(w.a, 0.3); for (const k of "bcdef") assert.equal(w[k], 0.14);
-  assert.ok(Math.abs(sum(w) - 1) < 1e-3);
-  // deux modèles au-dessus du plafond, puis un troisième poussé au-dessus par la redistribution
-  const w2 = capWeights({ a: 100, b: 50, c: 9, d: 3, e: 2, f: 1 });
-  assert.equal(w2.a, 0.3); assert.equal(w2.b, 0.3); assert.ok(w2.c <= 0.3 + 1e-9);
-  assert.ok(Object.values(w2).every((x) => x <= 0.3 + 1e-9)); assert.ok(Math.abs(sum(w2) - 1) < 1e-3);
-  assert.ok(w2.d > w2.e && w2.e > w2.f);                                             // proportionnalité gardée sous le plafond
-  // un modèle parfait face à 5 modèles faibles (43 % sans plafond) n'emporte jamais plus de 30 %
-  const r = rankModels({ models: MODELS.slice(0, 6), book: book(trades("m1", Array(40).fill(3)), ...["m2", "m3", "m4", "m5", "m6"].map((m) => trades(m, BAD))), now: NOW });
-  assert.equal(r.active.length, 6); assert.equal(r.models.find((m) => m.model === "m1").weight, 0.3);
-  assert.ok(Math.abs(sum(Object.fromEntries(r.models.map((m) => [m.model, m.weight]))) - 1) < 1e-3);
-  // 2 votants : 30 % est impossible, poids égaux au plus
-  assert.deepEqual(capWeights({ a: 5, b: 1 }), { a: 0.5, b: 0.5 });
-  assert.deepEqual(voterWeights(["x", "y"], null), { x: 0.5, y: 0.5 });
-});
-
-test("(3) un modèle faible passe à 0 % et vote en ombre par rotation ; il redevient actif dès qu'il remonte dans le Top 6", () => {
-  const ms = MODELS.slice(0, 8);                                                     // 8 familles : 6 actifs, 2 en sourdine
-  const base = [trades("m1", GOOD), trades("m2", GOOD), trades("m3", GOOD), trades("m4", GOOD), trades("m5", GOOD), trades("m6", GOOD.map((x) => x * 0.5))];
-  let st = rankModels({ models: ms, book: book(...base, trades("m8", BAD)), state: emptyRanking(), now: NOW });
-  const m8 = () => st.models.find((m) => m.model === "m8");
-  assert.ok(!st.active.includes("m8")); assert.equal(m8().weight, 0); assert.match(m8().status, /^Ombre 0 %/);
-  assert.deepEqual(st.probes.sort(), ["m7", "m8"]);                                  // 2 modèles en sourdine tirés à chaque réveil
-  // vrai routeur, faux serveur : m8 (en sourdine) vote OPEN en ombre, poids nul ; les 6 actifs votent avec leurs poids
-  const CAND = { id: "hl|BTC|long", type: "whale", venue: "hl", coin: "BTC", side: "long", pocket: "core", score: 3, metrics: { mark: 100, atr14: 2, dist_atr: 0.55 } };
-  const vote = (action) => ({ votes: [{ candidate_id: CAND.id, action, conviction: 80, invalidation_condition: "retour sous l'entrée", horizon_hours: 48, cited_risk_metric: "dist_atr = 0.55" }] });
+  assert.equal(r.active.length, 12); assert.deepEqual(r.probes, []);
+  assert.ok(r.active.includes("m1") && r.active.includes("m12"));                    // même famille : les deux votent
+  assert.ok(r.models.filter((m) => !m.shadowOnly).every((m) => m.status === "Actif"));
+  // vrai routeur, faux serveur : les 12 votent, les 2 modèles ombre aussi (poids nul)
   const asked = [];
-  const f = async (url, init) => { const m = JSON.parse(init.body).model; asked.push(m); return new Response(JSON.stringify({ choices: [{ message: { content: JSON.stringify(vote(m === "m8" ? "OPEN" : "REJECT")) } }] }), { status: 200 }); };
-  const router = new LLMRouter({ env: { K: "k" }, providers: [{ name: "p", url: "https://example.test/v1", keyEnv: "K", models: ms.map((m) => ({ id: m.model, family: m.family, role: "voter" })) }], fetch: f });
-  return (async () => {
-    const d = await decide({ router, dossier: { wakeLLM: true, candidates: [CAND], rejected: [] }, portfolio: initialPortfolio(), now: NOW, ranking: st });
-    assert.deepEqual(Object.keys(d.weights).sort(), [...st.active].sort());
-    assert.ok(Math.abs(sum(d.weights) - 1) < 1e-3 && Object.values(d.weights).every((w) => w <= 0.3 + 1e-9));
-    const p8 = d.votes.find((v) => v.model === "m8");
-    assert.equal(p8.weight, 0); assert.equal(p8.probe, true); assert.equal(asked.filter((m) => m === "m8").length, 1);   // jamais aussi en remplaçant
-    assert.equal(d.decisions.length, 0);                                             // son OPEN ne pèse rien en live
-    const rec = recordCycle(st, d.weights, d.probes);
-    assert.equal(rec.models.find((m) => m.model === "m8").weight, 0);
-    // son vote alimente le shadow book…
-    const sb = addShadows(null, d.votes, { candidates: [CAND] }, NOW).book;
-    assert.ok(sb.open.some((s) => s.model === "m8"));
-    // …puis ses bons appels en ombre le font remonter : il redevient actif et récupère du poids, sans intervention
-    const later = NOW + 10 * D;
-    st = rankModels({ models: ms, book: book(...base, trades("m8", BAD, NOW), trades("m8", Array(30).fill(2), later)), state: rec, now: later });
-    assert.ok(st.active.includes("m8"), st.active.join()); assert.ok(m8().weight > 0); assert.equal(m8().status, "Actif");
-    assert.ok(!st.active.includes("m6") || !st.active.includes("m7"));               // un autre a cédé sa place
-  })();
+  const router = routerFor(MODELS, reply((m) => { asked.push(m); return ballot(m.startsWith("sh") ? "OPEN" : "REJECT"); }));
+  const d = await decide({ router, dossier: { wakeLLM: true, candidates: [CAND], rejected: [] }, portfolio: initialPortfolio(), now: NOW, ranking: r });
+  assert.equal(asked.length, 14); assert.equal(new Set(asked).size, 14);
+  assert.deepEqual(Object.keys(d.weights).sort(), r.active.slice().sort());
+  assert.equal(d.records[0].n, 12); assert.equal(d.decisions.length, 0);
 });
 
-test("rotation du repêchage : les modèles en sourdine sont tirés à tour de rôle", () => {
-  const ms = Array.from({ length: 10 }, (_, i) => ({ model: `n${i}`, family: `g${i}`, provider: "p" }));   // 6 actifs, 4 en sourdine
-  const b = book(...ms.slice(0, 6).map((m) => trades(m.model, GOOD)));
-  let st = emptyRanking(); const seen = [];
-  for (let k = 0; k < 2; k++) { st = rankModels({ models: ms, book: b, state: st, now: NOW }); seen.push(...st.probes); }
-  assert.deepEqual(seen.sort(), ["n6", "n7", "n8", "n9"]);                         // en 2 réveils, les 4 ont voté en ombre
+test("(2) poids cible continu : max(0,2 ; score)², strictement positif, borné entre 4 % et 30 %, somme 1", () => {
+  assert.equal(MIN_WEIGHT, 0.04); assert.equal(MAX_WEIGHT, 0.3);
+  // un excellent, un très mauvais et dix neutres
+  const r = rankModels({ models: MODELS, book: book(trades("m1", Array(40).fill(3)), trades("m2", Array(40).fill(-1))), now: NOW });
+  const act = r.models.filter((m) => !m.shadowOnly);
+  assert.ok(act.every((m) => m.target >= 0.04 - 1e-9 && m.target <= 0.3 + 1e-9), JSON.stringify(act.map((m) => [m.model, m.target])));
+  assert.ok(Math.abs(sum(r.target) - 1) < 1e-3);
+  const t = Object.fromEntries(act.map((m) => [m.model, m.target]));
+  assert.equal(t.m2, 0.04);                                                           // le plus mauvais garde une voix réelle
+  assert.ok(t.m1 > t.m3 && t.m3 > t.m2);                                              // ordre des scores respecté
+  // un modèle parfait face à 5 très faibles : plafonné à 30 %, les faibles au-dessus du plancher, rapport ≤ 7,5
+  const w = targetWeights({ a: 2, b: 0.05, c: 0.05, d: 0.05, e: 0.05, f: 0.05 });
+  assert.equal(w.a, 0.3); for (const k of "bcdef") assert.equal(w[k], 0.14);
+  const spread = targetWeights(Object.fromEntries(Array.from({ length: 20 }, (_, i) => [`x${i}`, i === 0 ? 2 : 0.05])));
+  assert.equal(spread.x0, 0.3); assert.ok(Object.values(spread).every((x) => x >= 0.04 - 1e-9)); assert.ok(spread.x0 / Math.min(...Object.values(spread)) <= 7.5 + 1e-6);
+  // bornes infaisables : 2 modèles → 50 % chacun ; 30 modèles → plancher 1/30
+  assert.deepEqual(targetWeights({ a: 2, b: 0.1 }), { a: 0.5, b: 0.5 });
+  const many = targetWeights(Object.fromEntries(Array.from({ length: 30 }, (_, i) => [`y${i}`, 1 + i / 30])));
+  assert.ok(Object.values(many).every((x) => Math.abs(x - 1 / 30) < 1e-3));
+  // remplissage par niveaux : deux au plafond, un poussé au-dessus par la redistribution, plafond seul compatible
+  const w2 = capWeights({ a: 100, b: 50, c: 9, d: 3, e: 2, f: 1 });
+  assert.equal(w2.a, 0.3); assert.equal(w2.b, 0.3); assert.ok(Object.values(w2).every((x) => x <= 0.3 + 1e-9)); assert.ok(Math.abs(sum(w2) - 1) < 1e-3);
+  assert.deepEqual(boundedWeights({ a: 1, b: 1, c: 1, d: 1 }), { a: 0.25, b: 0.25, c: 0.25, d: 0.25 });
+});
+
+test("(3) poids 0 % uniquement pour les modèles shadowOnly ; leurs votes restent dans le shadow book", async () => {
+  const r = rankModels({ models: MODELS, book: book(trades("sh1", Array(40).fill(3))), now: NOW });   // même excellent, un shadowOnly reste à 0
+  for (const m of r.models) assert.equal(m.weight === 0, m.shadowOnly, m.model);
+  assert.equal(r.models.find((m) => m.model === "sh1").status, "Ombre (config)");
+  const router = routerFor(MODELS, reply((m) => ballot(m.startsWith("sh") ? "OPEN" : "REJECT")));
+  const d = await decide({ router, dossier: { wakeLLM: true, candidates: [CAND], rejected: [] }, portfolio: initialPortfolio(), now: NOW, ranking: r });
+  const zero = d.votes.filter((v) => v.weight === 0).map((v) => v.model).sort();
+  assert.deepEqual(zero, ["sh1", "sh2"]); assert.ok(d.votes.filter((v) => !v.shadowOnly).every((v) => v.weight >= 0.04 - 1e-9 && v.weight <= 0.3 + 1e-9));
+  const sb = addShadows(null, d.votes, { candidates: [CAND] }, NOW).book;
+  assert.deepEqual(sb.open.map((s) => s.model).sort(), ["sh1", "sh2"]);
+});
+
+test("modèle actif sans réponse : 0 sur ce cycle, sa part redistribuée au prorata ; cause courte affichée", async () => {
+  const ms = DEC.slice(0, 8), r = rankModels({ models: ms, book: book(trades("m1", GOOD)), now: NOW });
+  const f = reply((m) => (m === "m2" ? new Response('{"error":{"message":"Rate limit reached for model in organization on tokens per minute (TPM): Limit 8000, Used 7900"}}', { status: 429 })
+    : m === "m3" ? "Je ne peux pas répondre." : ballot("REJECT")));
+  const router = routerFor(ms, f);
+  const d = await decide({ router, dossier: { wakeLLM: true, candidates: [CAND], rejected: [] }, portfolio: initialPortfolio(), now: NOW, ranking: r });
+  const answered = ["m1", "m4", "m5", "m6", "m7", "m8"];
+  assert.deepEqual(Object.keys(d.weights).sort(), answered);
+  assert.ok(Math.abs(sum(d.weights) - 1) < 1e-3);
+  assert.ok(Object.values(d.weights).every((w) => w >= 0.04 - 1e-9 && w <= 0.3 + 1e-9));
+  // prorata des poids cibles des répondants : la part des muets (m2, m3) est redistribuée ; m1 bute sur le plafond de 30 %,
+  // les autres gardent entre eux les rapports de leurs poids cibles
+  assert.equal(d.weights.m1, 0.3);
+  for (const m of answered.slice(2)) assert.ok(Math.abs(d.weights[m] / d.weights.m4 - r.target[m] / r.target.m4) < 0.02, `${m} : rapport ${d.weights[m] / d.weights.m4}`);
+  assert.ok(d.weights.m4 > r.target.m4);                                                  // chacun récupère une part des muets
+  assert.ok(d.weights.m1 > d.weights.m4);                                                 // le mieux classé garde l'avantage
+  const rec = recordCycle(r, d.weights, router.log), by = Object.fromEntries(rec.models.map((m) => [m.model, m]));
+  assert.equal(by.m2.status, "Actif · sans réponse · 429 TPM"); assert.equal(by.m2.cycle, 0); assert.ok(by.m2.target > 0);
+  assert.match(by.m2.cycleError.message, /tokens per minute/);
+  assert.equal(by.m3.status, "Actif · sans réponse · JSON");
+  assert.equal(by.m1.status, "Actif"); assert.equal(by.m1.cycle, d.weights.m1);
+  assert.equal(errorCode("HTTP 404 : No endpoints found matching your data policy"), "404 policy");
+  assert.equal(errorCode("HTTP 404 : model not found"), "404 modèle");
+  assert.equal(errorCode("The operation was aborted due to timeout"), "délai");
+  assert.equal(errorCode("HTTP 503 : overloaded"), "5xx serveur");
+});
+
+test("OpenRouter : 400 ms au moins entre deux requêtes vers openrouter.ai, même en parallèle ; les autres hôtes ne sont pas retardés", async () => {
+  const waits = [], sleep = async (ms) => { waits.push(ms); };
+  const providers = [{ name: "openrouter", url: "https://openrouter.ai/api/v1/chat/completions", keyEnv: "O", models: ["a", "b", "c"].map((id) => ({ id, family: id, role: "voter" })) },
+    { name: "groq", url: "https://api.groq.com/openai/v1/chat/completions", keyEnv: "G", models: [{ id: "g", family: "g", role: "voter" }] }];
+  const r = new LLMRouter({ env: { O: "o", G: "g" }, providers, sleep, fetch: reply(() => ballot("REJECT")) });
+  const out = await r.collectAll([], (j) => ({ ok: true, value: j }));
+  assert.equal(out.results.length, 4);
+  assert.equal(waits.length, 2);                                                       // 1re requête immédiate, puis 2 décalées
+  assert.ok(Math.abs(waits[0] - 400) <= 50 && Math.abs(waits[1] - 800) <= 50, waits.join());
+});
+
+test("JSON habillé : balises markdown, texte avant / après, accolades dans la prose, </think> seul, virgules finales", () => {
+  assert.deepEqual(extractJson('Voici mon vote :\n```json\n{"votes":[]}\n```\nBonne journée.'), { votes: [] });
+  assert.deepEqual(extractJson('Avec {des accolades} dans la prose. Réponse : {"votes":[1]} fin.'), { votes: [1] });
+  assert.deepEqual(extractJson('```python\nx = {1: 2}\n```\n```JSON\n{"ok": true}\n```'), { ok: true });
+  assert.deepEqual(extractJson('je réfléchis…</think>\n{"ok": 1}'), { ok: 1 });
+  assert.deepEqual(extractJson('{"a": [1, 2,], "b": 3,}'), { a: [1, 2], b: 3 });
+  assert.throws(() => extractJson("pas de JSON"), /aucun JSON/); assert.throws(() => extractJson('{"a": 1'), /incomplet/);
+});
+
+test("Blueprints compilés après le vote : collecte sans compilation, puis compileLibrary ; mistral-small essayé en premier", async () => {
+  const posts = { "arxiv:1": { id: "arxiv:1", kind: "infinity", interest: 80, src: "arxiv", author: "A", text: "Momentum factor.", t: NOW - H, url: null } };
+  let calls = 0;
+  const ex = async () => { calls++; return { blueprint: { name: "Momentum", thesis: "t", universe: ["BTC"], side: "both", horizon_hours: 24, blocks: [{ type: "momentum", weight: 1, params: {} }], entry: { score_above: 0.2 }, exit: { stop_atr: 2, max_hold_hours: 24 } }, model: "mistral-small-latest" }; };
+  const { alpha, cache } = await runXAlpha({ cache: { posts }, env: {}, free: false, net: false, now: NOW, deferCompile: true, extract: ex });
+  assert.equal(calls, 0); assert.equal(alpha.infinity.blueprints.length, 0); assert.equal(alpha.infinity.translator, "après le vote de trading");
+  assert.ok(!alpha.notes.some((n) => /traducteur indisponible/.test(n)));
+  const after = await compileLibrary(alpha, cache, ex, { now: NOW, env: { MISTRAL_API_KEY: "m", GROQ_API_KEY: "g" } });
+  assert.equal(calls, 1); assert.equal(after.alpha.infinity.blueprints.length, 1); assert.match(after.alpha.infinity.translator, /^mistral-small → qwen3.8/);
+  const order = [];
+  const ext = blueprintExtractor({ env: { MISTRAL_API_KEY: "m", GROQ_API_KEY: "g", OPENROUTER_API_KEY: "o" }, fetch: reply((m) => { order.push(m); return { none: true }; }) });
+  await ext({ author: "a", text: "x", src: "arxiv" });
+  assert.deepEqual(order, ["mistral-small-latest", "qwen/qwen3.8-27b", "openai/gpt-oss-120b", "openrouter/free"]);
 });
 
 test("dépouillement pondéré : 4 OPEN sur 6 ouvrent sans arbitre si leur poids ≥ 75 %, arbitre à poids égaux ; conviction pondérée", () => {
@@ -116,9 +158,9 @@ test("dépouillement pondéré : 4 OPEN sur 6 ouvrent sans arbitre si leur poids
   const t = tallyCandidate("x", heavy);
   assert.equal(t.status, "open"); assert.match(t.via, /majorité pondérée 80 %/);
   assert.equal(t.conviction, Math.round((0.3 * 90 + 0.3 * 70 + 0.1 * 60 + 0.1 * 60) / 0.8));
-  const equal = heavy.map((x) => ({ ...x, weight: 1 / 6 }));
-  assert.equal(tallyCandidate("x", equal).status, "arbiter");                       // 4/6 = 67 % : arbitre
+  assert.equal(tallyCandidate("x", heavy.map((x) => ({ ...x, weight: 1 / 6 }))).status, "arbiter");
   assert.equal(tallyCandidate("x", [v("a", "OPEN", 0.1), ...["b", "c", "d", "e", "f"].map((m) => v(m, "REJECT", 0.18))]).status, "reject");
-  // à 3 votants égaux on retrouve l'ancienne règle : 2 contre 1 → arbitre
   assert.equal(tallyCandidate("x", [v("a", "OPEN", 1 / 3), v("b", "OPEN", 1 / 3), v("c", "REJECT", 1 / 3)]).status, "arbiter");
+  assert.deepEqual(voterWeights(["x", "y"], null), { x: 0.5, y: 0.5 });
+  assert.deepEqual(emptyRanking().probes, []);
 });

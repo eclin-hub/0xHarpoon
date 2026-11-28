@@ -148,6 +148,12 @@ Spécification complète dans `SPEC.md` (elle prime sur cette section). Impléme
 - Blueprints : qwen3.8 d'abord, normalisation avant validation, compilation à chaque cycle même avec une collecte réutilisée.
 - D1 labo synthétique (GJR-GARCH, sauts, régimes), D2 live sur les vrais prix horaires, D3 champions mêlés aux LLM (65 / 35). Rien n'est encore en D2 en production : il faut d'abord des Blueprints compilés (clé Groq) qui passent la D1, puis au moins 15 trades réels pour atteindre la D3.
 
+### Tous les modèles actifs votent, poids continus 4 % à 30 % (28/11/2026)
+- Fin du Top 6 et du repêchage : tous les modèles non `shadowOnly` votent à chaque réveil (`LLMRouter.collectAll`), poids cible max(0,2 ; score)² borné entre 4 % et 30 % ; un modèle muet pèse 0 sur le cycle, sa part est redistribuée.
+- Moins d'échecs « sans réponse » : Blueprints compilés après le vote et par mistral-small en priorité (quota TPM de gpt-oss-120b réservé au vote) ; 400 ms entre deux requêtes OpenRouter ; extraction JSON plus tolérante (plusieurs blocs markdown, accolades dans la prose, `</think>` seul, virgules finales).
+- Classement : colonne Poids « 16,7 % (cible 12,1 %) », « Cible 15,1 % · Cycle 0 % » pour un actif muet, « 0 % exclu » pour un modèle grisé ; Statut « Actif · sans réponse · 429 TPM / 404 policy / JSON / délai ».
+- Note : llama 3.3 70b est servi deux fois (Cerebras et OpenRouter) ; les deux votent désormais, ce même modèle pèse donc deux voix.
+
 ### Carnet permanent des stratégies (28/11/2026)
 - `d1Stats` figées à l'évaluation D1 et gardées après promotion ; `strategy_ledger.json` (jamais purgé) mis à jour à chaque cycle et publié ; page autonome `public/ledger.html` ouverte depuis l'arène X Alpha.
 - X Alpha : tableau D1 avec les qualifiées en tête (badge « qualifié → D2 »), sous-ligne « Labo D1 : PF · DD · Stress » dans D2 et D3, lien discret vers le carnet ; aucun nouveau bloc.
